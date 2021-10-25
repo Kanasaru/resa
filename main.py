@@ -1,8 +1,8 @@
-from game import Game
+from data.start import Start
 
 
 def main():
-    game = Game()
+    start = Start()
 
 
 if __name__ == "__main__":

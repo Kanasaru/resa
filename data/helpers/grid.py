@@ -1,9 +1,8 @@
 class Grid(object):
-    def __init__(self):
-        # self.size has to be dividable by 2
-        self.size = 20
-        self.WIDTH = 6
-        self.HEIGHT = 4
+    def __init__(self, size):
+        self.size = size[0]
+        self.WIDTH = size[1]
+        self.HEIGHT = size[2]
 
     def get_field_by_number(self, field_number):
         if field_number >= (self.WIDTH * self.HEIGHT):
@@ -30,8 +29,8 @@ class Grid(object):
         row = position[1] / self.size
         x = divmod(position[0], self.size)
         if row == 0:
-            return 1 + x[0]
-        return int(row * self.WIDTH + x[0] + 1)
+            return x[0]
+        return int(row * self.WIDTH + x[0])
 
     def get_grid_size(self):
         x: int = self.WIDTH
@@ -40,3 +39,14 @@ class Grid(object):
 
     def get_field_size(self):
         return self.size
+
+    def get_grid_width_in_px(self):
+        return self.WIDTH * self.size
+
+    def get_grid_height_in_px(self):
+        return self.HEIGHT * self.size
+
+    def get_size(self):
+        x: int = self.WIDTH * self.size
+        y: int = self.HEIGHT * self.size
+        return x, y
