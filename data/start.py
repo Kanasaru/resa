@@ -3,7 +3,7 @@ import data.eventcodes
 from data import settings
 from data.helpers import event
 from data.game import Game
-from data.forms import title, textbox
+from data.forms import title, textbox, button
 
 
 class Start(object):
@@ -20,6 +20,11 @@ class Start(object):
 
         pygame.display.set_caption(f"{settings.GAME_TITLE} in v{settings.GAME_VERSION} by {settings.GAME_AUTHOR}")
 
+        pygame.mixer.music.load('resources/music/sb_indreams.mp3')
+        pygame.mixer.music.play(-1, 0.0)
+        pygame.mixer.music.set_volume(.2)
+        self.pause = False
+
         self.build_titles()
         self.loop()
 
@@ -35,9 +40,10 @@ class Start(object):
     def handle_events(self):
         for event in self.title_main.get_events():
             if event.code == data.eventcodes.STARTGAME:
-                self.game = Game(self.surface)
+                print("Let's start!")
+                # self.game = Game(self.surface)
             elif event.code == data.eventcodes.LOADGAME:
-                pass
+                print("Load Game!")
             elif event.code == data.eventcodes.QUITGAME:
                 self.leave = True
 
@@ -49,8 +55,20 @@ class Start(object):
                     z = pygame.mouse.get_pos()
                 if event.button == 2:
                     pass
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_p:
+                    if self.pause:
+                        pygame.mixer.music.unpause()
+                        self.pause = False
+                    else:
+                        pygame.mixer.music.pause()
+                        self.pause = True
             else:
                 pass
+
+            self.title_main.handle_event(event)
+
+        self.title_main.clear_events()
 
     def run_logic(self):
         self.title_main.run_logic()
@@ -75,8 +93,9 @@ class Start(object):
             "height": settings.RESOLUTION[0],
             "bg_color": settings.COLOR_TEAL,
             "colorkey": settings.COLOR_KEY,
+            "bg_image": "resources/images/bg_default.png",
         })
-        tf_headline = data.forms.textbox.Textbox({
+        tf_headline = data.forms.textbox.Textbox("tf_headline", {
             "pos_y": 20,
             "text": "RESA",
             "font_size": 90,
@@ -87,7 +106,7 @@ class Start(object):
         pos_x = display_width / 2 - tf_headline.width() / 2
         tf_headline.set_attr(("pos_x", pos_x))
         self.title_main.add(tf_headline)
-        tf_version = data.forms.textbox.Textbox({
+        tf_version = data.forms.textbox.Textbox("tf_version", {
             "pos_x": self.title_main.get_attr("width") - 5,
             "pos_y": 5,
             "text": f"Version: {settings.GAME_VERSION}",
@@ -98,3 +117,49 @@ class Start(object):
             "colorkey": settings.COLOR_KEY,
         })
         self.title_main.add(tf_version)
+        width, height = tf_headline.get_dimensions()
+        position_y = height + 100
+        b_newgame = data.forms.button.Button({
+            "pos_y": position_y,
+            "text": "New Game",
+            "callback_event": data.helpers.event.Event(
+                data.eventcodes.STARTGAME,
+                data.eventcodes.STARTGAME
+            ),
+            "colorkey": settings.COLOR_KEY,
+            "spritesheet": "resources/images/sprites/buttons.png"
+        })
+        b_newgame.set_attr({
+            "pos_x": self.title_main.get_attr("width") / 2 - b_newgame.width() / 2
+        })
+        self.title_main.add(b_newgame)
+        position_y = b_newgame.get_attr("pos_y") + b_newgame.height() + 20
+        b_loadgame = data.forms.button.Button({
+            "pos_y": position_y,
+            "text": "Load Game",
+            "callback_event": data.helpers.event.Event(
+                data.eventcodes.LOADGAME,
+                data.eventcodes.LOADGAME
+            ),
+            "colorkey": settings.COLOR_KEY,
+            "spritesheet": "resources/images/sprites/buttons.png"
+        })
+        b_loadgame.set_attr({
+            "pos_x": self.title_main.get_attr("width") / 2 - b_loadgame.width() / 2
+        })
+        self.title_main.add(b_loadgame)
+        position_y = b_loadgame.get_attr("pos_y") + b_loadgame.height() + 20
+        b_quitgame = data.forms.button.Button({
+            "pos_y": position_y,
+            "text": "Quit Game",
+            "callback_event": data.helpers.event.Event(
+                data.eventcodes.QUITGAME,
+                data.eventcodes.QUITGAME
+            ),
+            "colorkey": settings.COLOR_KEY,
+            "spritesheet": "resources/images/sprites/buttons.png"
+        })
+        b_quitgame.set_attr({
+            "pos_x": self.title_main.get_attr("width") / 2 - b_quitgame.width() / 2
+        })
+        self.title_main.add(b_quitgame)

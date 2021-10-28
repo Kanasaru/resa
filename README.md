@@ -15,7 +15,8 @@ Yeah, sure. For this repository I created a wiki. My personal goal is a document
 - If you are a **designer**, nice. Please wait until I implemented something to support different texture packages. Before that, all your work could be for nothing and I do not want to waste your time.
 
 ## Credits
-...
+### Music
+- "In Dreams" by Scott Buckley | www.scottbuckley.com.au, Music promoted by https://www.chosic.com/free-music/all/, Attribution 4.0 International (CC BY 4.0) | https://creativecommons.org/licenses/by/4.0/
 
 ## License
 Published under GNU General Public License Version 3.0

@@ -8,11 +8,12 @@ import data.helpers.attr
 
 
 class Textbox(pygame.sprite.Sprite):
-    def __init__(self, attributes=None):
+    def __init__(self, name, attributes=None):
         pygame.sprite.Sprite.__init__(self)
 
         self.events = []
         self.attr = {
+            "name": name,
             "pos_x": 0,
             "pos_y": 0,
             "text": "Textbox",
