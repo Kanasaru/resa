@@ -3,7 +3,7 @@ import data.eventcodes
 from data import settings
 from data.helpers import event
 from data.game import Game
-from data.forms import title, textbox, button
+import data.forms
 
 
 class Start(object):
@@ -15,20 +15,20 @@ class Start(object):
         self.clock = pygame.time.Clock()
         self.events = data.helpers.event.EventList()
         self.game = None
-
-        self.title_main = None
+        self.start_game = False
 
         pygame.display.set_caption(f"{settings.GAME_TITLE} in v{settings.GAME_VERSION} by {settings.GAME_AUTHOR}")
 
-        pygame.mixer.music.load('resources/music/sb_indreams.mp3')
-        pygame.mixer.music.play(-1, 0.0)
-        pygame.mixer.music.set_volume(.2)
+        self.load_music()
         self.pause = False
 
+        self.title_main = None
         self.build_titles()
+
         self.loop()
 
     def loop(self):
+        self.start_music(settings.MUSIC_VOLUME, settings.MUSIC_LOOP)
         while not self.leave:
             self.clock.tick(settings.FPS)
             self.handle_events()
@@ -40,29 +40,20 @@ class Start(object):
     def handle_events(self):
         for event in self.title_main.get_events():
             if event.code == data.eventcodes.STARTGAME:
-                print("Let's start!")
-                # self.game = Game(self.surface)
+                self.start_game = True
             elif event.code == data.eventcodes.LOADGAME:
                 print("Load Game!")
             elif event.code == data.eventcodes.QUITGAME:
                 self.leave = True
+            else:
+                pass
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.leave = True
-            elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    z = pygame.mouse.get_pos()
-                if event.button == 2:
-                    pass
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_p:
-                    if self.pause:
-                        pygame.mixer.music.unpause()
-                        self.pause = False
-                    else:
-                        pygame.mixer.music.pause()
-                        self.pause = True
+                    self.pause_music()
             else:
                 pass
 
@@ -71,6 +62,17 @@ class Start(object):
         self.title_main.clear_events()
 
     def run_logic(self):
+        if self.start_game:
+            if self.game is not None and self.game.exit_game:
+                self.load_music()
+                self.start_music(settings.MUSIC_VOLUME, settings.MUSIC_LOOP)
+                self.start_game = False
+                self.game = None
+            else:
+                self.clr_screen()
+                self.stop_music()
+                self.game = Game(self.surface)
+
         self.title_main.run_logic()
 
     def render(self):
@@ -84,15 +86,34 @@ class Start(object):
         pygame.quit()
         print("Bye bye!")
 
+    def clr_screen(self):
+        self.surface.fill(settings.COLOR_BLACK)
+        pygame.display.flip()
+
+    def load_music(self):
+        pygame.mixer.music.load(settings.MUSIC_BG_1)
+
+    def start_music(self, volume, loop):
+        pygame.mixer.music.play(loop)
+        pygame.mixer.music.set_volume(volume)
+
+    def pause_music(self):
+        if self.pause:
+            pygame.mixer.music.unpause()
+            self.pause = False
+        else:
+            pygame.mixer.music.pause()
+            self.pause = True
+
+    def stop_music(self):
+        pygame.mixer.music.stop()
+
     def build_titles(self):
         self.title_main = data.forms.title.Title("main", {
-            "pos_x": 0,
-            "pos_y": 0,
             "width": settings.RESOLUTION[0],
-            "height": settings.RESOLUTION[0],
-            "bg_color": settings.COLOR_TEAL,
+            "height": settings.RESOLUTION[1],
             "colorkey": settings.COLOR_KEY,
-            "bg_image": "resources/images/bg_default.png",
+            "bg_image": settings.MENU_BG_IMG,
         })
         tf_headline = data.forms.textbox.Textbox("tf_headline", {
             "pos_y": 20,
@@ -100,7 +121,6 @@ class Start(object):
             "font_size": 90,
             "text_font": settings.BASIC_FONT,
             "font_color": settings.COLOR_BLACK,
-            "colorkey": settings.COLOR_KEY,
         })
         pos_x = self.title_main.width() / 2 - tf_headline.width() / 2
         tf_headline.set_attr(("pos_x", pos_x))
@@ -112,10 +132,19 @@ class Start(object):
             "font_size": 14,
             "text_font": settings.BASIC_FONT,
             "font_color": settings.COLOR_BLACK,
-            "position": "right",
-            "colorkey": settings.COLOR_KEY,
+            "alignment": data.forms.textbox.RIGHT,
         })
         self.title_main.add(tf_version)
+        tf_credits = data.forms.textbox.Textbox("tf_credits", {
+            "pos_x": self.title_main.width() / 2,
+            "pos_y": self.title_main.height() - 24,
+            "text": f"Created and Designed by {settings.GAME_AUTHOR}",
+            "font_size": 14,
+            "text_font": settings.BASIC_FONT,
+            "font_color": settings.COLOR_BLACK,
+            "alignment": data.forms.textbox.CENTER,
+        })
+        self.title_main.add(tf_credits)
         width, height = tf_headline.get_dimensions()
         position_y = height + 100
         b_newgame = data.forms.button.Button("b_newgame", {
@@ -141,7 +170,8 @@ class Start(object):
                 data.eventcodes.LOADGAME
             ),
             "colorkey": settings.COLOR_KEY,
-            "spritesheet": "resources/images/sprites/buttons.png"
+            "spritesheet": "resources/images/sprites/buttons.png",
+            "clickable": False,
         })
         b_loadgame.set_attr({
             "pos_x": self.title_main.width() / 2 - b_loadgame.width() / 2

@@ -1,5 +1,6 @@
 import pygame
 import data.helpers.attr
+from data import settings
 
 
 class Title(object):
@@ -10,7 +11,7 @@ class Title(object):
             "pos_y": 0,
             "width": 0,
             "height": 0,
-            "bg_color": (255, 255, 255),
+            "bg_color": settings.COLOR_BLACK,
             "colorkey": None,
             "bg_image": None,
         }
@@ -32,9 +33,8 @@ class Title(object):
 
     def set_bg_image(self):
         if self.get_attr("bg_image") is not None:
-            org_pic = pygame.image.load(self.get_attr("bg_image")).convert()
-            pic_position_and_size = org_pic.get_rect()
-            self.bg_img = pygame.transform.scale(org_pic, pic_position_and_size.size)
+            pic = pygame.image.load(self.get_attr("bg_image")).convert()
+            self.bg_img = pygame.transform.scale(pic, pic.get_rect().size)
 
     def set_forms_attr(self, name, attr):
         for form_object in self.form_objects:

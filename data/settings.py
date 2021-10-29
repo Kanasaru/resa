@@ -27,3 +27,7 @@ RESOLUTION = (1280, 800)
 FPS = 60
 GRID = (20, 64, 40)
 BASIC_FONT = "resources/fonts/RobotoMono.ttf"
+MENU_BG_IMG = "resources/images/bg_default.png"
+MUSIC_VOLUME = .2
+MUSIC_LOOP = -1
+MUSIC_BG_1 = "resources/music/sb_indreams.mp3"

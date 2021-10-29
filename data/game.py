@@ -1,15 +1,14 @@
 import pygame
 from data import settings
-from data.helpers.grid import Grid
 
 
 class Game(object):
 
     def __init__(self, surface):
-        self.grid = Grid(settings.GRID)
         self.exit_game = False
         self.clock = pygame.time.Clock()
         self.surface = surface
+
         self.loop()
 
     def loop(self):
@@ -44,6 +43,5 @@ class Game(object):
         pass
 
     def render(self):
-        self.surface.fill(settings.COLOR_WHITE)
-
+        self.surface.fill(settings.COLOR_BLACK)
         pygame.display.flip()

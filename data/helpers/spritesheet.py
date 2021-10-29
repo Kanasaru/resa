@@ -1,4 +1,9 @@
+"""
+code is taken and slightly edited from https://www.pygame.org/wiki/Spritesheet
+"""
+
 import pygame
+from data import errorcodes
 
 
 class SpriteSheet(object):
@@ -7,8 +12,8 @@ class SpriteSheet(object):
             self.sheet = pygame.image.load(filename).convert()
             self.sheet_size = self.sheet.get_size()
             self.sprite_size = sprite_size
-        except:
-            print("Can't find file")
+        except FileNotFoundError:
+            print(errorcodes.resa_error_list.get_error_by_key(errorcodes.E_FILE))
 
     def image_at(self, rectangle, colorkey=None):
         rect = pygame.Rect(rectangle)
