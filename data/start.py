@@ -85,8 +85,7 @@ class Start(object):
         print("Bye bye!")
 
     def build_titles(self):
-        display_width = 1280
-        self.title_main = data.forms.title.Title({
+        self.title_main = data.forms.title.Title("main", {
             "pos_x": 0,
             "pos_y": 0,
             "width": settings.RESOLUTION[0],
@@ -103,11 +102,11 @@ class Start(object):
             "font_color": settings.COLOR_BLACK,
             "colorkey": settings.COLOR_KEY,
         })
-        pos_x = display_width / 2 - tf_headline.width() / 2
+        pos_x = self.title_main.width() / 2 - tf_headline.width() / 2
         tf_headline.set_attr(("pos_x", pos_x))
         self.title_main.add(tf_headline)
         tf_version = data.forms.textbox.Textbox("tf_version", {
-            "pos_x": self.title_main.get_attr("width") - 5,
+            "pos_x": self.title_main.width() - 5,
             "pos_y": 5,
             "text": f"Version: {settings.GAME_VERSION}",
             "font_size": 14,
@@ -119,7 +118,7 @@ class Start(object):
         self.title_main.add(tf_version)
         width, height = tf_headline.get_dimensions()
         position_y = height + 100
-        b_newgame = data.forms.button.Button({
+        b_newgame = data.forms.button.Button("b_newgame", {
             "pos_y": position_y,
             "text": "New Game",
             "callback_event": data.helpers.event.Event(
@@ -130,11 +129,11 @@ class Start(object):
             "spritesheet": "resources/images/sprites/buttons.png"
         })
         b_newgame.set_attr({
-            "pos_x": self.title_main.get_attr("width") / 2 - b_newgame.width() / 2
+            "pos_x": self.title_main.width() / 2 - b_newgame.width() / 2
         })
         self.title_main.add(b_newgame)
         position_y = b_newgame.get_attr("pos_y") + b_newgame.height() + 20
-        b_loadgame = data.forms.button.Button({
+        b_loadgame = data.forms.button.Button("b_loadgame", {
             "pos_y": position_y,
             "text": "Load Game",
             "callback_event": data.helpers.event.Event(
@@ -145,11 +144,11 @@ class Start(object):
             "spritesheet": "resources/images/sprites/buttons.png"
         })
         b_loadgame.set_attr({
-            "pos_x": self.title_main.get_attr("width") / 2 - b_loadgame.width() / 2
+            "pos_x": self.title_main.width() / 2 - b_loadgame.width() / 2
         })
         self.title_main.add(b_loadgame)
         position_y = b_loadgame.get_attr("pos_y") + b_loadgame.height() + 20
-        b_quitgame = data.forms.button.Button({
+        b_quitgame = data.forms.button.Button("b_quitgame", {
             "pos_y": position_y,
             "text": "Quit Game",
             "callback_event": data.helpers.event.Event(
@@ -160,6 +159,6 @@ class Start(object):
             "spritesheet": "resources/images/sprites/buttons.png"
         })
         b_quitgame.set_attr({
-            "pos_x": self.title_main.get_attr("width") / 2 - b_quitgame.width() / 2
+            "pos_x": self.title_main.width() / 2 - b_quitgame.width() / 2
         })
         self.title_main.add(b_quitgame)

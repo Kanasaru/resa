@@ -3,8 +3,9 @@ import data.helpers.attr
 
 
 class Title(object):
-    def __init__(self, attributes=None):
+    def __init__(self, name, attributes=None):
         self.attr = {
+            "name": name,
             "pos_x": 0,
             "pos_y": 0,
             "width": 0,
@@ -78,3 +79,9 @@ class Title(object):
         self.form_objects.draw(self.surface)
 
         pygame.Surface.blit(surface, self.surface, (self.attr["pos_x"], self.attr["pos_y"]))
+
+    def width(self):
+        return self.get_attr("width")
+
+    def height(self):
+        return self.get_attr("height")
