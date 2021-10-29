@@ -1,7 +1,11 @@
 import pygame
-import data.settings
+from data import settings
 import data.helpers.attr
 import data.helpers.spritesheet
+
+LEFT = 0
+RIGHT = 1
+CENTER = 2
 
 
 class Button(pygame.sprite.Sprite):
@@ -19,14 +23,15 @@ class Button(pygame.sprite.Sprite):
             "callback_event": None,
             "clickable": True,
             "spritesheet": None,
-            "text_font": data.settings.BASIC_FONT,
+            "text_font": settings.BASIC_FONT,
             "font_size": 20,
-            "font_color": (0, 0, 0),
-            "font_color_hover": (120, 117, 98),
-            "font_color_pressed": (120, 117, 98),
-            "font_color_disabled": (0, 0, 0),
-            "bg_color": (255, 255, 255),
-            "colorkey": (0, 0, 0),
+            "font_color": settings.COLOR_BLACK,
+            "font_color_hover": settings.COLOR_BUTTON_HOVER,
+            "font_color_pressed": settings.COLOR_BUTTON_PRESSED,
+            "font_color_disabled": settings.COLOR_BLACK,
+            "bg_color": settings.COLOR_WHITE,
+            "colorkey": settings.COLOR_KEY,
+            "alignment": LEFT,
         }
         if attributes is not None:
             self.set_attr(attributes)
@@ -80,6 +85,14 @@ class Button(pygame.sprite.Sprite):
         self.surf_images["image_hover"].blit(text_surf_hover, text_rect)
         self.surf_images["image_pressed"].blit(text_surf_pressed, text_rect)
         self.surf_images["image_disabled"].blit(text_surf_disabled, text_rect)
+
+        if self.attr["alignment"] == RIGHT:
+            self.attr["pos_x"] = self.attr["pos_x"] - self.width()
+        elif self.attr["alignment"] == CENTER:
+            self.attr["pos_x"] = self.attr["pos_x"] - self.width() / 2
+        else:
+            self.rect.top = self.attr["pos_y"]
+            self.rect.left = self.attr["pos_x"]
 
         self.button_down = False
 

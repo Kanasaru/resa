@@ -15,11 +15,14 @@ COLOR_GREEN = (0, 128, 0)
 COLOR_PURPLE = (128, 0, 128)
 COLOR_TEAL = (0, 128, 128)
 COLOR_NAVY = (0, 0, 128)
+COLOR_BUTTON_HOVER = (120, 117, 98)
+COLOR_BUTTON_PRESSED = (120, 117, 98)
 
 # info
 GAME_TITLE = "Resa"
 GAME_VERSION = "0.1.0"
 GAME_AUTHOR = "Kanasaru"
+GAME_WWW = "bitbyteopen.org"
 
 # game settings
 COLOR_KEY = (1, 0, 0)
@@ -31,3 +34,4 @@ MENU_BG_IMG = "resources/images/bg_default.png"
 MUSIC_VOLUME = .2
 MUSIC_LOOP = -1
 MUSIC_BG_1 = "resources/music/sb_indreams.mp3"
+SPRITES_MENU_BUTTONS = "resources/images/sprites/buttons.png"

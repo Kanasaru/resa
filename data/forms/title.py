@@ -12,7 +12,7 @@ class Title(object):
             "width": 0,
             "height": 0,
             "bg_color": settings.COLOR_BLACK,
-            "colorkey": None,
+            "colorkey": settings.COLOR_KEY,
             "bg_image": None,
         }
         if attributes is not None:

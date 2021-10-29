@@ -1,8 +1,3 @@
-"""
-This module contains constants, functions and classes for handling textboxes.
-
-:class Textbox: creates a textbox
-"""
 import pygame
 import data.helpers.attr
 from data import settings
