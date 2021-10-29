@@ -5,6 +5,11 @@ This module contains constants, functions and classes for handling textboxes.
 """
 import pygame
 import data.helpers.attr
+from data import settings
+
+LEFT = 0
+RIGHT = 1
+CENTER = 2
 
 
 class Textbox(pygame.sprite.Sprite):
@@ -19,14 +24,17 @@ class Textbox(pygame.sprite.Sprite):
             "text": "Textbox",
             "text_font": None,
             "font_size": 20,
-            "font_color": (255, 255, 255),
-            "bg_color": (1, 0, 0),
-            "colorkey": (1, 0, 0),
-            "position": None,
+            "font_color": settings.COLOR_BLACK,
+            "alignment": LEFT,
             "update_text_cb": None,
         }
         if attributes is not None:
             self.set_attr(attributes)
+
+        if self.attr["text_font"] is not None:
+            self.font = pygame.font.Font(self.attr["text_font"], self.attr["font_size"])
+        else:
+            self.font = pygame.font.Font(None, self.attr["font_size"])
 
         self.update()
 
@@ -40,27 +48,12 @@ class Textbox(pygame.sprite.Sprite):
         if self.attr["update_text_cb"] is not None:
             self.attr["text"] = self.attr["update_text_cb"]()
 
-        if self.attr["text_font"] is not None:
-            self.font = pygame.font.Font(self.attr["text_font"], self.attr["font_size"])
-        else:
-            self.font = pygame.font.Font(None, self.attr["font_size"])
-
-        text_width, text_height = self.font.size(self.attr["text"])
-
-        self.image = pygame.Surface((text_width, text_height))
-        self.image.fill(self.attr["bg_color"])
-        self.image.set_colorkey(self.attr["colorkey"])
-
+        self.image = self.font.render(self.attr["text"], True, self.attr["font_color"])
         self.rect = self.image.get_rect(topleft=(self.attr["pos_x"], self.attr["pos_y"]))
 
-        text_surf = self.font.render(self.attr["text"], True, self.attr["font_color"])
-        text_rect = text_surf.get_rect()
-
-        self.image.blit(text_surf, text_rect)
-
-        if self.attr["position"] == "right":
+        if self.attr["alignment"] == RIGHT:
             self.rect.left = self.attr["pos_x"] - self.width()
-        elif self.attr["position"] == "center":
+        elif self.attr["alignment"] == CENTER:
             self.rect.left = self.attr["pos_x"] - self.width() / 2
         else:
             self.rect.top = self.attr["pos_y"]
