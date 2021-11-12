@@ -33,21 +33,23 @@ class Game(object):
         self.panel.add(data.forms.button.Button("b_quit", {
             "pos_x": self.panel.width() - 5,
             "pos_y": 3,
+            "width": 70,
+            "height": 24,
             "text": "Quit",
             "callback_event": data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.RIGHT,
-            "scale": settings.SPRITES_PANEL_SCALE,
             "font_size": 13,
         }))
         self.panel.add(data.forms.button.Button("b_save", {
             "pos_x": self.panel.width() - 80,
             "pos_y": 3,
+            "width": 70,
+            "height": 24,
             "text": "Save",
             "callback_event": data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.RIGHT,
-            "scale": settings.SPRITES_PANEL_SCALE,
             "font_size": 13,
         }))
         self.panel.add(data.forms.textbox.Textbox("tf_resources", {

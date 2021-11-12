@@ -19,6 +19,7 @@ class Button(pygame.sprite.Sprite):
             "pos_y": 0,
             "width": 220,
             "height": 60,
+            "sprite_size": (220, 60),
             "text": "",
             "callback_event": None,
             "clickable": True,
@@ -55,24 +56,22 @@ class Button(pygame.sprite.Sprite):
             self.spritesheet = data.helpers.spritesheet.SpriteSheet(self.attr["spritesheet"])
 
             self.surf_images["image_normal"] = self.spritesheet.image_at(
-                (0, 0, self.attr["width"], self.attr["height"]), self.attr["colorkey"])
+                (0, 0, self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
             self.surf_images["image_hover"] = self.spritesheet.image_at(
-                (0, self.attr["height"], self.attr["width"], self.attr["height"]), self.attr["colorkey"])
+                (0, self.attr["sprite_size"][1], self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
             self.surf_images["image_pressed"] = self.spritesheet.image_at(
-                (0, self.attr["height"] * 2, self.attr["width"], self.attr["height"]), self.attr["colorkey"])
+                (0, self.attr["sprite_size"][1] * 2, self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
             self.surf_images["image_disabled"] = self.spritesheet.image_at(
-                (0, self.attr["height"] * 3, self.attr["width"], self.attr["height"]), self.attr["colorkey"])
+                (0, self.attr["sprite_size"][1] * 3, self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
 
         if self.attr["clickable"]:
             self.image = self.surf_images["image_normal"]
         else:
             self.image = self.surf_images["image_disabled"]
 
-        # todo: fix scaling, use width and height instead
-        if self.attr["scale"] is not None:
-            for key in self.surf_images:
-                self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.attr["scale"])
-            self.image = pygame.transform.scale(self.image, self.attr["scale"])
+        for key in self.surf_images:
+            self.surf_images[key] = pygame.transform.scale(self.surf_images[key], (self.attr["width"], self.attr["height"]))
+        self.image = pygame.transform.scale(self.image, (self.attr["width"], self.attr["height"]))
 
         self.rect = self.image.get_rect(topleft=(self.attr["pos_y"], self.attr["pos_x"]))
 
