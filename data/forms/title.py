@@ -38,14 +38,14 @@ class Title(object):
 
     def set_forms_attr(self, name, attr):
         for form_object in self.form_objects:
-            if form_object.get_attr("name") == name:
+            if form_object.name == name:
                 form_object.set_attr(attr)
                 return True
         return False
 
     def get_forms_attr(self, name, attr_key):
         for form_object in self.form_objects:
-            if form_object.get_attr("name") == name:
+            if form_object.name == name:
                 return form_object.get_attr(attr_key)
         return False
 

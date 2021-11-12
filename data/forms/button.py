@@ -2,34 +2,32 @@ import pygame
 from data import settings
 import data.helpers.attr
 import data.helpers.spritesheet
+import data.forms.form
 
 LEFT = 0
 RIGHT = 1
 CENTER = 2
 
 
-class Button(pygame.sprite.Sprite):
-    def __init__(self, name, rect: pygame.Rect, attributes=None):
-        pygame.sprite.Sprite.__init__(self)
+class Button(data.forms.form.Form):
+    def __init__(self, name, rect: pygame.Rect, sprite_sheet, sprite_size, attributes=None):
+        data.forms.form.Form.__init__(self, rect.size)
+
+        self.set_spritesheet(sprite_sheet, sprite_size)
 
         # todo: use single methods instead of attr / all attr as param
-        self.events = []
         self.rect = rect
+        self.name = name
         self.attr = {
-            "name": name,
-            "sprite_size": (220, 60),
             "text": "",
             "callback_event": None,
             "clickable": True,
-            "spritesheet": None,
             "text_font": settings.BASIC_FONT,
             "font_size": 20,
             "font_color": settings.COLOR_BLACK,
             "font_color_hover": settings.COLOR_BUTTON_HOVER,
             "font_color_pressed": settings.COLOR_BUTTON_PRESSED,
             "font_color_disabled": settings.COLOR_BLACK,
-            "bg_color": settings.COLOR_WHITE,
-            "colorkey": settings.COLOR_KEY,
             "alignment": LEFT,
         }
         if attributes is not None:
@@ -38,23 +36,23 @@ class Button(pygame.sprite.Sprite):
         self.font = pygame.font.Font(self.attr["text_font"], self.attr["font_size"])
 
         self.surf_images = {
-            "image_normal": None,
-            "image_hover": None,
-            "image_pressed": None,
-            "image_disabled": None
+            "image_normal": self.sprite_sheet.image_at(
+                (0, 0, self.sprite_size[0], self.sprite_size[1]),
+                self.colorkey
+            ),
+            "image_hover": self.sprite_sheet.image_at(
+                (0, self.sprite_size[1], self.sprite_size[0], self.sprite_size[1]),
+                self.colorkey
+            ),
+            "image_pressed": self.sprite_sheet.image_at(
+                (0, self.sprite_size[1] * 2, self.sprite_size[0], self.sprite_size[1]),
+                self.colorkey
+            ),
+            "image_disabled": self.sprite_sheet.image_at(
+                (0, self.sprite_size[1] * 3, self.sprite_size[0], self.sprite_size[1]),
+                self.colorkey
+            )
         }
-
-        if self.attr["spritesheet"] is not None:
-            self.spritesheet = data.helpers.spritesheet.SpriteSheet(self.attr["spritesheet"])
-
-            self.surf_images["image_normal"] = self.spritesheet.image_at(
-                (0, 0, self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
-            self.surf_images["image_hover"] = self.spritesheet.image_at(
-                (0, self.attr["sprite_size"][1], self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
-            self.surf_images["image_pressed"] = self.spritesheet.image_at(
-                (0, self.attr["sprite_size"][1] * 2, self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
-            self.surf_images["image_disabled"] = self.spritesheet.image_at(
-                (0, self.attr["sprite_size"][1] * 3, self.attr["sprite_size"][0], self.attr["sprite_size"][1]), self.attr["colorkey"])
 
         if self.attr["clickable"]:
             self.image = self.surf_images["image_normal"]
@@ -94,15 +92,6 @@ class Button(pygame.sprite.Sprite):
     def get_attr(self, key=None):
         return data.helpers.attr.get_attr(self.attr, key)
 
-    def update(self):
-        pass
-
-    def get_events(self):
-        return self.events
-
-    def clear_events(self):
-        self.events.clear()
-
     def handle_event(self, event):
         if self.attr["clickable"]:
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -123,12 +112,3 @@ class Button(pygame.sprite.Sprite):
                     self.image = self.surf_images["image_normal"]
         else:
             self.image = self.surf_images["image_disabled"]
-
-    def get_dimensions(self):
-        return self.image.get_size()
-
-    def width(self):
-        return self.image.get_width()
-
-    def height(self):
-        return self.image.get_height()

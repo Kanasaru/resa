@@ -4,7 +4,6 @@ import data.forms.button
 import data.forms.textbox
 import data.eventcodes
 import data.helpers.event
-import data.test_sprites
 from data import settings
 import data.world.map
 
@@ -30,17 +29,17 @@ class Game(object):
             "text_font": settings.BASIC_FONT,
             "font_color": settings.COLOR_WHITE,
         }))
-        self.panel.add(data.forms.button.Button("b_quit", pygame.Rect(self.panel.width() - 5, 3, 70, 24), {
+        self.panel.add(data.forms.button.Button("b_quit", pygame.Rect(self.panel.width() - 5, 3, 70, 24),
+                                                settings.SPRITES_MENU_BUTTONS, (220, 60), {
             "text": "Quit",
             "callback_event": data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME),
-            "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.RIGHT,
             "font_size": 13,
         }))
-        self.panel.add(data.forms.button.Button("b_save", pygame.Rect(self.panel.width() - 80, 3, 70, 24),{
+        self.panel.add(data.forms.button.Button("b_save", pygame.Rect(self.panel.width() - 80, 3, 70, 24),
+                                                settings.SPRITES_MENU_BUTTONS, (220, 60), {
             "text": "Save",
             "callback_event": data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME),
-            "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.RIGHT,
             "font_size": 13,
         }))

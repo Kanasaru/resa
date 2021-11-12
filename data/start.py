@@ -139,33 +139,32 @@ class Start(object):
                 self.title_main.width() / 2,
                 position_y,
                 220,
-                60), {
+                60), settings.SPRITES_MENU_BUTTONS, (220, 60), {
             "text": "New Game",
             "callback_event": data.helpers.event.Event(data.eventcodes.STARTGAME, data.eventcodes.STARTGAME),
-            "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.CENTER,
         })
+        b_newgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_newgame.height() + 20
         b_loadgame = data.forms.button.Button("b_loadgame", pygame.Rect(
                 self.title_main.width() / 2,
                 position_y,
                 220,
-                60), {
+                60), settings.SPRITES_MENU_BUTTONS, (220, 60), {
             "text": "Load Game",
             "callback_event": data.helpers.event.Event(data.eventcodes.LOADGAME, data.eventcodes.LOADGAME),
-            "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.CENTER,
             "clickable": False,
         })
+        b_loadgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_loadgame.height() + 20
         b_quitgame = data.forms.button.Button("b_quitgame", pygame.Rect(
                 self.title_main.width() / 2,
                 position_y,
                 220,
-                60), {
+                60), settings.SPRITES_MENU_BUTTONS, (220, 60), {
             "text": "Quit Game",
             "callback_event": data.helpers.event.Event(data.eventcodes.QUITGAME, data.eventcodes.QUITGAME),
-            "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.CENTER,
         })
 
