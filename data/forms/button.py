@@ -32,6 +32,7 @@ class Button(pygame.sprite.Sprite):
             "bg_color": settings.COLOR_WHITE,
             "colorkey": settings.COLOR_KEY,
             "alignment": LEFT,
+            "scale": None,
         }
         if attributes is not None:
             self.set_attr(attributes)
@@ -51,10 +52,7 @@ class Button(pygame.sprite.Sprite):
             self.surf_images[key].set_colorkey(self.attr["colorkey"])
 
         if self.attr["spritesheet"] is not None:
-            self.spritesheet = data.helpers.spritesheet.SpriteSheet(
-                self.attr["spritesheet"],
-                (self.attr["width"], self.attr["height"])
-            )
+            self.spritesheet = data.helpers.spritesheet.SpriteSheet(self.attr["spritesheet"])
 
             self.surf_images["image_normal"] = self.spritesheet.image_at(
                 (0, 0, self.attr["width"], self.attr["height"]), self.attr["colorkey"])
@@ -69,6 +67,12 @@ class Button(pygame.sprite.Sprite):
             self.image = self.surf_images["image_normal"]
         else:
             self.image = self.surf_images["image_disabled"]
+
+        # todo: fix scaling, use width and height instead
+        if self.attr["scale"] is not None:
+            for key in self.surf_images:
+                self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.attr["scale"])
+            self.image = pygame.transform.scale(self.image, self.attr["scale"])
 
         self.rect = self.image.get_rect(topleft=(self.attr["pos_y"], self.attr["pos_x"]))
 
@@ -95,6 +99,8 @@ class Button(pygame.sprite.Sprite):
             self.rect.left = self.attr["pos_x"]
 
         self.button_down = False
+
+        self.image = self.surf_images["image_normal"]
 
     def set_attr(self, attributes):
         return data.helpers.attr.set_attr(self.attr, attributes)

@@ -19,7 +19,7 @@ class Start(object):
         self.clock = pygame.time.Clock()
         self.surface = pygame.display.set_mode(settings.RESOLUTION)
 
-        pygame.display.set_caption(f"{settings.GAME_TITLE} in v{settings.GAME_VERSION} by {settings.GAME_AUTHOR}")
+        pygame.display.set_caption(f"{settings.GAME_TITLE}")
 
         self.load_music()
         self.build_titles()

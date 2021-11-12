@@ -7,11 +7,10 @@ from data import errorcodes
 
 
 class SpriteSheet(object):
-    def __init__(self, filename, sprite_size):
+    def __init__(self, filename):
         try:
             self.sheet = pygame.image.load(filename).convert()
             self.sheet_size = self.sheet.get_size()
-            self.sprite_size = sprite_size
         except FileNotFoundError:
             print(errorcodes.resa_error_list.get_error_by_key(errorcodes.E_FILE))
 

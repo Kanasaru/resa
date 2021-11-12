@@ -26,7 +26,7 @@ GAME_WWW = "bitbyteopen.org"
 
 # game settings
 COLOR_KEY = (1, 0, 0)
-RESOLUTION = (1280, 800)
+RESOLUTION = (1000, 600)
 FPS = 60
 GRID = (20, 64, 40)
 BASIC_FONT = "resources/fonts/RobotoMono.ttf"
@@ -35,3 +35,9 @@ MUSIC_VOLUME = .2
 MUSIC_LOOP = -1
 MUSIC_BG_1 = "resources/music/sb_indreams.mp3"
 SPRITES_MENU_BUTTONS = "resources/images/sprites/buttons.png"
+SPRITES_PANEL_SCALE = (70, 24)
+
+# map
+WORLD_SIZE = (1500, 1000)
+WORLD_START_POS = (0, 0)
+MAP_PACE = 10
