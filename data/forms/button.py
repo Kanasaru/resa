@@ -9,16 +9,14 @@ CENTER = 2
 
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, name, attributes=None):
+    def __init__(self, name, rect: pygame.Rect, attributes=None):
         pygame.sprite.Sprite.__init__(self)
 
+        # todo: use single methods instead of attr / all attr as param
         self.events = []
+        self.rect = rect
         self.attr = {
             "name": name,
-            "pos_x": 0,
-            "pos_y": 0,
-            "width": 220,
-            "height": 60,
             "sprite_size": (220, 60),
             "text": "",
             "callback_event": None,
@@ -33,7 +31,6 @@ class Button(pygame.sprite.Sprite):
             "bg_color": settings.COLOR_WHITE,
             "colorkey": settings.COLOR_KEY,
             "alignment": LEFT,
-            "scale": None,
         }
         if attributes is not None:
             self.set_attr(attributes)
@@ -46,11 +43,6 @@ class Button(pygame.sprite.Sprite):
             "image_pressed": None,
             "image_disabled": None
         }
-
-        for key in self.surf_images:
-            self.surf_images[key] = pygame.Surface((self.attr["width"], self.attr["height"]))
-            self.surf_images[key].fill(self.attr["bg_color"])
-            self.surf_images[key].set_colorkey(self.attr["colorkey"])
 
         if self.attr["spritesheet"] is not None:
             self.spritesheet = data.helpers.spritesheet.SpriteSheet(self.attr["spritesheet"])
@@ -70,32 +62,27 @@ class Button(pygame.sprite.Sprite):
             self.image = self.surf_images["image_disabled"]
 
         for key in self.surf_images:
-            self.surf_images[key] = pygame.transform.scale(self.surf_images[key], (self.attr["width"], self.attr["height"]))
-        self.image = pygame.transform.scale(self.image, (self.attr["width"], self.attr["height"]))
-
-        self.rect = self.image.get_rect(topleft=(self.attr["pos_y"], self.attr["pos_x"]))
-
-        image_center_x, image_center_y = self.image.get_rect().center
+            self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.rect.size)
 
         text_surf = self.font.render(self.attr["text"], True, self.attr["font_color"])
         text_surf_hover = self.font.render(self.attr["text"], True, self.attr["font_color_hover"])
         text_surf_pressed = self.font.render(self.attr["text"], True, self.attr["font_color_pressed"])
         text_surf_disabled = self.font.render(self.attr["text"], True, self.attr["font_color_disabled"])
 
-        text_rect = text_surf.get_rect(center=(image_center_x, image_center_y))
+        text_rect = text_surf.get_rect()
+        text_pos = self.rect.width / 2 - text_rect.width / 2, self.rect.height / 2 - text_rect.height / 2
 
-        self.surf_images["image_normal"].blit(text_surf, text_rect)
-        self.surf_images["image_hover"].blit(text_surf_hover, text_rect)
-        self.surf_images["image_pressed"].blit(text_surf_pressed, text_rect)
-        self.surf_images["image_disabled"].blit(text_surf_disabled, text_rect)
+        self.surf_images["image_normal"].blit(text_surf, text_pos)
+        self.surf_images["image_hover"].blit(text_surf_hover, text_pos)
+        self.surf_images["image_pressed"].blit(text_surf_pressed, text_pos)
+        self.surf_images["image_disabled"].blit(text_surf_disabled, text_pos)
 
         if self.attr["alignment"] == RIGHT:
-            self.attr["pos_x"] = self.attr["pos_x"] - self.width()
+            self.rect.x = self.rect.x - self.rect.width
         elif self.attr["alignment"] == CENTER:
-            self.attr["pos_x"] = self.attr["pos_x"] - self.width() / 2
+            self.rect.x = self.rect.x - self.rect.width / 2
         else:
-            self.rect.top = self.attr["pos_y"]
-            self.rect.left = self.attr["pos_x"]
+            pass
 
         self.button_down = False
 
@@ -108,8 +95,7 @@ class Button(pygame.sprite.Sprite):
         return data.helpers.attr.get_attr(self.attr, key)
 
     def update(self):
-        self.rect.top = self.attr["pos_y"]
-        self.rect.left = self.attr["pos_x"]
+        pass
 
     def get_events(self):
         return self.events

@@ -30,22 +30,14 @@ class Game(object):
             "text_font": settings.BASIC_FONT,
             "font_color": settings.COLOR_WHITE,
         }))
-        self.panel.add(data.forms.button.Button("b_quit", {
-            "pos_x": self.panel.width() - 5,
-            "pos_y": 3,
-            "width": 70,
-            "height": 24,
+        self.panel.add(data.forms.button.Button("b_quit", pygame.Rect(self.panel.width() - 5, 3, 70, 24), {
             "text": "Quit",
             "callback_event": data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.RIGHT,
             "font_size": 13,
         }))
-        self.panel.add(data.forms.button.Button("b_save", {
-            "pos_x": self.panel.width() - 80,
-            "pos_y": 3,
-            "width": 70,
-            "height": 24,
+        self.panel.add(data.forms.button.Button("b_save", pygame.Rect(self.panel.width() - 80, 3, 70, 24),{
             "text": "Save",
             "callback_event": data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,

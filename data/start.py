@@ -135,28 +135,34 @@ class Start(object):
         })
         width, height = tf_headline.get_dimensions()
         position_y = height + 100
-        b_newgame = data.forms.button.Button("b_newgame", {
-            "pos_x": self.title_main.width() / 2,
-            "pos_y": position_y,
+        b_newgame = data.forms.button.Button("b_newgame", pygame.Rect(
+                self.title_main.width() / 2,
+                position_y,
+                220,
+                60), {
             "text": "New Game",
             "callback_event": data.helpers.event.Event(data.eventcodes.STARTGAME, data.eventcodes.STARTGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.CENTER,
         })
-        position_y = b_newgame.get_attr("pos_y") + b_newgame.height() + 20
-        b_loadgame = data.forms.button.Button("b_loadgame", {
-            "pos_x": self.title_main.width() / 2,
-            "pos_y": position_y,
+        position_y += b_newgame.height() + 20
+        b_loadgame = data.forms.button.Button("b_loadgame", pygame.Rect(
+                self.title_main.width() / 2,
+                position_y,
+                220,
+                60), {
             "text": "Load Game",
             "callback_event": data.helpers.event.Event(data.eventcodes.LOADGAME, data.eventcodes.LOADGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,
             "alignment": data.forms.button.CENTER,
             "clickable": False,
         })
-        position_y = b_loadgame.get_attr("pos_y") + b_loadgame.height() + 20
-        b_quitgame = data.forms.button.Button("b_quitgame", {
-            "pos_x": self.title_main.width() / 2,
-            "pos_y": position_y,
+        position_y += b_loadgame.height() + 20
+        b_quitgame = data.forms.button.Button("b_quitgame", pygame.Rect(
+                self.title_main.width() / 2,
+                position_y,
+                220,
+                60), {
             "text": "Quit Game",
             "callback_event": data.helpers.event.Event(data.eventcodes.QUITGAME, data.eventcodes.QUITGAME),
             "spritesheet": settings.SPRITES_MENU_BUTTONS,
