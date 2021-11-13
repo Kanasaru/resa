@@ -1,4 +1,5 @@
 import pygame
+import data.forms.form
 import data.helpers.attr
 from data import settings
 
@@ -7,7 +8,7 @@ RIGHT = 1
 CENTER = 2
 
 
-class Textbox(pygame.sprite.Sprite):
+class Textbox(data.forms.form.Form):
     def __init__(self, name, attributes=None):
         pygame.sprite.Sprite.__init__(self)
 
@@ -53,21 +54,3 @@ class Textbox(pygame.sprite.Sprite):
         else:
             self.rect.top = self.attr["pos_y"]
             self.rect.left = self.attr["pos_x"]
-
-    def get_events(self):
-        return self.events
-
-    def clear_events(self):
-        self.events.clear()
-
-    def handle_event(self, event):
-        return
-
-    def get_dimensions(self):
-        return self.image.get_size()
-
-    def width(self):
-        return self.image.get_width()
-
-    def height(self):
-        return self.image.get_height()

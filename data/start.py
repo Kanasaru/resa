@@ -135,38 +135,37 @@ class Start(object):
         })
         width, height = tf_headline.get_dimensions()
         position_y = height + 100
-        b_newgame = data.forms.button.Button("b_newgame", pygame.Rect(
-                self.title_main.width() / 2,
-                position_y,
-                220,
-                60), settings.SPRITES_MENU_BUTTONS, (220, 60), {
-            "text": "New Game",
-            "callback_event": data.helpers.event.Event(data.eventcodes.STARTGAME, data.eventcodes.STARTGAME),
-            "alignment": data.forms.button.CENTER,
-        })
+        b_newgame = data.forms.button.Button(
+            "b_newgame",
+            pygame.Rect(self.title_main.width() / 2, position_y, 220, 60),
+            settings.SPRITES_MENU_BUTTONS,
+            (220, 60),
+            "New Game",
+            data.helpers.event.Event(data.eventcodes.STARTGAME, data.eventcodes.STARTGAME)
+        )
+        b_newgame.align(data.forms.button.CENTER)
         b_newgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_newgame.height() + 20
-        b_loadgame = data.forms.button.Button("b_loadgame", pygame.Rect(
-                self.title_main.width() / 2,
-                position_y,
-                220,
-                60), settings.SPRITES_MENU_BUTTONS, (220, 60), {
-            "text": "Load Game",
-            "callback_event": data.helpers.event.Event(data.eventcodes.LOADGAME, data.eventcodes.LOADGAME),
-            "alignment": data.forms.button.CENTER,
-            "clickable": False,
-        })
+        b_loadgame = data.forms.button.Button(
+            "b_loadgame",
+            pygame.Rect(self.title_main.width() / 2, position_y, 220, 60),
+            settings.SPRITES_MENU_BUTTONS,
+            (220, 60),
+            "Load Game",
+            data.helpers.event.Event(data.eventcodes.LOADGAME, data.eventcodes.LOADGAME)
+        )
+        b_loadgame.align(data.forms.button.CENTER)
+        b_loadgame.disable()
         b_loadgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_loadgame.height() + 20
-        b_quitgame = data.forms.button.Button("b_quitgame", pygame.Rect(
-                self.title_main.width() / 2,
-                position_y,
-                220,
-                60), settings.SPRITES_MENU_BUTTONS, (220, 60), {
-            "text": "Quit Game",
-            "callback_event": data.helpers.event.Event(data.eventcodes.QUITGAME, data.eventcodes.QUITGAME),
-            "alignment": data.forms.button.CENTER,
-        })
+        b_quitgame = data.forms.button.Button(
+            "b_quitgame",
+            pygame.Rect(self.title_main.width() / 2, position_y, 220, 60),
+            settings.SPRITES_MENU_BUTTONS, (220, 60),
+            "Quit Game",
+            data.helpers.event.Event(data.eventcodes.QUITGAME, data.eventcodes.QUITGAME)
+        )
+        b_quitgame.align(data.forms.button.CENTER)
 
         self.title_main.add(tf_headline)
         self.title_main.add(tf_version)

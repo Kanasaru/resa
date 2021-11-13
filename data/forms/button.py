@@ -1,8 +1,6 @@
 import pygame
-from data import settings
-import data.helpers.attr
-import data.helpers.spritesheet
 import data.forms.form
+from data import settings
 
 LEFT = 0
 RIGHT = 1
@@ -10,105 +8,134 @@ CENTER = 2
 
 
 class Button(data.forms.form.Form):
-    def __init__(self, name, rect: pygame.Rect, sprite_sheet, sprite_size, attributes=None):
+    def __init__(self, name: str, rect: pygame.Rect,
+                 sprite_sheet: str, sprite_size: tuple[int, int],
+                 text: str = "", callback: int = None):
         data.forms.form.Form.__init__(self, rect.size)
 
         self.set_spritesheet(sprite_sheet, sprite_size)
 
-        # todo: use single methods instead of attr / all attr as param
         self.rect = rect
+        self.pos_x = self.rect.x
+        self.pos_y = self.rect.y
         self.name = name
-        self.attr = {
-            "text": "",
-            "callback_event": None,
-            "clickable": True,
-            "text_font": settings.BASIC_FONT,
-            "font_size": 20,
-            "font_color": settings.COLOR_BLACK,
-            "font_color_hover": settings.COLOR_BUTTON_HOVER,
-            "font_color_pressed": settings.COLOR_BUTTON_PRESSED,
-            "font_color_disabled": settings.COLOR_BLACK,
-            "alignment": LEFT,
+        self.text = text
+        self.font = settings.BASIC_FONT
+        self.font_size = 20
+        self.font_color = {
+            "standard": settings.COLOR_BLACK,
+            "hover": settings.COLOR_BUTTON_HOVER,
+            "pressed": settings.COLOR_BUTTON_PRESSED,
+            "disabled": settings.COLOR_BLACK,
         }
-        if attributes is not None:
-            self.set_attr(attributes)
+        self.alignment = LEFT
+        self.surf_images = {}
+        self.clickable = True
+        self.callback_event = callback
+        self.button_down = False
 
-        self.font = pygame.font.Font(self.attr["text_font"], self.attr["font_size"])
+        self.set_font(settings.BASIC_FONT, self.font_size)
+        self.load_sprites()
+        self.scale()
+        self.render_text()
+        self.align(self.alignment)
+        self.load_start_image()
 
+    def enable(self):
+        self.clickable = True
+        self.image = self.surf_images["standard"]
+
+    def disable(self):
+        self.clickable = False
+        self.image = self.surf_images["disabled"]
+
+    def toggle(self):
+        if self.clickable:
+            self.disable()
+        else:
+            self.enable()
+
+    def load_start_image(self):
+        if self.clickable:
+            self.image = self.surf_images["standard"]
+        else:
+            self.image = self.surf_images["disabled"]
+
+    def set_callback_event(self, event: int):
+        self.callback_event = event
+
+    def set_font(self, font: str, size: int):
+        self.font = pygame.font.Font(font, size)
+        self.load_sprites()
+        self.scale()
+        self.render_text()
+        self.load_start_image()
+
+    def scale(self):
+        for key in self.surf_images:
+            self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.rect.size)
+
+    def load_sprites(self):
         self.surf_images = {
-            "image_normal": self.sprite_sheet.image_at(
+            "standard": self.sprite_sheet.image_at(
                 (0, 0, self.sprite_size[0], self.sprite_size[1]),
                 self.colorkey
             ),
-            "image_hover": self.sprite_sheet.image_at(
+            "hover": self.sprite_sheet.image_at(
                 (0, self.sprite_size[1], self.sprite_size[0], self.sprite_size[1]),
                 self.colorkey
             ),
-            "image_pressed": self.sprite_sheet.image_at(
+            "pressed": self.sprite_sheet.image_at(
                 (0, self.sprite_size[1] * 2, self.sprite_size[0], self.sprite_size[1]),
                 self.colorkey
             ),
-            "image_disabled": self.sprite_sheet.image_at(
+            "disabled": self.sprite_sheet.image_at(
                 (0, self.sprite_size[1] * 3, self.sprite_size[0], self.sprite_size[1]),
                 self.colorkey
             )
         }
 
-        if self.attr["clickable"]:
-            self.image = self.surf_images["image_normal"]
-        else:
-            self.image = self.surf_images["image_disabled"]
-
-        for key in self.surf_images:
-            self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.rect.size)
-
-        text_surf = self.font.render(self.attr["text"], True, self.attr["font_color"])
-        text_surf_hover = self.font.render(self.attr["text"], True, self.attr["font_color_hover"])
-        text_surf_pressed = self.font.render(self.attr["text"], True, self.attr["font_color_pressed"])
-        text_surf_disabled = self.font.render(self.attr["text"], True, self.attr["font_color_disabled"])
+    def render_text(self):
+        text_surf = self.font.render(self.text, True, self.font_color["standard"])
+        text_surf_hover = self.font.render(self.text, True, self.font_color["hover"])
+        text_surf_pressed = self.font.render(self.text, True, self.font_color["pressed"])
+        text_surf_disabled = self.font.render(self.text, True, self.font_color["disabled"])
 
         text_rect = text_surf.get_rect()
         text_pos = self.rect.width / 2 - text_rect.width / 2, self.rect.height / 2 - text_rect.height / 2
 
-        self.surf_images["image_normal"].blit(text_surf, text_pos)
-        self.surf_images["image_hover"].blit(text_surf_hover, text_pos)
-        self.surf_images["image_pressed"].blit(text_surf_pressed, text_pos)
-        self.surf_images["image_disabled"].blit(text_surf_disabled, text_pos)
+        self.surf_images["standard"].blit(text_surf, text_pos)
+        self.surf_images["hover"].blit(text_surf_hover, text_pos)
+        self.surf_images["pressed"].blit(text_surf_pressed, text_pos)
+        self.surf_images["disabled"].blit(text_surf_disabled, text_pos)
 
-        if self.attr["alignment"] == RIGHT:
-            self.rect.x = self.rect.x - self.rect.width
-        elif self.attr["alignment"] == CENTER:
-            self.rect.x = self.rect.x - self.rect.width / 2
-        else:
+    def align(self, alignment: int):
+        if alignment == self.alignment:
             pass
-
-        self.button_down = False
-
-        self.image = self.surf_images["image_normal"]
-
-    def set_attr(self, attributes):
-        return data.helpers.attr.set_attr(self.attr, attributes)
-
-    def get_attr(self, key=None):
-        return data.helpers.attr.get_attr(self.attr, key)
+        elif alignment == RIGHT:
+            self.rect.x = self.pos_x - self.rect.width
+        elif alignment == CENTER:
+            self.rect.x = self.pos_x - self.rect.width / 2
+        elif alignment == LEFT:
+            self.rect.x = self.pos_x
 
     def handle_event(self, event):
-        if self.attr["clickable"]:
+        if self.clickable:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
-                    self.image = self.surf_images["image_pressed"]
+                    self.image = self.surf_images["pressed"]
                     self.button_down = True
             elif event.type == pygame.MOUSEBUTTONUP:
                 if self.rect.collidepoint(event.pos) and self.button_down:
-                    if self.attr["callback_event"] is not None:
-                        self.events.append(self.attr["callback_event"])
-                    self.image = self.surf_images["image_hover"]
+                    if self.callback_event is not None:
+                        self.events.append(self.callback_event)
+                    self.image = self.surf_images["hover"]
                 self.button_down = False
             elif event.type == pygame.MOUSEMOTION:
                 collided = self.rect.collidepoint(event.pos)
                 if collided and not self.button_down:
-                    self.image = self.surf_images["image_hover"]
+                    self.image = self.surf_images["hover"]
                 elif not collided:
-                    self.image = self.surf_images["image_normal"]
+                    self.image = self.surf_images["standard"]
         else:
-            self.image = self.surf_images["image_disabled"]
+            self.image = self.surf_images["disabled"]

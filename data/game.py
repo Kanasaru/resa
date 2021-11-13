@@ -29,20 +29,27 @@ class Game(object):
             "text_font": settings.BASIC_FONT,
             "font_color": settings.COLOR_WHITE,
         }))
-        self.panel.add(data.forms.button.Button("b_quit", pygame.Rect(self.panel.width() - 5, 3, 70, 24),
-                                                settings.SPRITES_MENU_BUTTONS, (220, 60), {
-            "text": "Quit",
-            "callback_event": data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME),
-            "alignment": data.forms.button.RIGHT,
-            "font_size": 13,
-        }))
-        self.panel.add(data.forms.button.Button("b_save", pygame.Rect(self.panel.width() - 80, 3, 70, 24),
-                                                settings.SPRITES_MENU_BUTTONS, (220, 60), {
-            "text": "Save",
-            "callback_event": data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME),
-            "alignment": data.forms.button.RIGHT,
-            "font_size": 13,
-        }))
+        b_quit = data.forms.button.Button(
+            "b_quit",
+            pygame.Rect(self.panel.width() - 5, 3, 70, 24),
+            settings.SPRITES_MENU_BUTTONS,
+            (220, 60),
+            "Quit",
+            data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME)
+        )
+        b_quit.align(data.forms.button.RIGHT)
+        b_quit.set_font(settings.BASIC_FONT, 13)
+        self.panel.add(b_quit)
+        b_save = data.forms.button.Button(
+            "b_save",
+            pygame.Rect(self.panel.width() - 80, 3, 70, 24),
+            settings.SPRITES_MENU_BUTTONS, (220, 60),
+            "Save",
+            data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME)
+        )
+        b_save.align(data.forms.button.RIGHT)
+        b_save.set_font(settings.BASIC_FONT, 13)
+        self.panel.add(b_save)
         self.panel.add(data.forms.textbox.Textbox("tf_resources", {
             "pos_x": self.panel.width() / 2,
             "pos_y": 5,
