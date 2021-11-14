@@ -20,7 +20,7 @@ COLOR_BUTTON_PRESSED = (120, 117, 98)
 
 # info
 GAME_TITLE = "Resa"
-GAME_VERSION = "0.1.0"
+GAME_VERSION = "0.2.0"
 GAME_AUTHOR = "Kanasaru"
 GAME_WWW = "bitbyteopen.org"
 
@@ -37,6 +37,6 @@ MUSIC_BG_1 = "resources/music/sb_indreams.mp3"
 SPRITES_MENU_BUTTONS = "resources/images/sprites/buttons.png"
 
 # map
-WORLD_SIZE = (1500, 1000)
+WORLD_SIZE = (40, 40)
 WORLD_START_POS = (0, 0)
 MAP_PACE = 10
