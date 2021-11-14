@@ -109,30 +109,27 @@ class Start(object):
             "height": settings.RESOLUTION[1],
             "bg_image": settings.MENU_BG_IMG,
         })
-        tf_headline = data.forms.textbox.Textbox("tf_headline", {
-            "pos_x": self.title_main.width() / 2,
-            "pos_y": 20,
-            "text": "RESA",
-            "font_size": 90,
-            "text_font": settings.BASIC_FONT,
-            "alignment": data.forms.textbox.CENTER,
-        })
-        tf_version = data.forms.textbox.Textbox("tf_version", {
-            "pos_x": self.title_main.width() - 5,
-            "pos_y": 5,
-            "text": f"Version: {settings.GAME_VERSION}",
-            "font_size": 14,
-            "text_font": settings.BASIC_FONT,
-            "alignment": data.forms.textbox.RIGHT,
-        })
-        tf_credits = data.forms.textbox.Textbox("tf_credits", {
-            "pos_x": self.title_main.width() / 2,
-            "pos_y": self.title_main.height() - 24,
-            "text": f"Created and Designed by {settings.GAME_AUTHOR} | {settings.GAME_WWW}",
-            "font_size": 14,
-            "text_font": settings.BASIC_FONT,
-            "alignment": data.forms.textbox.CENTER,
-        })
+        tf_headline = data.forms.textbox.Textbox(
+            "tf_headline",
+            (self.title_main.width() / 2, 20),
+            "RESA",
+            90
+        )
+        tf_headline.align(tf_headline.CENTER)
+        tf_version = data.forms.textbox.Textbox(
+            "tf_version",
+            (self.title_main.width() - 5, 5),
+            f"Version: {settings.GAME_VERSION}",
+            14
+        )
+        tf_version.align(tf_version.RIGHT)
+        tf_credits = data.forms.textbox.Textbox(
+            "tf_credits",
+            (self.title_main.width() / 2, self.title_main.height() - 24),
+            f"Created and Designed by {settings.GAME_AUTHOR} | {settings.GAME_WWW}",
+            14
+        )
+        tf_credits.align(tf_credits.CENTER)
         width, height = tf_headline.get_dimensions()
         position_y = height + 100
         b_newgame = data.forms.button.Button(
@@ -143,7 +140,7 @@ class Start(object):
             "New Game",
             data.helpers.event.Event(data.eventcodes.STARTGAME, data.eventcodes.STARTGAME)
         )
-        b_newgame.align(data.forms.button.CENTER)
+        b_newgame.align(b_newgame.CENTER)
         b_newgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_newgame.height() + 20
         b_loadgame = data.forms.button.Button(
@@ -154,7 +151,7 @@ class Start(object):
             "Load Game",
             data.helpers.event.Event(data.eventcodes.LOADGAME, data.eventcodes.LOADGAME)
         )
-        b_loadgame.align(data.forms.button.CENTER)
+        b_loadgame.align(b_loadgame.CENTER)
         b_loadgame.disable()
         b_loadgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_loadgame.height() + 20
@@ -165,7 +162,7 @@ class Start(object):
             "Quit Game",
             data.helpers.event.Event(data.eventcodes.QUITGAME, data.eventcodes.QUITGAME)
         )
-        b_quitgame.align(data.forms.button.CENTER)
+        b_quitgame.align(b_quitgame.CENTER)
 
         self.title_main.add(tf_headline)
         self.title_main.add(tf_version)

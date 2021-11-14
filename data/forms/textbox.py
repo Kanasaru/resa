@@ -1,56 +1,44 @@
 import pygame
 import data.forms.form
-import data.helpers.attr
 from data import settings
-
-LEFT = 0
-RIGHT = 1
-CENTER = 2
 
 
 class Textbox(data.forms.form.Form):
-    def __init__(self, name, attributes=None):
+    def __init__(self, name: str, position: tuple[int, int],
+                 text: str = "", font_size: int = 20, callback=None):
         pygame.sprite.Sprite.__init__(self)
+        data.forms.form.Form.__init__(self, (0, 0))
 
-        self.events = []
-        self.attr = {
-            "name": name,
-            "pos_x": 0,
-            "pos_y": 0,
-            "text": "Textbox",
-            "text_font": None,
-            "font_size": 20,
-            "font_color": settings.COLOR_BLACK,
-            "alignment": LEFT,
-            "update_text_cb": None,
+        self.name = name
+        self.pos_x = position[0]
+        self.pos_y = position[1]
+        self.text = text
+        self.font = None
+        self.font_size = font_size
+        self.font_colors = {
+            "standard": settings.COLOR_BLACK,
         }
-        if attributes is not None:
-            self.set_attr(attributes)
+        self.callback = callback
 
-        if self.attr["text_font"] is not None:
-            self.font = pygame.font.Font(self.attr["text_font"], self.attr["font_size"])
-        else:
-            self.font = pygame.font.Font(None, self.attr["font_size"])
+        self.set_font(settings.BASIC_FONT, self.font_size)
 
-        self.update()
+        self.render_text()
 
-    def set_attr(self, attributes):
-        return data.helpers.attr.set_attr(self.attr, attributes)
+    def set_font(self, font: str, size: int):
+        self.font = pygame.font.Font(font, size)
 
-    def get_attr(self, key=None):
-        return data.helpers.attr.get_attr(self.attr, key)
+    def render_text(self):
+        self.image = self.font.render(self.text, True, self.font_colors["standard"])
+        self.rect = self.image.get_rect()
+
+        self.align()
+
+    def font_color(self, color: tuple[int, int, int]):
+        self.font_colors['standard'] = color
+        self.render_text()
 
     def update(self):
-        if self.attr["update_text_cb"] is not None:
-            self.attr["text"] = self.attr["update_text_cb"]()
-
-        self.image = self.font.render(self.attr["text"], True, self.attr["font_color"])
-        self.rect = self.image.get_rect(topleft=(self.attr["pos_x"], self.attr["pos_y"]))
-
-        if self.attr["alignment"] == RIGHT:
-            self.rect.left = self.attr["pos_x"] - self.width()
-        elif self.attr["alignment"] == CENTER:
-            self.rect.left = self.attr["pos_x"] - self.width() / 2
-        else:
-            self.rect.top = self.attr["pos_y"]
-            self.rect.left = self.attr["pos_x"]
+        if self.callback is not None:
+            self.text = self.callback()
+            self.render_text()
+            self.align()

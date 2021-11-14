@@ -21,14 +21,15 @@ class Game(object):
             "height": 30,
             "bg_color": settings.COLOR_BLACK,
         })
-        self.panel.add(data.forms.textbox.Textbox("tf_version", {
-            "pos_x": 5,
-            "pos_y": 5,
-            "text": f"v{settings.GAME_VERSION}",
-            "font_size": 14,
-            "text_font": settings.BASIC_FONT,
-            "font_color": settings.COLOR_WHITE,
-        }))
+        tf_version = data.forms.textbox.Textbox(
+            "tf_version",
+            (5, 5),
+            f"v{settings.GAME_VERSION}",
+            14
+        )
+        tf_version.font_color(settings.COLOR_WHITE)
+        tf_version.align(tf_version.RIGHT)
+        self.panel.add(tf_version)
         b_quit = data.forms.button.Button(
             "b_quit",
             pygame.Rect(self.panel.width() - 5, 3, 70, 24),
@@ -37,7 +38,7 @@ class Game(object):
             "Quit",
             data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME)
         )
-        b_quit.align(data.forms.button.RIGHT)
+        b_quit.align(b_quit.RIGHT)
         b_quit.set_font(settings.BASIC_FONT, 13)
         self.panel.add(b_quit)
         b_save = data.forms.button.Button(
@@ -47,18 +48,18 @@ class Game(object):
             "Save",
             data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME)
         )
-        b_save.align(data.forms.button.RIGHT)
+        b_save.align(b_save.RIGHT)
         b_save.set_font(settings.BASIC_FONT, 13)
         self.panel.add(b_save)
-        self.panel.add(data.forms.textbox.Textbox("tf_resources", {
-            "pos_x": self.panel.width() / 2,
-            "pos_y": 5,
-            "text": f"Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0",
-            "font_size": 14,
-            "text_font": settings.BASIC_FONT,
-            "font_color": settings.COLOR_WHITE,
-            "alignment": data.forms.textbox.CENTER,
-        }))
+        tf_resources = data.forms.textbox.Textbox(
+            "tf_resources",
+            (self.panel.width() / 2, 5),
+            f"Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0",
+            14
+        )
+        tf_resources.font_color(settings.COLOR_WHITE)
+        tf_resources.align(tf_resources.CENTER)
+        self.panel.add(tf_resources)
 
         self.load_msg()
 
@@ -124,14 +125,14 @@ class Game(object):
             "height": settings.RESOLUTION[1],
             "bg_color": settings.COLOR_BLACK,
         })
-        load_screen.add(data.forms.textbox.Textbox("tf_load_screen", {
-            "pos_x": settings.RESOLUTION[0] / 2,
-            "pos_y": settings.RESOLUTION[1] / 2,
-            "text": f"Loading world...",
-            "font_size": 20,
-            "text_font": settings.BASIC_FONT,
-            "font_color": settings.COLOR_WHITE,
-            "alignment": data.forms.textbox.CENTER,
-        }))
+        tf_load_screen = data.forms.textbox.Textbox(
+            "tf_load_screen",
+            (settings.RESOLUTION[0] / 2, settings.RESOLUTION[1] / 2),
+            f"Loading world...",
+            20
+        )
+        tf_load_screen.font_color(settings.COLOR_WHITE)
+        tf_load_screen.align(tf_load_screen.CENTER)
+        load_screen.add(tf_load_screen)
         load_screen.render(self.surface)
         pygame.display.flip()
