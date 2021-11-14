@@ -16,11 +16,11 @@ class Game(object):
         self.surface = surface
 
         self.surface.fill(settings.COLOR_WHITE)
-        self.panel = data.forms.title.Title("panel", {
-            "width": settings.RESOLUTION[0],
-            "height": 30,
-            "bg_color": settings.COLOR_BLACK,
-        })
+        self.panel = data.forms.title.Title(
+            "panel",
+            pygame.Rect(0, 0, settings.RESOLUTION[0], 30),
+            settings.COLOR_BLACK
+        )
         tf_version = data.forms.textbox.Textbox(
             "tf_version",
             (5, 5),
@@ -120,11 +120,11 @@ class Game(object):
         pass
 
     def load_msg(self):
-        load_screen = data.forms.title.Title("load_screen", {
-            "width": settings.RESOLUTION[0],
-            "height": settings.RESOLUTION[1],
-            "bg_color": settings.COLOR_BLACK,
-        })
+        load_screen = data.forms.title.Title(
+            "load_screen",
+            pygame.Rect(0, 0, settings.RESOLUTION[0], settings.RESOLUTION[1]),
+            settings.COLOR_BLACK
+        )
         tf_load_screen = data.forms.textbox.Textbox(
             "tf_load_screen",
             (settings.RESOLUTION[0] / 2, settings.RESOLUTION[1] / 2),

@@ -104,11 +104,12 @@ class Start(object):
         pygame.mixer.music.stop()
 
     def build_titles(self):
-        self.title_main = data.forms.title.Title("main", {
-            "width": settings.RESOLUTION[0],
-            "height": settings.RESOLUTION[1],
-            "bg_image": settings.MENU_BG_IMG,
-        })
+        self.title_main = data.forms.title.Title(
+            "main",
+            pygame.Rect(0, 0, settings.RESOLUTION[0], settings.RESOLUTION[1]),
+            settings.COLOR_BLACK,
+            settings.MENU_BG_IMG
+        )
         tf_headline = data.forms.textbox.Textbox(
             "tf_headline",
             (self.title_main.width() / 2, 20),
