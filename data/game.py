@@ -28,7 +28,7 @@ class Game(object):
             14
         )
         tf_version.font_color(settings.COLOR_WHITE)
-        tf_version.align(tf_version.RIGHT)
+        tf_version.align(tf_version.LEFT)
         self.panel.add(tf_version)
         b_quit = data.forms.button.Button(
             "b_quit",

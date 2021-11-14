@@ -2,6 +2,7 @@ import pygame.sprite
 import data.helpers.spritesheet
 from data import settings
 from data.world import fields, maps
+from data.world.islands import big_islands
 
 
 class Field(pygame.sprite.Sprite):
@@ -51,7 +52,8 @@ class Loader(object):
         self.map_data = maps.MAPS
         self.sprite_sheets = []
         self.field_data = fields.FIELD_DICT
-        self.rect = pygame.Rect(settings.WORLD_START_POS, settings.WORLD_SIZE)
+        self.rect = pygame.Rect(settings.WORLD_START_POS,
+                                (settings.WORLD_SIZE[0]*self.grid_size[0], settings.WORLD_SIZE[1]*self.grid_size[1]))
 
         for sheet in fields.SPRITE_SHEETS:
             self.sprite_sheets.append(data.helpers.spritesheet.SpriteSheet(fields.SPRITE_SHEETS[sheet]))
@@ -109,13 +111,14 @@ class Loader(object):
         self.fields.draw(self.surface)
 
     def load_fields(self):
+        # load water
         pos_x = 20
         pos_y = 0
         for row in self.map_data:
             for identifier in self.map_data[row]:
-                image = self.sprite_sheets[fields.FIELD_DICT[identifier]["sprite_sheet"]].image_at(
-                    fields.FIELD_DICT[identifier]["sprite_rect"],
-                    fields.FIELD_DICT[identifier]["colorkey"]
+                image = self.sprite_sheets[fields.FIELD_DICT[5]["sprite_sheet"]].image_at(
+                    fields.FIELD_DICT[5]["sprite_rect"],
+                    fields.FIELD_DICT[5]["colorkey"]
                 )
                 self.fields.add(Field((pos_x, pos_y), self.grid_size, image))
                 pos_x += self.grid_size[0]
@@ -125,5 +128,29 @@ class Loader(object):
             else:
                 pos_x = self.grid_size[0] / 2
 
+        # load islands
+        self.load_island((7, 6))
+
     def get_surface(self):
         return self.surface
+
+    def load_island(self, position):
+        offset = divmod(len(big_islands.big_island_one), 2)
+        start_x = (position[0] + offset[0] + 1) * self.grid_size[0]
+        start_y = position[1] * self.grid_size[1] - self.grid_size[1] / 2
+
+        for row_nb, row in enumerate(big_islands.big_island_one):
+            for col_nb, tile in enumerate(row):
+                if tile == 0:
+                    pass
+                else:
+                    identifier = 1
+                    cart_x = row_nb * (self.grid_size[0] / 2)
+                    cart_y = col_nb * self.grid_size[1]
+                    pos_x = (cart_x - cart_y)
+                    pos_y = (cart_x + cart_y) / 2
+                    image = self.sprite_sheets[fields.FIELD_DICT[identifier]["sprite_sheet"]].image_at(
+                        fields.FIELD_DICT[identifier]["sprite_rect"],
+                        fields.FIELD_DICT[identifier]["colorkey"]
+                    )
+                    self.fields.add(Field((start_x + pos_x, start_y + pos_y), self.grid_size, image))
