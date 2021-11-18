@@ -8,6 +8,7 @@ class Generator(object):
     """
     Generates a world and provides methods customize it
     """
+
     def __init__(self, world_size: tuple[int, int], grid_size: tuple[int, int]) -> None:
         """
         Creates basic world and its parameters
@@ -66,7 +67,7 @@ class Generator(object):
         pos_y = 0
         for row in range(self.world_size[1] * 2 - 1):
             for col in range(self.world_size[0]):
-                image = self.sprite_sheets[self.field_dict[self.field_dict_id]["sprite_sheet"]].image_at(
+                image = self.sprite_sheets[self.get_sprite_sheet_id("Water", self.field_dict_id)].image_at(
                     self.field_dict[self.field_dict_id]["sprite_rect"],
                     self.field_dict[self.field_dict_id]["colorkey"]
                 )
@@ -78,6 +79,29 @@ class Generator(object):
             else:
                 pos_x = self.grid_size[0] / 2
 
+    def get_sprite_sheet_id(self, name: str, field_dict_id: int) -> int:
+        """
+        Returns an id of a sprite sheet by comparing wished sheet with fields dictionary sheets
+
+        :param name: name that will be compared with names dictionary
+        :param field_dict_id: id from fields dictionary
+        :return: sprite sheet id that was identified by name
+        :todo: needs a lot improvement (o.O)
+        """
+        sheet_names = {"Dirt A": 1, "Dirt B": 2, "Grass A": 3, "Grass B": 4, "Sand": 5, }
+        sprite_sheet_id = self.field_dict[field_dict_id]["sprite_sheet"]
+        if isinstance(sprite_sheet_id, tuple):
+            for sheet_id in sprite_sheet_id:
+                try:
+                    if sheet_names[name] == sheet_id:
+                        return sheet_id
+                finally:
+                    pass
+            print("ERROR: Given name not allowed with field identifier")
+            return 0
+        else:
+            return sprite_sheet_id
+
     def add_island(self, position: tuple[int, int], island_data_set: dict) -> None:
         """
         Adds an island to the world
@@ -86,6 +110,9 @@ class Generator(object):
         :param island_data_set: data set of the island
         :return: None
         """
+        solid_tile = "Grass A"
+        water_to_solid = "Dirt B"
+
         # identify isometric x-shift and calculate top-left-position
         offset = divmod(len(island_data_set), 2)
         start_x = (position[0] + offset[0] + 1) * self.grid_size[0]
@@ -94,6 +121,7 @@ class Generator(object):
         # run through island data set and add fields
         for row_nb, row in enumerate(island_data_set):
             for col_nb, tile in enumerate(row):
+                solid = False
                 if tile != 0:
                     # detecting fields around current field
                     neighbors = [
@@ -135,6 +163,7 @@ class Generator(object):
                         field_dict_id = random.choice([21, 25])
                     else:
                         field_dict_id = 1
+                        solid = True
 
                     # transform 2d position into isometric coordinates
                     # thanks to 'ThiPi' | https://python-forum.io/thread-14617.html
@@ -149,8 +178,12 @@ class Generator(object):
                             field.delete()
 
                     # add field
-                    image = self.sprite_sheets[self.field_dict[field_dict_id]["sprite_sheet"]].image_at(
+                    image = self.sprite_sheets[self.get_sprite_sheet_id(water_to_solid, field_dict_id)].image_at(
                         self.field_dict[field_dict_id]["sprite_rect"],
                         self.field_dict[field_dict_id]["colorkey"]
                     )
-                    self.fields.add(Field((start_x + pos_x, start_y + pos_y), self.grid_size, image))
+                    field = Field((start_x + pos_x, start_y + pos_y), self.grid_size, image)
+                    # todo: add more field information
+                    field.set_solid(solid)
+
+                    self.fields.add(field)

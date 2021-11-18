@@ -18,8 +18,13 @@ class Field(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.topleft = self.pos
 
+        self.solid = False
+
     def update(self) -> None:
         self.rect.topleft = self.pos
+
+    def set_solid(self, value: bool):
+        self.solid = value
 
     def position(self, position: tuple = None) -> tuple | bool:
         if position is not None:
