@@ -1,59 +1,66 @@
+""" This module provides classes to load world
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '0.1'
+
 import pygame
-import data.forms.title
-import data.forms.button
-import data.forms.textbox
-import data.eventcodes
-import data.helpers.event
+import data.eventcodes as ecodes
+from data.helpers.event import Event
+from data.forms.textbox import Textbox
+from data.forms.button import Button
+from data.forms.title import Title
+from data.world.map import Loader
 from data import settings
-import data.world.map
 
 
 class Game(object):
-
     def __init__(self, surface):
+        """ Initializes the in-game
+
+        :param surface: surface the in-game should be rendered on
+        """
         self.exit_game = False
         self.clock = pygame.time.Clock()
         self.surface = surface
 
         self.surface.fill(settings.COLOR_WHITE)
-        self.panel = data.forms.title.Title(
+        self.panel = Title(
             "panel",
             pygame.Rect(0, 0, settings.RESOLUTION[0], 30),
             settings.COLOR_BLACK
         )
-        tf_version = data.forms.textbox.Textbox(
-            "tf_version",
-            (5, 5),
-            f"v{settings.GAME_VERSION}",
-            14
-        )
+        tf_version = Textbox("tf_version", (5, 5), f"v{settings.GAME_VERSION}", 14)
         tf_version.font_color(settings.COLOR_WHITE)
         tf_version.align(tf_version.LEFT)
         self.panel.add(tf_version)
-        b_quit = data.forms.button.Button(
+        b_quit = Button(
             "b_quit",
             pygame.Rect(self.panel.width() - 5, 3, 70, 24),
             settings.SPRITES_MENU_BUTTONS,
             (220, 60),
             "Quit",
-            data.helpers.event.Event(data.eventcodes.STOPGAME, data.eventcodes.STOPGAME)
+            Event(ecodes.STOPGAME, ecodes.STOPGAME)
         )
         b_quit.align(b_quit.RIGHT)
         b_quit.set_font(settings.BASIC_FONT, 13)
         self.panel.add(b_quit)
-        b_save = data.forms.button.Button(
+        b_save = Button(
             "b_save",
             pygame.Rect(self.panel.width() - 80, 3, 70, 24),
             settings.SPRITES_MENU_BUTTONS, (220, 60),
             "Save",
-            data.helpers.event.Event(data.eventcodes.SAVEGAME, data.eventcodes.SAVEGAME)
+            Event(ecodes.SAVEGAME, ecodes.SAVEGAME)
         )
         b_save.align(b_save.RIGHT)
         b_save.set_font(settings.BASIC_FONT, 13)
         self.panel.add(b_save)
-        tf_resources = data.forms.textbox.Textbox(
+        tf_resources = Textbox(
             "tf_resources",
-            (self.panel.width() / 2, 5),
+            (int(self.panel.width() / 2), 5),
             f"Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0",
             14
         )
@@ -63,25 +70,30 @@ class Game(object):
 
         self.load_msg()
 
-        self.map = data.world.map.Loader(
-            (settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.panel.height() - 2),
-            (40, 20)
-        )
+        self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.panel.height() - 2), (40, 20))
 
         self.loop()
 
-    def loop(self):
+    def loop(self) -> None:
+        """ in-game loop
+
+        :return: None
+        """
         while not self.exit_game:
             self.clock.tick(settings.FPS)
             self.handle_events()
             self.run_logic()
             self.render()
 
-    def handle_events(self):
+    def handle_events(self) -> None:
+        """ Handles all in-game events
+
+        :return: None
+        """
         for event in self.panel.get_events():
-            if event.code == data.eventcodes.STOPGAME:
+            if event.code == ecodes.STOPGAME:
                 self.exit_game = True
-            elif event.code == data.eventcodes.SAVEGAME:
+            elif event.code == ecodes.SAVEGAME:
                 print("Save Game!")
             else:
                 pass
@@ -104,28 +116,36 @@ class Game(object):
 
         self.panel.clear_events()
 
-    def run_logic(self):
+    def run_logic(self) -> None:
+        """ Runs the in-game logic
+
+        :return: None
+        """
         self.panel.run_logic()
-        self.update_panel()
         self.map.run_logic()
 
-    def render(self):
+    def render(self) -> None:
+        """ Renders everything to the surface
+
+        :return: None
+        """
         self.surface.fill(settings.COLOR_WHITE)
         self.map.render()
         pygame.Surface.blit(self.surface, self.map.get_surface(), (1, self.panel.height() + 1))
         self.panel.render(self.surface)
         pygame.display.flip()
 
-    def update_panel(self):
-        pass
+    def load_msg(self) -> None:
+        """ Creates and displays the world loading title
 
-    def load_msg(self):
-        load_screen = data.forms.title.Title(
+        :return: None
+        """
+        load_screen = Title(
             "load_screen",
             pygame.Rect(0, 0, settings.RESOLUTION[0], settings.RESOLUTION[1]),
             settings.COLOR_BLACK
         )
-        tf_load_screen = data.forms.textbox.Textbox(
+        tf_load_screen = Textbox(
             "tf_load_screen",
             (settings.RESOLUTION[0] / 2, settings.RESOLUTION[1] / 2),
             f"Loading world...",

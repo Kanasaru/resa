@@ -1,57 +1,108 @@
+""" This module provides an 'abstract' class for forms. Should not be used directly.
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '1.0'
+
 import pygame
-import data.helpers.spritesheet
+from data.helpers.spritesheet import SpriteSheet
 from data import settings
 
 
 class Form(pygame.sprite.Sprite):
-    def __init__(self, size: tuple[int, int]):
+    def __init__(self, size: tuple[int, int]) -> None:
+        """ Initializes basic class for form objects
+
+        :param size: size of the form object
+        """
         pygame.sprite.Sprite.__init__(self)
 
         self.LEFT = 0
         self.RIGHT = 1
         self.CENTER = 2
-
         self.image = pygame.Surface(size)
         self.image.fill(settings.COLOR_WHITE)
         self.rect = self.image.get_rect()
-
         self.rect.x = 0
         self.rect.y = 0
         self.pos_x = 0
         self.pos_y = 0
         self.alignment = self.LEFT
-
         self.events = []
         self.sprite_size = (0, 0)
         self.sprite_sheet = None
         self.colorkey = settings.COLOR_KEY
 
-    def set_spritesheet(self, sprite_sheet: str, sprite_size: tuple[int, int]):
-        self.sprite_sheet = data.helpers.spritesheet.SpriteSheet(sprite_sheet)
+    def set_spritesheet(self, sprite_sheet: str, sprite_size: tuple[int, int]) -> None:
+        """ Sets the sprite sheet of the form
+
+        :param sprite_sheet: path with filename of the sprite sheet
+        :param sprite_size: size of a single sprite in the sprite sheet
+        :return: None
+        """
+        self.sprite_sheet = SpriteSheet(sprite_sheet)
         self.sprite_size = sprite_size
 
-    def set_colorkey(self, key: tuple[int, int, int]):
+    def set_colorkey(self, key: tuple[int, int, int]) -> None:
+        """ Sets the colorkey of the image
+
+        :param key: color to be set as the colorkey
+        :return: None
+        """
         self.image.set_colorkey(key)
 
-    def get_events(self):
+    def get_events(self) -> list:
+        """ Returns all raised form events without emptying the event queue
+
+        :return: list of all raised form events
+        """
         return self.events
 
-    def clear_events(self):
+    def clear_events(self) -> None:
+        """ Empties the form event queue
+
+        :return: None
+        """
         self.events.clear()
 
-    def handle_event(self, event):
+    def handle_event(self, event) -> None:
+        """ Handles given event
+
+        :param event: pygame or resa event
+        :return: None
+        """
         pass
 
-    def get_dimensions(self):
+    def get_dimensions(self) -> tuple[int, int]:
+        """ Returns form dimensions
+
+        :return: size of the form image
+        """
         return self.image.get_size()
 
-    def width(self):
+    def width(self) -> int:
+        """ Returns form width
+
+        :return: width of the form image
+        """
         return self.image.get_width()
 
-    def height(self):
+    def height(self) -> int:
+        """ Returns form height
+
+        :return: height of the form image
+        """
         return self.image.get_height()
 
-    def align(self, alignment: int = None):
+    def align(self, alignment: int = None) -> None:
+        """ Aligns the form horizontally in relation to its own position
+
+        :param alignment: integer to set right, left or center
+        :return: None
+        """
         if alignment is None:
             alignment = self.alignment
 

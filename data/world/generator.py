@@ -1,3 +1,12 @@
+""" This module provides classes to create worlds
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '0.1'
+
 import random
 import pygame
 from data.world.field import Field
@@ -5,13 +14,8 @@ from data.helpers.spritesheet import SpriteSheet
 
 
 class Generator(object):
-    """
-    Generates a world and provides methods customize it
-    """
-
     def __init__(self, world_size: tuple[int, int], grid_size: tuple[int, int]) -> None:
-        """
-        Creates basic world and its parameters
+        """ Creates basic world and its parameters
 
         :param world_size: width and height as number of fields of the world
         :param grid_size: width and height in px as size of used tile-grid
@@ -28,16 +32,14 @@ class Generator(object):
         self.field_dict_id = 0
 
     def get_world(self) -> tuple[pygame.sprite.Group, pygame.Rect]:
-        """
-        Returns the generated world values
+        """ Returns the generated world values
 
         :return: sprites and rectangle of the created world
         """
         return self.fields, self.rect
 
     def add_sprite_sheet(self, sprite_sheet: str) -> None:
-        """
-        Adds a sprite sheet that can be used for world generation
+        """ Adds a sprite sheet that can be used for world generation
 
         :param sprite_sheet: path to a sprite map/sheet
         :return: None
@@ -45,8 +47,7 @@ class Generator(object):
         self.sprite_sheets.append(SpriteSheet(sprite_sheet))
 
     def set_field_dict(self, field_dict: dict) -> None:
-        """
-        Sets the field dict as reference dictionary for added sprite sheets
+        """ Sets the field dict as reference dictionary for added sprite sheets
 
         :param field_dict:
         :return: None
@@ -54,8 +55,7 @@ class Generator(object):
         self.field_dict = field_dict
 
     def fill(self, field_dict_id: int) -> None:
-        """
-        Uses given id to create all fields of the world
+        """ Uses given id to create all fields of the world
 
         :param field_dict_id: id of a field in field dictionary, set by set_field_dict
         :return: None
@@ -80,8 +80,7 @@ class Generator(object):
                 pos_x = self.grid_size[0] / 2
 
     def get_sprite_sheet_id(self, name: str, field_dict_id: int) -> int:
-        """
-        Returns an id of a sprite sheet by comparing wished sheet with fields dictionary sheets
+        """ Returns an id of a sprite sheet by comparing wished sheet with fields dictionary sheets
 
         :param name: name that will be compared with names dictionary
         :param field_dict_id: id from fields dictionary
@@ -103,8 +102,7 @@ class Generator(object):
             return sprite_sheet_id
 
     def add_island(self, position: tuple[int, int], island_data_set: dict) -> None:
-        """
-        Adds an island to the world
+        """ Adds an island to the world
 
         :param position: top and left position the island should be placed
         :param island_data_set: data set of the island
@@ -182,8 +180,7 @@ class Generator(object):
                         self.field_dict[field_dict_id]["sprite_rect"],
                         self.field_dict[field_dict_id]["colorkey"]
                     )
-                    field = Field((start_x + pos_x, start_y + pos_y), self.grid_size, image)
-                    # todo: add more field information
+                    field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
                     field.set_solid(solid)
 
                     self.fields.add(field)

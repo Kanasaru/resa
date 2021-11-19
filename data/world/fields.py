@@ -1,3 +1,10 @@
+""" This module provides the sprite sheets and field dictionary for world generation
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
 SPRITE_SHEETS = {
     0: "resources/images/sprites/map/Solid Tiles Flat 128x64.png",
     1: "resources/images/sprites/map/Dirt A - Water Flat 128x64.png",

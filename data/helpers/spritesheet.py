@@ -1,20 +1,36 @@
+""" This module provides sprite sheet handling by class SpriteSheet
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+:contribution: code is taken and slightly edited from https://www.pygame.org/wiki/Spritesheet
 """
-code is taken and slightly edited from https://www.pygame.org/wiki/Spritesheet
-"""
+
+__version__ = '1.0'
 
 import pygame
 from data import errorcodes
 
 
 class SpriteSheet(object):
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
+        """ Initializes a sprite sheet
+
+        :param filename: pathname to sprite sheet
+        """
         try:
             self.sheet = pygame.image.load(filename).convert()
             self.sheet_size = self.sheet.get_size()
         except FileNotFoundError:
             print(errorcodes.resa_error_list.get_error_by_key(errorcodes.E_FILE))
 
-    def image_at(self, rectangle, colorkey=None):
+    def image_at(self, rectangle: tuple[int, int, int, int], colorkey: tuple[int, int, int] = None) -> pygame.Surface:
+        """ Returns an image from the sprite sheet by given rectangle and colorkey
+
+        :param rectangle: position and size of the image on the sprite sheet
+        :param colorkey: colorkey that is used to create the images
+        :return: selected image
+        """
         rect = pygame.Rect(rectangle)
         image = pygame.Surface(rect.size).convert()
         image.blit(self.sheet, (0, 0), rect)
@@ -26,9 +42,21 @@ class SpriteSheet(object):
 
         return image
 
-    def image_rotate(self, image, angle):
+    def image_rotate(self, image: pygame.Surface, angle: int) -> pygame.Surface:
+        """ Rotates given image by given angle and returns the new image
+
+        :param image: image that should be transformed
+        :param angle: angle used to transform the image
+        :return: created image
+        """
         image_new = pygame.transform.rotate(image, angle)
         return image_new
 
-    def images_at(self, rects, colorkey=None):
+    def images_at(self, rects: list, colorkey: tuple[int, int, int] = None) -> list[pygame.Surface]:
+        """ Returns a list of images located at given rectangles
+
+        :param rects: list of rectangles
+        :param colorkey: colorkey that is used to create the images
+        :return: list of images
+        """
         return [self.image_at(rect, colorkey) for rect in rects]

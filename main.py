@@ -1,3 +1,9 @@
+"""
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
 from data.start import Start
 
 

@@ -1,3 +1,12 @@
+""" This module provides classes to load world
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '0.2'
+
 import pygame.sprite
 from data import settings
 from data.world import fields
@@ -6,13 +15,11 @@ from data.world.generator import Generator
 
 
 class Loader(object):
-    def __init__(self, size: tuple, grid_size: tuple) -> None:
-        """
+    def __init__(self, size: tuple[int, int], grid_size: tuple[int, int]) -> None:
+        """ Initializes a world loading instance
+
         :param size: tuple of screen size
-        :param spritesheet: path to spritesheet
         :param grid_size: tuple of single grid (field) size
-        :param sprite_size: tuple of single sprite size in spritesheet
-        :param colorkey: rgb tuple of used colorkey in spritesheet
         """
         self.size = size
         self.grid_size = grid_size
@@ -22,7 +29,8 @@ class Loader(object):
             self.world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
         self.world.set_field_dict(fields.FIELD_DICT)
         self.world.fill(5)
-        self.world.add_island((7, 6), big_islands.big_island_one)
+        self.world.add_island((0, 0), big_islands.big_island_one)
+        self.world.add_island((10, 3), big_islands.big_island_two)
 
         self.fields, self.rect = self.world.get_world()
 
@@ -34,6 +42,11 @@ class Loader(object):
         self.move_steps = (0, 0)
 
     def handle_event(self, event) -> None:
+        """ Handles given event
+
+        :param event: pygame or resa event object
+        :return: None
+        """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 self.move_steps = (-self.map_pace, self.move_steps[1])
@@ -51,6 +64,10 @@ class Loader(object):
             pass
 
     def run_logic(self) -> None:
+        """ Runs the logic for the loaded world
+
+        :return: None
+        """
         new_pos_x = self.rect.x + self.move_steps[0]
         new_pos_y = self.rect.y + self.move_steps[1]
 
@@ -72,10 +89,18 @@ class Loader(object):
 
         self.fields.update()
 
-    def render(self):
+    def render(self) -> None:
+        """ Renders all fields of the world on its surface
+
+        :return: None
+        """
         self.surface.fill(settings.COLOR_BLACK)
         self.fields.draw(self.surface)
 
-    def get_surface(self):
+    def get_surface(self) -> pygame.Surface:
+        """ Returns the current state of the world surface
+
+        :return: current world surface
+        """
         return self.surface
 

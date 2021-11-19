@@ -1,13 +1,22 @@
+""" This module provides buttons as form objects that can be used in titles
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '1.0'
+
 import pygame
-import data.forms.form
+from data.forms.form import Form
 from data import settings
 
 
-class Button(data.forms.form.Form):
+class Button(Form):
     def __init__(self, name: str, rect: pygame.Rect,
                  sprite_sheet: str, sprite_size: tuple[int, int],
-                 text: str = "", callback_event: object = None):
-        data.forms.form.Form.__init__(self, rect.size)
+                 text: str = "", callback_event: object = None) -> None:
+        Form.__init__(self, rect.size)
 
         self.set_spritesheet(sprite_sheet, sprite_size)
 
@@ -36,41 +45,64 @@ class Button(data.forms.form.Form):
         self.align(self.alignment)
         self.load_start_image()
 
-    def enable(self):
+    def enable(self) -> None:
         self.clickable = True
         self.image = self.surf_images["standard"]
 
-    def disable(self):
+    def disable(self) -> None:
         self.clickable = False
         self.image = self.surf_images["disabled"]
 
-    def toggle(self):
+    def toggle(self) -> None:
         if self.clickable:
             self.disable()
         else:
             self.enable()
 
-    def load_start_image(self):
+    def load_start_image(self) -> None:
+        """ Sets the starting image of the button
+
+        :return: None
+        """
         if self.clickable:
             self.image = self.surf_images["standard"]
         else:
             self.image = self.surf_images["disabled"]
 
-    def set_callback_event(self, event):
+    def set_callback_event(self, event) -> None:
+        """ Sets the callback event which is return to the title if button was clicked
+
+        :param event: resa event
+        :return: None
+        """
         self.callback_event = event
 
-    def set_font(self, font: str, size: int):
+    def set_font(self, font: str, size: int) -> None:
+        """ Sets the font of the button
+
+        :param font: pathname to font that should be used
+        :param size: font size of displayed text
+        :return: None
+        """
         self.font = pygame.font.Font(font, size)
         self.load_sprites()
         self.scale()
         self.render_text()
         self.load_start_image()
 
-    def scale(self):
+    def scale(self) -> None:
+        """ Scales individual sprites from sprite sheet for each button state to button size
+
+        :return: None
+        """
         for key in self.surf_images:
             self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.rect.size)
 
-    def load_sprites(self):
+    def load_sprites(self) -> None:
+        """ Loads individual sprites from sprite sheet for each button state
+
+        :return: None
+        """
         self.surf_images = {
             "standard": self.sprite_sheet.image_at(
                 (0, 0, self.sprite_size[0], self.sprite_size[1]),
@@ -90,7 +122,11 @@ class Button(data.forms.form.Form):
             )
         }
 
-    def render_text(self):
+    def render_text(self) -> None:
+        """ Renders text for all button states on their images
+
+        :return: None
+        """
         text_surf = self.font.render(self.text, True, self.font_colors["standard"])
         text_surf_hover = self.font.render(self.text, True, self.font_colors["hover"])
         text_surf_pressed = self.font.render(self.text, True, self.font_colors["pressed"])
@@ -104,7 +140,12 @@ class Button(data.forms.form.Form):
         self.surf_images["pressed"].blit(text_surf_pressed, text_pos)
         self.surf_images["disabled"].blit(text_surf_disabled, text_pos)
 
-    def handle_event(self, event):
+    def handle_event(self, event) -> None:
+        """ Handles given event
+
+        :param event: pygame or resa event
+        :return: None
+        """
         if self.clickable:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.rect.collidepoint(event.pos):
