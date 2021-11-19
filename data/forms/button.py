@@ -16,6 +16,15 @@ class Button(Form):
     def __init__(self, name: str, rect: pygame.Rect,
                  sprite_sheet: str, sprite_size: tuple[int, int],
                  text: str = "", callback_event: object = None) -> None:
+        """ Initializes a button form object
+
+        :param name: name of the textbox
+        :param rect: rectangle with dimension and position
+        :param sprite_sheet: filepath to sprite sheet
+        :param sprite_size: size of a single sprite in sprite sheet
+        :param text: displayed text
+        :param callback_event: event which is called if button gets clicked
+        """
         Form.__init__(self, rect.size)
 
         self.set_spritesheet(sprite_sheet, sprite_size)
@@ -46,14 +55,26 @@ class Button(Form):
         self.load_start_image()
 
     def enable(self) -> None:
+        """ Enables the button
+
+        :return: None
+        """
         self.clickable = True
         self.image = self.surf_images["standard"]
 
     def disable(self) -> None:
+        """ Disables the button
+
+        :return: None
+        """
         self.clickable = False
         self.image = self.surf_images["disabled"]
 
     def toggle(self) -> None:
+        """ Toggles the button state for clickable
+
+        :return: None
+        """
         if self.clickable:
             self.disable()
         else:

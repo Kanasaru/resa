@@ -15,7 +15,7 @@ from data import settings
 class Textbox(Form):
     def __init__(self, name: str, position: tuple[int, int],
                  text: str = "", font_size: int = 20, callback=None) -> None:
-        """ Initializes a text box from object
+        """ Initializes a text box form object
 
         :param name: name of the textbox
         :param position: position of the textbox on the title
