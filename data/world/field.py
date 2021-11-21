@@ -29,6 +29,8 @@ class Field(pygame.sprite.Sprite):
         self.rect.topleft = self.pos
 
         self.solid = False
+        self.sprite_sheet_id = None
+        self.sprite_id = None
 
     def update(self) -> None:
         """ Updates field by its position
@@ -54,7 +56,7 @@ class Field(pygame.sprite.Sprite):
         if position is not None:
             self.pos = position
             return True
-        return self.pos
+        return int(self.pos[0]), int(self.pos[1])
 
     def move(self, movement: tuple[int, int]) -> None:
         """ Changes the fields position by calculating a new position by given movement

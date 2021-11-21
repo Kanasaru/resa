@@ -71,7 +71,10 @@ class Generator(object):
                     self.field_dict[self.field_dict_id]["sprite_rect"],
                     self.field_dict[self.field_dict_id]["colorkey"]
                 )
-                self.fields.add(Field((pos_x, pos_y), self.grid_size, image))
+                new_field = Field((pos_x, pos_y), self.grid_size, image)
+                new_field.sprite_sheet_id = 0
+                new_field.sprite_id = field_dict_id
+                self.fields.add(new_field)
                 pos_x += self.grid_size[0]
             pos_y += self.grid_size[1] / 2
             if (row % 2) == 0:
@@ -176,11 +179,14 @@ class Generator(object):
                             field.delete()
 
                     # add field
-                    image = self.sprite_sheets[self.get_sprite_sheet_id(water_to_solid, field_dict_id)].image_at(
+                    sprite_sheet_id = self.get_sprite_sheet_id(water_to_solid, field_dict_id)
+                    image = self.sprite_sheets[sprite_sheet_id].image_at(
                         self.field_dict[field_dict_id]["sprite_rect"],
                         self.field_dict[field_dict_id]["colorkey"]
                     )
                     field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
+                    field.sprite_sheet_id = sprite_sheet_id
+                    field.sprite_id = field_dict_id
                     field.set_solid(solid)
 
                     self.fields.add(field)

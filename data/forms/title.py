@@ -49,13 +49,17 @@ class Title(Form):
             pic = pygame.image.load(self.bg_image).convert()
             self.bg_image = pygame.transform.scale(pic, pic.get_rect().size)
 
-    def add(self, form_object: Form) -> None:
+    def add(self, form_object: Form | list[Form]) -> None:
         """ Adds a form object to the title
 
         :param form_object: form object that has to be added to the title
         :return: None
         """
-        self.form_objects.add(form_object)
+        if isinstance(form_object, list):
+            for obj in form_object:
+                self.form_objects.add(obj)
+        else:
+            self.form_objects.add(form_object)
 
     def get_events(self) -> list:
         """ Returns all raised form events in its own form group without emptying the event queue

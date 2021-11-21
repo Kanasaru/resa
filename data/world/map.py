@@ -41,6 +41,12 @@ class Loader(object):
         self.moving = False
         self.move_steps = (0, 0)
 
+    def get_fields(self):
+        return self.fields
+
+    def get_rect(self):
+        return self.rect
+
     def handle_event(self, event) -> None:
         """ Handles given event
 
@@ -73,14 +79,18 @@ class Loader(object):
 
         if new_pos_x > 0:
             self.move_steps = (0, self.move_steps[1])
+            self.rect.x = new_pos_x
         elif (new_pos_x * -1 + self.size[0] - self.grid_size[0] / 2) >= self.rect.width:
             self.move_steps = (0, self.move_steps[1])
+            self.rect.x = new_pos_x
         else:
             self.rect.x = new_pos_x
         if new_pos_y > 0:
             self.move_steps = (self.move_steps[0], 0)
+            self.rect.y = new_pos_y
         elif (new_pos_y * -1 + self.size[1] - self.grid_size[1] / 2) >= self.rect.height:
             self.move_steps = (self.move_steps[0], 0)
+            self.rect.y = new_pos_y
         else:
             self.rect.y = new_pos_y
 
