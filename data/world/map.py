@@ -44,6 +44,12 @@ class Loader(object):
     def get_fields(self):
         return self.fields
 
+    def get_raw_fields(self):
+        raw_fields = []
+        for field in self.fields:
+            raw_fields.append([field.position(), (field.sprite_sheet_id, field.sprite_id), field.solid])
+        return raw_fields
+
     def get_rect(self):
         return self.rect
 

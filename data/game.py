@@ -56,7 +56,7 @@ class Game(object):
             if event.code == ecodes.STOPGAME:
                 self.exit_game = True
             elif event.code == ecodes.SAVEGAME:
-                self.handler.set_world_data((self.map.get_rect(), self.map.get_fields()))
+                self.handler.world_data = (self.map.get_rect(), self.map.get_raw_fields())
                 self.handler.save_to_file("saves/game.xml")
             else:
                 pass
