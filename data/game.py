@@ -17,7 +17,7 @@ from data.handler import GameDataHandler
 
 
 class Game(object):
-    def __init__(self, surface):
+    def __init__(self, surface, load: bool = False):
         """ Initializes the in-game
 
         :param surface: surface the in-game should be rendered on
@@ -30,10 +30,13 @@ class Game(object):
         self.game_panel = GamePanel()
         self.load_msg()
 
-        self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2), (40, 20))
-        
+        self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2),
+                          (40, 20))
+
         self.handler = GameDataHandler()
-        
+        if load:
+            self.handler.read_from_file(settings.SAVE_FILE)
+
         self.loop()
 
     def loop(self) -> None:
@@ -57,7 +60,7 @@ class Game(object):
                 self.exit_game = True
             elif event.code == ecodes.SAVEGAME:
                 self.handler.world_data = (self.map.get_rect(), self.map.get_raw_fields())
-                self.handler.save_to_file("saves/game.xml")
+                self.handler.save_to_file(settings.SAVE_FILE)
             else:
                 pass
 

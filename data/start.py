@@ -21,6 +21,7 @@ class Start(object):
         pygame.init()
 
         self.start_game = False
+        self.load_game = False
         self.leave_game = False
         self.music = Music()
 
@@ -58,7 +59,8 @@ class Start(object):
             if event.code == ecodes.STARTGAME:
                 self.start_game = True
             elif event.code == ecodes.LOADGAME:
-                print("Load Game!")
+                self.start_game = True
+                self.load_game = True
             elif event.code == ecodes.QUITGAME:
                 self.leave_game = True
             else:
@@ -90,11 +92,12 @@ class Start(object):
                 self.music.load_music()
                 self.music.start_music()
                 self.start_game = False
+                self.load_game = False
                 self.game = None
             else:
                 self.clr_screen()
                 self.music.stop_music()
-                self.game = Game(self.surface)
+                self.game = Game(self.surface, self.load_game)
 
         self.title_main.run_logic()
 

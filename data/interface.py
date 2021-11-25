@@ -58,7 +58,10 @@ class MainMenu(object):
             Event(ecodes.LOADGAME, ecodes.LOADGAME)
         )
         b_loadgame.align(b_loadgame.CENTER)
-        b_loadgame.disable()
+        try:
+            f = open(settings.SAVE_FILE)
+        except FileNotFoundError:
+            b_loadgame.disable()
         b_loadgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_loadgame.height() + 20
         b_quitgame = Button(

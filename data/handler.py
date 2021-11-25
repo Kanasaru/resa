@@ -1,3 +1,5 @@
+from ast import literal_eval
+
 import pygame
 import xml.etree.ElementTree as ET
 
@@ -73,26 +75,31 @@ class GameDataHandler(object):
     def read_from_file(self, filepath: str):
         tree = ET.parse(filepath)
         root = tree.getroot()
+
+        # read resources
+        res = {}
+        for res_data in root.iter('res'):
+            res[res_data.attrib['name']] = int(res_data.text)
+
         # read world info
         rect = None
         fields = []
-        for rect_data in root.findall('rect'):
-            x = int(rect_data.find('x').text)
-            y = int(rect_data.find('y').text)
-            width = int(rect_data.find('width').text)
-            height = int(rect_data.find('height').text)
-            rect = pygame.Rect(x, y, width, height)
+        for rect_data in root.iter('rect'):
+            rect = pygame.Rect(literal_eval(rect_data.text))
+
         # read fields
-        for field in root.findall('field'):
-            pos = tuple(field.find('pos').text)
-            sprite_data = tuple(field.find('sprite_data').text)
-            solid = bool(field.find('solid').text)
+        for field in root.iter('field'):
+            pos = literal_eval(field.attrib['pos'])
+            sprite_data = literal_eval(field.attrib['sprite_data'])
+            solid = literal_eval(field.attrib['solid'])
             fields.append([pos, sprite_data, solid])
 
+        self.resources = res
         self.world_data = (rect, fields)
 
     def save_to_file(self, filepath: str):
         root = ET.Element("data")
+
         # save resources
         resources = ET.SubElement(root, "resources")
         for key, value in self.resources.items():
@@ -100,16 +107,15 @@ class GameDataHandler(object):
 
         # save world
         world = ET.SubElement(root, "world")
-        ET.SubElement(world, "rect", name="x").text = str(self.world_data[0].x)
-        ET.SubElement(world, "rect", name="y").text = str(self.world_data[0].y)
-        ET.SubElement(world, "rect", name="width").text = str(self.world_data[0].width)
-        ET.SubElement(world, "rect", name="height").text = str(self.world_data[0].height)
+        ET.SubElement(world, "rect").text = str((
+            self.world_data[0].x, self.world_data[0].y, self.world_data[0].width, self.world_data[0].height
+        ))
         fields = ET.SubElement(world, "fields")
         for raw_field in self.world_data[1]:
-            field = ET.SubElement(fields, "field")
-            ET.SubElement(field, "data", name="pos").text = str(raw_field[0])
-            ET.SubElement(field, "data", name="sprite_data").text = str(raw_field[1])
-            ET.SubElement(field, "data", name="solid").text = str(raw_field[2])
+            ET.SubElement(fields, "field",
+                          pos=str(raw_field[0]),
+                          sprite_data=str(raw_field[1]),
+                          solid=str(raw_field[2]))
 
         # write file
         tree = ET.ElementTree(root)

@@ -42,6 +42,7 @@ MUSIC_VOLUME = .2
 MUSIC_LOOP = -1
 MUSIC_BG_1 = "resources/music/sb_indreams.mp3"
 SPRITES_MENU_BUTTONS = "resources/images/sprites/buttons.png"
+SAVE_FILE = "saves/game.xml"
 
 # map
 WORLD_SIZE = (40, 40)
