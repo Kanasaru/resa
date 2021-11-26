@@ -5,7 +5,7 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 import pygame
 from data.forms.textbox import Textbox
@@ -60,6 +60,7 @@ class MainMenu(object):
         b_loadgame.align(b_loadgame.CENTER)
         try:
             f = open(settings.SAVE_FILE)
+            f.close()
         except FileNotFoundError:
             b_loadgame.disable()
         b_loadgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
