@@ -150,7 +150,9 @@ class GamePanel(object):
         tf_version = Textbox("tf_version", (5, 5), f"v{settings.GAME_VERSION}", 14)
         tf_version.font_color(settings.COLOR_WHITE)
         tf_version.align(tf_version.LEFT)
-        tf_resources = Textbox("tf_resources", (int(self.title.width() / 2), 5), self.resources, 14)
+        tf_resources = Textbox("tf_resources",
+                               (int(self.title.width() / 2), 5),
+                               self.resources, 14, self.update_resources)
         tf_resources.font_color(settings.COLOR_WHITE)
         tf_resources.align(tf_resources.CENTER)
         # buttons
@@ -190,8 +192,8 @@ class GamePanel(object):
     def run_logic(self):
         self.title.run_logic()
 
-    def update(self):
-        self.__build()
+    def update_resources(self):
+        return self.resources
 
     def render(self, surface: pygame.Surface):
         self.title.render(surface)

@@ -32,10 +32,15 @@ class Game(object):
 
         self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2),
                           (40, 20))
-
         self.handler = GameDataHandler()
         if load:
             self.handler.read_from_file(settings.SAVE_FILE)
+            self.map.build_world(self.handler.world_data)
+            res = self.handler.resources
+            self.game_panel.resources = f"Wood: {res['Wood']} | Stone: {res['Stone']} | Marble: {res['Marble']}" \
+                                        f" | Tools: {res['Tools']} | Gold: {res['Gold']}"
+        else:
+            self.map.build_world()
 
         self.loop()
 

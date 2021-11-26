@@ -7,11 +7,11 @@ import xml.etree.ElementTree as ET
 class GameDataHandler(object):
     def __init__(self):
         self._resources = {
-            "Wood": 0,
-            "Stone": 0,
+            "Wood": 1000,
+            "Stone": 500,
             "Marble": 0,
-            "Tools": 0,
-            "Gold": 0,
+            "Tools": 250,
+            "Gold": 5000,
         }
         self._world_data = None
         self._game_time = 0
@@ -76,23 +76,27 @@ class GameDataHandler(object):
         tree = ET.parse(filepath)
         root = tree.getroot()
 
-        # read resources
         res = {}
-        for res_data in root.iter('res'):
-            res[res_data.attrib['name']] = int(res_data.text)
-
-        # read world info
         rect = None
         fields = []
-        for rect_data in root.iter('rect'):
-            rect = pygame.Rect(literal_eval(rect_data.text))
-
-        # read fields
-        for field in root.iter('field'):
-            pos = literal_eval(field.attrib['pos'])
-            sprite_data = literal_eval(field.attrib['sprite_data'])
-            solid = literal_eval(field.attrib['solid'])
-            fields.append([pos, sprite_data, solid])
+        for child in root:
+            # read resources
+            if child.tag == 'resources':
+                for res_data in child.iter('res'):
+                    res[res_data.attrib['name']] = int(res_data.text)
+            # read world
+            if child.tag == 'world':
+                # basic data
+                for rect_data in child.iter('rect'):
+                    rect = pygame.Rect(literal_eval(rect_data.text))
+                for sub_child in child:
+                    # read field data
+                    if sub_child.tag == 'fields':
+                        for field in sub_child.iter('field'):
+                            pos = literal_eval(field.attrib['pos'])
+                            sprite_data = literal_eval(field.attrib['sprite_data'])
+                            solid = literal_eval(field.attrib['solid'])
+                            fields.append([pos, sprite_data, solid])
 
         self.resources = res
         self.world_data = (rect, fields)
@@ -107,9 +111,7 @@ class GameDataHandler(object):
 
         # save world
         world = ET.SubElement(root, "world")
-        ET.SubElement(world, "rect").text = str((
-            self.world_data[0].x, self.world_data[0].y, self.world_data[0].width, self.world_data[0].height
-        ))
+        ET.SubElement(world, "rect").text = str((self.world_data[0].topleft, self.world_data[0].size))
         fields = ET.SubElement(world, "fields")
         for raw_field in self.world_data[1]:
             ET.SubElement(fields, "field",

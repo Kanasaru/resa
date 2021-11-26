@@ -23,23 +23,13 @@ class Loader(object):
         """
         self.size = size
         self.grid_size = grid_size
-
-        self.world = Generator(settings.WORLD_SIZE, grid_size)
-        for sheet in fields.SPRITE_SHEETS:
-            self.world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
-        self.world.set_field_dict(fields.FIELD_DICT)
-        self.world.fill(5)
-        self.world.add_island((0, 0), big_islands.big_island_one)
-        self.world.add_island((10, 3), big_islands.big_island_two)
-
-        self.fields, self.rect = self.world.get_world()
-
         self.surface = pygame.Surface(self.size)
         self.surface.fill(settings.COLOR_BLACK)
-
         self.map_pace = settings.MAP_PACE
         self.moving = False
         self.move_steps = (0, 0)
+        self.fields = None
+        self.rect = None
 
     def get_fields(self):
         return self.fields
@@ -75,11 +65,33 @@ class Loader(object):
         else:
             pass
 
+    def build_world(self, world_data: tuple[pygame.Rect, dict] = None):
+        if world_data is not None:
+            rect, field_data = world_data
+            world = Generator(rect.size, self.grid_size)
+            for sheet in fields.SPRITE_SHEETS:
+                world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
+            world.set_field_dict(fields.FIELD_DICT)
+            world.load_fields_by_dict(field_data)
+            world.rect = rect
+        else:
+            world = Generator(settings.WORLD_SIZE, self.grid_size)
+            for sheet in fields.SPRITE_SHEETS:
+                world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
+            world.set_field_dict(fields.FIELD_DICT)
+            world.fill(5)
+            # todo: using random island method
+            world.add_island((0, 0), big_islands.big_island_one)
+            world.add_island((10, 3), big_islands.big_island_two)
+
+        self.fields, self.rect = world.get_world()
+
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
 
         :return: None
         """
+        # todo: still an issue after moving the map a bit that borders move
         new_pos_x = self.rect.x + self.move_steps[0]
         new_pos_y = self.rect.y + self.move_steps[1]
 

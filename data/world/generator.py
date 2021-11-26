@@ -190,3 +190,21 @@ class Generator(object):
                     field.set_solid(solid)
 
                     self.fields.add(field)
+
+    def load_fields_by_dict(self, field_data: dict):
+        self.fields.empty()
+        for field_d in field_data:
+            pos = field_d[0]
+            sprite_sheet_id = field_d[1][0]
+            field_dict_id = field_d[1][1]
+            solid = field_d[2]
+            image = self.sprite_sheets[sprite_sheet_id].image_at(
+                self.field_dict[field_dict_id]["sprite_rect"],
+                self.field_dict[field_dict_id]["colorkey"]
+            )
+            field = Field(pos, self.grid_size, image)
+            field.sprite_sheet_id = sprite_sheet_id
+            field.sprite_id = field_dict_id
+            field.set_solid(solid)
+
+            self.fields.add(field)
