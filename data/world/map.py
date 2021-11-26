@@ -5,7 +5,7 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '0.2'
+__version__ = '1.1'
 
 import pygame.sprite
 from data import settings
@@ -27,7 +27,7 @@ class Loader(object):
         self.surface.fill(settings.COLOR_BLACK)
         self.map_pace = settings.MAP_PACE
         self.moving = False
-        self.move_steps = (0, 0)
+        self.move_steps = (False, False, False, False)
         self.fields = None
         self.rect = None
 
@@ -51,17 +51,48 @@ class Loader(object):
         """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                self.move_steps = (-self.map_pace, self.move_steps[1])
+                move_steps_l = True
+            else:
+                move_steps_l = self.move_steps[0]
             if event.key == pygame.K_RIGHT:
-                self.move_steps = (self.map_pace, self.move_steps[1])
+                move_steps_r = True
+            else:
+                move_steps_r = self.move_steps[1]
             if event.key == pygame.K_UP:
-                self.move_steps = (self.move_steps[0], -self.map_pace)
+                move_steps_u = True
+            else:
+                move_steps_u = self.move_steps[2]
             if event.key == pygame.K_DOWN:
-                self.move_steps = (self.move_steps[0], self.map_pace)
-            self.moving = True
+                move_steps_d = True
+            else:
+                move_steps_d = self.move_steps[3]
+            self.move_steps = (move_steps_l, move_steps_r, move_steps_u, move_steps_d)
+            if self.move_steps[0] or self.move_steps[1] or self.move_steps[2] or self.move_steps[3]:
+                self.moving = True
+            else:
+                self.moving = False
         elif event.type == pygame.KEYUP:
-            self.moving = False
-            self.move_steps = (0, 0)
+            if event.key == pygame.K_LEFT:
+                move_steps_l = False
+            else:
+                move_steps_l = self.move_steps[0]
+            if event.key == pygame.K_RIGHT:
+                move_steps_r = False
+            else:
+                move_steps_r = self.move_steps[1]
+            if event.key == pygame.K_UP:
+                move_steps_u = False
+            else:
+                move_steps_u = self.move_steps[2]
+            if event.key == pygame.K_DOWN:
+                move_steps_d = False
+            else:
+                move_steps_d = self.move_steps[3]
+            self.move_steps = (move_steps_l, move_steps_r, move_steps_u, move_steps_d)
+            if self.move_steps[0] or self.move_steps[1] or self.move_steps[2] or self.move_steps[3]:
+                self.moving = True
+            else:
+                self.moving = False
         else:
             pass
 
@@ -91,29 +122,47 @@ class Loader(object):
 
         :return: None
         """
-        # todo: still an issue after moving the map a bit that borders move
-        new_pos_x = self.rect.x + self.move_steps[0]
-        new_pos_y = self.rect.y + self.move_steps[1]
+        if self.moving:
+            movable_px_right = self.rect.width - self.size[0] - abs(0 - self.rect.x) + self.grid_size[0] / 2
+            movable_px_left = abs(0 - self.rect.x)
+            movable_px_up = abs(0 - self.rect.y)
+            movable_px_down = self.rect.height - self.size[1] - abs(0 - self.rect.y)
+            move_field = (0, 0)
+            # move left
+            if self.move_steps[0] and movable_px_left != 0:
+                if movable_px_left < self.map_pace:
+                    self.rect.x += movable_px_left
+                    move_field = (movable_px_left, 0)
+                else:
+                    self.rect.x += self.map_pace
+                    move_field = (self.map_pace, 0)
+            # move right
+            elif self.move_steps[1] and movable_px_right != 0:
+                if movable_px_right < self.map_pace:
+                    self.rect.x -= movable_px_right
+                    move_field = (-movable_px_right, 0)
+                else:
+                    self.rect.x -= self.map_pace
+                    move_field = (-self.map_pace, 0)
+            # move up
+            if self.move_steps[2] and movable_px_up != 0:
+                if movable_px_up < self.map_pace:
+                    self.rect.y += movable_px_up
+                    move_field = (move_field[0], movable_px_up)
+                else:
+                    self.rect.y += self.map_pace
+                    move_field = (move_field[0], self.map_pace)
+            # move down
+            elif self.move_steps[3] and movable_px_down != 0:
+                if movable_px_down < self.map_pace:
+                    self.rect.y -= movable_px_down
+                    move_field = (move_field[0], -movable_px_down)
+                else:
+                    self.rect.y -= self.map_pace
+                    move_field = (move_field[0], -self.map_pace)
 
-        if new_pos_x > 0:
-            self.move_steps = (0, self.move_steps[1])
-            self.rect.x = new_pos_x
-        elif (new_pos_x * -1 + self.size[0] - self.grid_size[0] / 2) >= self.rect.width:
-            self.move_steps = (0, self.move_steps[1])
-            self.rect.x = new_pos_x
-        else:
-            self.rect.x = new_pos_x
-        if new_pos_y > 0:
-            self.move_steps = (self.move_steps[0], 0)
-            self.rect.y = new_pos_y
-        elif (new_pos_y * -1 + self.size[1] - self.grid_size[1] / 2) >= self.rect.height:
-            self.move_steps = (self.move_steps[0], 0)
-            self.rect.y = new_pos_y
-        else:
-            self.rect.y = new_pos_y
-
-        for field in self.fields:
-            field.move(self.move_steps)
+            for field in self.fields:
+                field.move(move_field)
 
         self.fields.update()
 
@@ -132,3 +181,9 @@ class Loader(object):
         """
         return self.surface
 
+    def __bool__(self):
+        if isinstance(self.fields, pygame.sprite.Group) and \
+                len(self.fields) > 0 and \
+                isinstance(self.rect, pygame.Rect):
+            return True
+        return False
