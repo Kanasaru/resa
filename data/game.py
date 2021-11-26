@@ -5,7 +5,7 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '0.1'
+__version__ = '0.2'
 
 import pygame
 import data.eventcodes as ecodes
@@ -36,11 +36,11 @@ class Game(object):
         if load:
             self.handler.read_from_file(settings.SAVE_FILE)
             self.map.build_world(self.handler.world_data)
-            res = self.handler.resources
-            self.game_panel.resources = f"Wood: {res['Wood']} | Stone: {res['Stone']} | Marble: {res['Marble']}" \
-                                        f" | Tools: {res['Tools']} | Gold: {res['Gold']}"
         else:
             self.map.build_world()
+        res = self.handler.resources
+        self.game_panel.resources = f"Wood: {res['Wood']} | Stone: {res['Stone']} | Marble: {res['Marble']}" \
+                                    f" | Tools: {res['Tools']} | Gold: {res['Gold']}"
 
         self.loop()
 
