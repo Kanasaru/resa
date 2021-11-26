@@ -5,7 +5,7 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '0.1'
+__version__ = '1.0'
 
 import random
 import pygame
@@ -191,13 +191,18 @@ class Generator(object):
 
                     self.fields.add(field)
 
-    def load_fields_by_dict(self, field_data: dict):
+    def load_fields_by_dict(self, fields_data: dict) -> None:
+        """ Loads fields into empty world by using raw field data from game handler
+
+        :param fields_data: raw field data from game handler
+        :return: None
+        """
         self.fields.empty()
-        for field_d in field_data:
-            pos = field_d[0]
-            sprite_sheet_id = field_d[1][0]
-            field_dict_id = field_d[1][1]
-            solid = field_d[2]
+        for field_data in fields_data:
+            pos = field_data[0]
+            sprite_sheet_id = field_data[1][0]
+            field_dict_id = field_data[1][1]
+            solid = field_data[2]
             image = self.sprite_sheets[sprite_sheet_id].image_at(
                 self.field_dict[field_dict_id]["sprite_rect"],
                 self.field_dict[field_dict_id]["colorkey"]
