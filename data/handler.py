@@ -1,17 +1,25 @@
-from ast import literal_eval
+""" This module provides handlers for the game
 
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '1.0'
+
+from ast import literal_eval
 import pygame
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ETree
 
 
 class GameDataHandler(object):
-    def __init__(self):
+    def __init__(self) -> None:
         self._resources = {
-            "Wood": 1000,
-            "Stone": 500,
+            "Wood": 0,
+            "Stone": 0,
             "Marble": 0,
-            "Tools": 250,
-            "Gold": 5000,
+            "Tools": 0,
+            "Gold": 0,
         }
         self._world_data = None
         self._game_time = 0
@@ -20,11 +28,11 @@ class GameDataHandler(object):
         self._play_timer = None
 
     @property
-    def resources(self):
+    def resources(self) -> dict:
         return self._resources
 
     @resources.setter
-    def resources(self, res: dict):
+    def resources(self, res: dict) -> None:
         for key, value in res.items():
             if key in self._resources:
                 self._resources[key] = int(value)
@@ -32,38 +40,38 @@ class GameDataHandler(object):
                 raise KeyError(f"'{key}' with '{value}' not in resources")
 
     @property
-    def game_time(self):
+    def game_time(self) -> int:
         return self._game_time
 
     @game_time.setter
-    def game_time(self, time):
+    def game_time(self, time: int) -> None:
         self._game_time = time
 
     @property
-    def play_time(self):
+    def play_time(self) -> int:
         return self._play_time
 
     @play_time.setter
-    def play_time(self, time):
+    def play_time(self, time: int) -> None:
         self._play_time = time
 
     @property
-    def world_data(self):
+    def world_data(self) -> tuple[pygame.Rect, dict]:
         return self._world_data
 
     @world_data.setter
-    def world_data(self, data: tuple[pygame.Rect, dict]):
+    def world_data(self, data: tuple[pygame.Rect, dict]) -> None:
         self._world_data = data
 
-    def start_play_time(self):
+    def start_play_time(self) -> None:
         self._play_timer = pygame.time.Clock()
         self._play_timer.tick()
 
-    def start_game_time(self):
+    def start_game_time(self) -> None:
         self._game_timer = pygame.time.Clock()
         self._game_timer.tick()
 
-    def update(self):
+    def update(self) -> None:
         if self._play_timer is not None:
             self._play_timer.tick()
             self.play_time += self._play_timer.get_time() / 1000
@@ -72,8 +80,8 @@ class GameDataHandler(object):
             self._game_timer.tick()
             self.game_time += self._game_timer.get_time() / 1000
 
-    def read_from_file(self, filepath: str):
-        tree = ET.parse(filepath)
+    def read_from_file(self, filepath: str) -> None:
+        tree = ETree.parse(filepath)
         root = tree.getroot()
 
         res = {}
@@ -102,24 +110,24 @@ class GameDataHandler(object):
         self.world_data = (rect, fields)
 
     def save_to_file(self, filepath: str):
-        root = ET.Element("data")
+        root = ETree.Element("data")
 
         # save resources
-        resources = ET.SubElement(root, "resources")
+        resources = ETree.SubElement(root, "resources")
         for key, value in self.resources.items():
-            ET.SubElement(resources, "res", name=key).text = str(value)
+            ETree.SubElement(resources, "res", name=key).text = str(value)
 
         # save world
-        world = ET.SubElement(root, "world")
-        ET.SubElement(world, "rect").text = str((self.world_data[0].topleft, self.world_data[0].size))
-        fields = ET.SubElement(world, "fields")
+        world = ETree.SubElement(root, "world")
+        ETree.SubElement(world, "rect").text = str((self.world_data[0].topleft, self.world_data[0].size))
+        fields = ETree.SubElement(world, "fields")
         for raw_field in self.world_data[1]:
-            ET.SubElement(fields, "field",
-                          pos=str(raw_field[0]),
-                          sprite_data=str(raw_field[1]),
-                          solid=str(raw_field[2]))
+            ETree.SubElement(fields, "field",
+                             pos=str(raw_field[0]),
+                             sprite_data=str(raw_field[1]),
+                             solid=str(raw_field[2]))
 
         # write file
-        tree = ET.ElementTree(root)
-        ET.indent(tree, space="\t", level=0)
+        tree = ETree.ElementTree(root)
+        ETree.indent(tree, space="\t", level=0)
         tree.write(filepath, encoding="utf-8", xml_declaration=True)
