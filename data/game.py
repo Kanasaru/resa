@@ -38,9 +38,7 @@ class Game(object):
             self.map.build_world(self.handler.world_data)
         else:
             self.map.build_world()
-        res = self.handler.resources
-        self.game_panel.resources = f"Wood: {res['Wood']} | Stone: {res['Stone']} | Marble: {res['Marble']}" \
-                                    f" | Tools: {res['Tools']} | Gold: {res['Gold']}"
+        self.game_panel.resources = self.handler.resources
 
         self.loop()
 

@@ -141,9 +141,23 @@ class GamePanel(object):
         self.bg_image = None
         self.bg_color = settings.COLOR_BLACK
         self.rect = pygame.Rect((0, 0), (settings.RESOLUTION[0], 30))
-        self.resources = f"Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0"
+        self._resources = f"Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0"
 
         self.__build()
+
+    @property
+    def resources(self) -> str:
+        return self._resources
+
+    @resources.setter
+    def resources(self, res: dict) -> None:
+        try:
+            self._resources = f"Wood: {res['Wood']} | Stone: {res['Stone']} | Marble: {res['Marble']}" \
+                              f" | Tools: {res['Tools']} | Gold: {res['Gold']}"
+        except KeyError as e:
+            print(e)
+        finally:
+            pass
 
     def __build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
