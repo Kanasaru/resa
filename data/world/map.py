@@ -10,7 +10,6 @@ __version__ = '1.1'
 import pygame.sprite
 from data import settings
 from data.world import fields
-from data.world.islands import big_islands
 from data.world.generator import Generator
 
 
@@ -112,8 +111,7 @@ class Loader(object):
             world.set_field_dict(fields.FIELD_DICT)
             world.fill(5)
             # todo: using random island method
-            world.add_island((0, 0), big_islands.big_island_one)
-            world.add_island((10, 3), big_islands.big_island_two)
+            world.add_island((-2, 2))
 
         self.fields, self.rect = world.get_world()
 
