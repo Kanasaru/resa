@@ -25,25 +25,29 @@ class Game(object):
         self.exit_game = False
         self.clock = pygame.time.Clock()
         self.surface = surface
-
+        self.map = None
+        # handler
         self.debug_handler = DebugHandler()
-        self.debug_screen = DebugScreen()
-
-        self.surface.fill(settings.COLOR_WHITE)
+        self.game_data_handler = GameDataHandler()
+        self.game_data_handler.game_time_speed = settings.INGAME_SPEED
+        # titles / screens
+        self.debug_screen = DebugScreen({'Game time': self.game_data_handler.get_game_time})
         self.game_panel = GamePanel()
+        # loading pre-data
         self.load_msg()
+        self.load_map(load)
+        # start game loop
+        self.loop()
 
+    def load_map(self, load: bool):
         self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2),
                           (40, 20))
-        self.game_data_handler = GameDataHandler()
         if load:
             self.game_data_handler.read_from_file(settings.SAVE_FILE)
             self.map.build_world(self.game_data_handler.world_data)
         else:
             self.map.build_world()
         self.game_panel.resources = self.game_data_handler.resources
-
-        self.loop()
 
     def loop(self) -> None:
         """ in-game loop
@@ -61,6 +65,7 @@ class Game(object):
 
         :return: None
         """
+        # game panel events
         for event in self.game_panel.get_events():
             if event.code == ecodes.STOPGAME:
                 self.exit_game = True
@@ -69,7 +74,7 @@ class Game(object):
                 self.game_data_handler.save_to_file(settings.SAVE_FILE)
             else:
                 pass
-
+        # pygame events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.exit_game = True
@@ -84,10 +89,12 @@ class Game(object):
                     self.debug_handler.toggle()
             else:
                 pass
+            # event handler
             self.debug_screen.handle_event(event)
             self.game_panel.handle_event(event)
             self.map.handle_event(event)
-
+        # clear event queues
+        self.debug_screen.clear_events()
         self.game_panel.clear_events()
 
     def run_logic(self) -> None:
@@ -95,6 +102,7 @@ class Game(object):
 
         :return: None
         """
+        self.game_data_handler.update()
         # debugging
         self.debug_handler.update()
         self.debug_screen.timer = self.debug_handler.play_time
@@ -111,11 +119,14 @@ class Game(object):
 
         :return: None
         """
+        # basic
         self.surface.fill(settings.COLOR_WHITE)
+        # map
         self.map.render()
         pygame.Surface.blit(self.surface, self.map.get_surface(), (1, self.game_panel.rect.height + 1))
+        # game panel
         self.game_panel.render(self.surface)
-
+        # debug screen
         if self.debug_handler:
             self.debug_screen.render(self.surface)
 

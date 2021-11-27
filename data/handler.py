@@ -11,6 +11,8 @@ from ast import literal_eval
 import pygame
 import xml.etree.ElementTree as ETree
 
+from data.helpers.time import seconds_to_clock
+
 
 class DebugHandler(object):
     def __init__(self, mode: int = 0):
@@ -66,7 +68,19 @@ class GameDataHandler(object):
         }
         self._world_data = None
         self._game_time = 0
-        self._game_timer = None
+        self._game_timer = pygame.time.Clock()
+        self._game_time_speed = 1
+
+    @property
+    def game_time_speed(self):
+        return self._game_time_speed
+
+    @game_time_speed.setter
+    def game_time_speed(self, value: int):
+        if value >= 1:
+            self._game_time_speed = value
+        else:
+            raise ValueError("Game time speed must be 1 or higher.")
 
     @property
     def resources(self) -> dict:
@@ -88,6 +102,10 @@ class GameDataHandler(object):
     def game_time(self, time: int) -> None:
         self._game_time = time
 
+    def get_game_time(self):
+        day = ((self.game_time // 1000) * self.game_time_speed) // (24 * 3600)
+        return f'Day {day}'
+
     @property
     def world_data(self) -> tuple[pygame.Rect, dict]:
         return self._world_data
@@ -96,14 +114,9 @@ class GameDataHandler(object):
     def world_data(self, data: tuple[pygame.Rect, dict]) -> None:
         self._world_data = data
 
-    def start_game_time(self) -> None:
-        self._game_timer = pygame.time.Clock()
-        self._game_timer.tick()
-
     def update(self) -> None:
-        if self._game_timer is not None:
-            self._game_timer.tick()
-            self.game_time += self._game_timer.get_time() / 1000
+        self._game_timer.tick()
+        self.game_time += self._game_timer.get_time()
 
     def read_from_file(self, filepath: str) -> None:
         tree = ETree.parse(filepath)
@@ -113,6 +126,10 @@ class GameDataHandler(object):
         rect = None
         fields = []
         for child in root:
+            # read in-game time
+            if child.tag == 'general':
+                for gen_data in child.iter('gametime'):
+                    self.game_time = literal_eval(gen_data.attrib['milliseconds'])
             # read resources
             if child.tag == 'resources':
                 for res_data in child.iter('res'):
@@ -137,6 +154,9 @@ class GameDataHandler(object):
     def save_to_file(self, filepath: str):
         root = ETree.Element("data")
 
+        # general
+        general = ETree.SubElement(root, "general")
+        ETree.SubElement(general, "gametime", milliseconds=str(self.game_time))
         # save resources
         resources = ETree.SubElement(root, "resources")
         for key, value in self.resources.items():

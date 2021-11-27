@@ -215,13 +215,14 @@ class GamePanel(object):
 
 
 class DebugScreen(object):
-    def __init__(self):
+    def __init__(self, text_boxes: dict = None):
         self.name = "debug"
         self.bg_image = None
         self.alpha = 192
         self.bg_color = settings.COLOR_BLACK
         self.rect = pygame.Rect((0, 0), (int(settings.RESOLUTION[0] / 3), settings.RESOLUTION[1]))
         self._timer = '00:00:00'
+        self._text_boxes = text_boxes
 
         self.__build()
 
@@ -259,10 +260,22 @@ class DebugScreen(object):
         tf_playtime.font_color(settings.COLOR_WHITE)
         tf_playtime.align(tf_playtime.LEFT)
 
+        y = tf_playtime.pos_y + tf_playtime.height() + 10
+
+        for key, value in self._text_boxes.items():
+            textbox = Textbox(key, (15, y), f'{key}', 14, lambda: self.__callback(value, key))
+            textbox.font_color(settings.COLOR_WHITE)
+            textbox.align(tf_playtime.LEFT)
+            y = textbox.pos_y + textbox.height() + 10
+            self.title.add(textbox)
+
         self.title.add(tf_title)
         self.title.add(tf_version)
         self.title.add(tf_date)
         self.title.add(tf_playtime)
+
+    def __callback(self, func, text):
+        return f'{text}: {func()}'
         
     def update_timer(self):
         return f'Current play game: {self.timer}'
