@@ -5,7 +5,7 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 import pygame
 from data.helpers.spritesheet import SpriteSheet
@@ -45,6 +45,9 @@ class Form(pygame.sprite.Sprite):
         """
         self.sprite_sheet = SpriteSheet(sprite_sheet)
         self.sprite_size = sprite_size
+
+    def set_alpha(self, value):
+        self.image.set_alpha(value)
 
     def set_colorkey(self, key: tuple[int, int, int]) -> None:
         """ Sets the colorkey of the image

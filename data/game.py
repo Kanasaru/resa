@@ -5,15 +5,15 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 import pygame
 import data.eventcodes as ecodes
-from data.interface import GameLoadScreen, GamePanel
+from data.interface import GameLoadScreen, GamePanel, DebugScreen
 from data.world.map import Loader
 from data import settings
 
-from data.handler import GameDataHandler
+from data.handler import GameDataHandler, DebugHandler
 
 
 class Game(object):
@@ -26,19 +26,22 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.surface = surface
 
+        self.debug_handler = DebugHandler()
+        self.debug_screen = DebugScreen()
+
         self.surface.fill(settings.COLOR_WHITE)
         self.game_panel = GamePanel()
         self.load_msg()
 
         self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2),
                           (40, 20))
-        self.handler = GameDataHandler()
+        self.game_data_handler = GameDataHandler()
         if load:
-            self.handler.read_from_file(settings.SAVE_FILE)
-            self.map.build_world(self.handler.world_data)
+            self.game_data_handler.read_from_file(settings.SAVE_FILE)
+            self.map.build_world(self.game_data_handler.world_data)
         else:
             self.map.build_world()
-        self.game_panel.resources = self.handler.resources
+        self.game_panel.resources = self.game_data_handler.resources
 
         self.loop()
 
@@ -62,8 +65,8 @@ class Game(object):
             if event.code == ecodes.STOPGAME:
                 self.exit_game = True
             elif event.code == ecodes.SAVEGAME:
-                self.handler.world_data = (self.map.get_rect(), self.map.get_raw_fields())
-                self.handler.save_to_file(settings.SAVE_FILE)
+                self.game_data_handler.world_data = (self.map.get_rect(), self.map.get_raw_fields())
+                self.game_data_handler.save_to_file(settings.SAVE_FILE)
             else:
                 pass
 
@@ -78,9 +81,10 @@ class Game(object):
                     pass
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_F3:
-                    pass
+                    self.debug_handler.toggle()
             else:
                 pass
+            self.debug_screen.handle_event(event)
             self.game_panel.handle_event(event)
             self.map.handle_event(event)
 
@@ -91,7 +95,15 @@ class Game(object):
 
         :return: None
         """
+        # debugging
+        self.debug_handler.update()
+        self.debug_screen.timer = self.debug_handler.play_time
+        self.debug_screen.run_logic()
+
+        # game panel
         self.game_panel.run_logic()
+
+        # map
         self.map.run_logic()
 
     def render(self) -> None:
@@ -103,6 +115,10 @@ class Game(object):
         self.map.render()
         pygame.Surface.blit(self.surface, self.map.get_surface(), (1, self.game_panel.rect.height + 1))
         self.game_panel.render(self.surface)
+
+        if self.debug_handler:
+            self.debug_screen.render(self.surface)
+
         pygame.display.flip()
 
     def load_msg(self) -> None:

@@ -5,11 +5,54 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 from ast import literal_eval
 import pygame
 import xml.etree.ElementTree as ETree
+
+
+class DebugHandler(object):
+    def __init__(self, mode: int = 0):
+        self.QUIET = 0
+        self.LOUD = 1
+        self._mode = mode
+        self._play_time = pygame.time.get_ticks()
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @mode.setter
+    def mode(self, value):
+        if value == self.QUIET or value == self.LOUD:
+            self._mode = value
+        else:
+            raise ValueError('Given debug mode is not available.')
+
+    @property
+    def play_time(self) -> int:
+        return self._play_time
+
+    @play_time.setter
+    def play_time(self, time: int) -> None:
+        self._play_time = time // 1000
+
+    def update(self) -> None:
+        self.play_time = pygame.time.get_ticks()
+
+    def toggle(self):
+        if self.mode == self.QUIET:
+            self.mode = self.LOUD
+        else:
+            self.mode = self.QUIET
+
+        print(self.mode)
+
+    def __bool__(self):
+        if self.mode == self.LOUD:
+            return True
+        return False
 
 
 class GameDataHandler(object):
@@ -24,8 +67,6 @@ class GameDataHandler(object):
         self._world_data = None
         self._game_time = 0
         self._game_timer = None
-        self._play_time = 0
-        self._play_timer = None
 
     @property
     def resources(self) -> dict:
@@ -48,14 +89,6 @@ class GameDataHandler(object):
         self._game_time = time
 
     @property
-    def play_time(self) -> int:
-        return self._play_time
-
-    @play_time.setter
-    def play_time(self, time: int) -> None:
-        self._play_time = time
-
-    @property
     def world_data(self) -> tuple[pygame.Rect, dict]:
         return self._world_data
 
@@ -63,19 +96,11 @@ class GameDataHandler(object):
     def world_data(self, data: tuple[pygame.Rect, dict]) -> None:
         self._world_data = data
 
-    def start_play_time(self) -> None:
-        self._play_timer = pygame.time.Clock()
-        self._play_timer.tick()
-
     def start_game_time(self) -> None:
         self._game_timer = pygame.time.Clock()
         self._game_timer.tick()
 
     def update(self) -> None:
-        if self._play_timer is not None:
-            self._play_timer.tick()
-            self.play_time += self._play_timer.get_time() / 1000
-
         if self._game_timer is not None:
             self._game_timer.tick()
             self.game_time += self._game_timer.get_time() / 1000

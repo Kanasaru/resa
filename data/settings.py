@@ -27,7 +27,7 @@ COLOR_BUTTON_PRESSED = (120, 117, 98)
 
 # info
 GAME_TITLE = "Resa"
-GAME_VERSION = "0.3.1"
+GAME_VERSION = "0.3.1-alpha"
 GAME_AUTHOR = "Kanasaru"
 GAME_WWW = "bitbyteopen.org"
 
