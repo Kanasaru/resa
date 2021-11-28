@@ -5,9 +5,8 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.1'
-
 import pygame.sprite
+import data.helpers.color as colors
 from data import settings
 from data.world import fields
 from data.world.generator import Generator
@@ -23,7 +22,7 @@ class Loader(object):
         self.size = size
         self.grid_size = grid_size
         self.surface = pygame.Surface(self.size)
-        self.surface.fill(settings.COLOR_BLACK)
+        self.surface.fill(colors.COLOR_BLACK)
         self.map_pace = settings.MAP_PACE
         self.moving = False
         self.move_steps = (False, False, False, False)
@@ -158,7 +157,7 @@ class Loader(object):
                 else:
                     self.rect.y -= self.map_pace
                     move_field = (move_field[0], -self.map_pace)
-
+            # move layer
             for field in self.fields:
                 field.move(move_field)
 
@@ -169,7 +168,7 @@ class Loader(object):
 
         :return: None
         """
-        self.surface.fill(settings.COLOR_BLACK)
+        self.surface.fill(colors.COLOR_BLACK)
         self.fields.draw(self.surface)
 
     def get_surface(self) -> pygame.Surface:

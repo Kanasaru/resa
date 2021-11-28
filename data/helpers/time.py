@@ -1,3 +1,13 @@
+""" This module provides some time functions
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
+__version__ = '1.0'
+
+
 def seconds_to_clock(seconds: int):
     """ Transforms seconds into time string
 

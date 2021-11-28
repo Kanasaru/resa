@@ -5,8 +5,6 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
-
 import random
 import pygame
 from data.world.field import Field
@@ -108,7 +106,6 @@ class Generator(object):
         """ Adds an island to the world
 
         :param position: top and left position the island should be placed
-        :param island_data_set: data set of the island
         :return: None
         """
         island_data_set = [

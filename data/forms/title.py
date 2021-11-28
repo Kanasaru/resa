@@ -5,17 +5,17 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 import pygame
 from data.forms.form import Form
-from data import settings
+import data.helpers.color as colors
 
 
 class Title(Form):
     def __init__(self, name: str, rect: pygame.Rect,
                  bg_color: tuple[int, int, int], bg_image=None,
-                 colorkey: tuple[int, int, int] = settings.COLOR_KEY) -> None:
+                 colorkey: tuple[int, int, int] = colors.COLOR_KEY) -> None:
         """ Initializes a title that handles and arrange other form objects
 
         :param name: name of the title

@@ -1,23 +1,23 @@
-""" This module provides text boxes as form objects that can be used in titles
+""" This module provides labels as form objects that can be used in titles
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 import pygame
+import data.helpers.color as colors
 from data.forms.form import Form
-from data import settings
 
 
-class Textbox(Form):
+class Label(Form):
     def __init__(self, name: str, position: tuple[int, int],
                  text: str = "", font_size: int = 20, callback=None) -> None:
         """ Initializes a text box form object
 
-        :param name: name of the textbox
+        :param name: name of the label
         :param position: position of the textbox on the title
         :param text: displayed text
         :param font_size: font size of displayed text
@@ -32,21 +32,26 @@ class Textbox(Form):
         self.font = None
         self.font_size = font_size
         self.font_colors = {
-            "standard": settings.COLOR_BLACK,
+            "standard": colors.COLOR_BLACK,
         }
         self.callback = callback
 
-        self.set_font(settings.BASIC_FONT, self.font_size)
+        self.set_font(False, self.font_size)
         self.render_text()
 
-    def set_font(self, font: str, size: int) -> None:
+    def set_font(self, font: str | bool, size: int = 0) -> None:
         """ Sets the font of the textbox
 
         :param font: pathname to font that should be used
         :param size: font size of displayed text
         :return: None
         """
-        self.font = pygame.font.Font(font, size)
+        if size != 0:
+            self.font_size = size
+        if font:
+            self.font = pygame.font.Font(font, self.font_size)
+        else:
+            self.font = pygame.font.SysFont('Arial', self.font_size)
 
     def render_text(self) -> None:
         """ Renders text on its own image

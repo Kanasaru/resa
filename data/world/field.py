@@ -5,8 +5,6 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
-
 import pygame
 
 

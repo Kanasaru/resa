@@ -5,8 +5,6 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.1'
-
 from ast import literal_eval
 import pygame
 import xml.etree.ElementTree as ETree

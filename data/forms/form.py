@@ -5,11 +5,11 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.1'
+__version__ = '1.2'
 
 import pygame
+import data.helpers.color as colors
 from data.helpers.spritesheet import SpriteSheet
-from data import settings
 
 
 class Form(pygame.sprite.Sprite):
@@ -24,7 +24,7 @@ class Form(pygame.sprite.Sprite):
         self.RIGHT = 1
         self.CENTER = 2
         self.image = pygame.Surface(size)
-        self.image.fill(settings.COLOR_WHITE)
+        self.image.fill(colors.COLOR_WHITE)
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
@@ -34,7 +34,7 @@ class Form(pygame.sprite.Sprite):
         self.events = []
         self.sprite_size = (0, 0)
         self.sprite_sheet = None
-        self.colorkey = settings.COLOR_KEY
+        self.colorkey = colors.COLOR_KEY
 
     def set_spritesheet(self, sprite_sheet: str, sprite_size: tuple[int, int]) -> None:
         """ Sets the sprite sheet of the form

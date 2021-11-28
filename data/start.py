@@ -5,10 +5,9 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
-
 import pygame
 import data.eventcodes as ecodes
+import data.helpers.color as colors
 from data.game import Game
 from data.interface import MainMenu
 from data.music import Music
@@ -106,7 +105,7 @@ class Start(object):
 
         :return: None
         """
-        self.surface.fill(settings.COLOR_WHITE)
+        self.surface.fill(colors.COLOR_WHITE)
         self.title_main.render(self.surface)
         pygame.display.flip()
 
@@ -123,5 +122,5 @@ class Start(object):
 
         :return: None
         """
-        self.surface.fill(settings.COLOR_BLACK)
+        self.surface.fill(colors.COLOR_BLACK)
         pygame.display.flip()

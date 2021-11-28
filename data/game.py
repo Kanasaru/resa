@@ -5,14 +5,12 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '0.3'
-
+import data.helpers.color as colors
 import pygame
 import data.eventcodes as ecodes
 from data.interface import GameLoadScreen, GamePanel, DebugScreen
 from data.world.map import Loader
 from data import settings
-
 from data.handler import GameDataHandler, DebugHandler
 
 
@@ -120,7 +118,7 @@ class Game(object):
         :return: None
         """
         # basic
-        self.surface.fill(settings.COLOR_WHITE)
+        self.surface.fill(colors.COLOR_WHITE)
         # map
         self.map.render()
         pygame.Surface.blit(self.surface, self.map.get_surface(), (1, self.game_panel.rect.height + 1))

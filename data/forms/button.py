@@ -5,11 +5,11 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.0'
+__version__ = '1.1'
 
 import pygame
+import data.helpers.color as colors
 from data.forms.form import Form
-from data import settings
 
 
 class Button(Form):
@@ -27,6 +27,9 @@ class Button(Form):
         """
         Form.__init__(self, rect.size)
 
+        self.COLOR_BUTTON_HOVER = (120, 117, 98)
+        self.COLOR_BUTTON_PRESSED = (120, 117, 98)
+
         self.set_spritesheet(sprite_sheet, sprite_size)
 
         self.rect = rect
@@ -37,17 +40,17 @@ class Button(Form):
         self.font = None
         self.font_size = 20
         self.font_colors = {
-            "standard": settings.COLOR_BLACK,
-            "hover": settings.COLOR_BUTTON_HOVER,
-            "pressed": settings.COLOR_BUTTON_PRESSED,
-            "disabled": settings.COLOR_BLACK,
+            "standard": colors.COLOR_BLACK,
+            "hover": self.COLOR_BUTTON_HOVER,
+            "pressed": self.COLOR_BUTTON_PRESSED,
+            "disabled": colors.COLOR_BLACK,
         }
         self.surf_images = {}
         self.clickable = True
         self.callback_event = callback_event
         self.button_down = False
 
-        self.set_font(settings.BASIC_FONT, self.font_size)
+        self.set_font(False, self.font_size)
         self.load_sprites()
         self.scale()
         self.render_text()
@@ -98,14 +101,19 @@ class Button(Form):
         """
         self.callback_event = event
 
-    def set_font(self, font: str, size: int) -> None:
+    def set_font(self, font: str | bool, size: int = 0) -> None:
         """ Sets the font of the button
 
         :param font: pathname to font that should be used
         :param size: font size of displayed text
         :return: None
         """
-        self.font = pygame.font.Font(font, size)
+        if size != 0:
+            self.font_size = size
+        if font:
+            self.font = pygame.font.Font(font, self.font_size)
+        else:
+            self.font = pygame.font.SysFont('Arial', self.font_size)
         self.load_sprites()
         self.scale()
         self.render_text()

@@ -5,12 +5,11 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.2'
-
 import datetime
 
 import pygame
-from data.forms.textbox import Textbox
+import data.helpers.color as colors
+from data.forms.label import Label
 from data.forms.button import Button
 from data.forms.title import Title
 from data.helpers.event import Event
@@ -23,7 +22,7 @@ class MainMenu(object):
     def __init__(self):
         self.name = "main"
         self.bg_image = settings.MENU_BG_IMG
-        self.bg_color = settings.COLOR_BLACK
+        self.bg_color = colors.COLOR_BLACK
         self.rect = pygame.Rect((0, 0), settings.RESOLUTION)
         self.__credits = f"Created and Designed by {settings.GAME_AUTHOR} | {settings.GAME_WWW}"
 
@@ -32,11 +31,11 @@ class MainMenu(object):
     def __build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
         # textboxes
-        tf_headline = Textbox("tf_headline", (int(self.title.width() / 2), 20), settings.GAME_TITLE.upper(), 90)
+        tf_headline = Label("tf_headline", (int(self.title.width() / 2), 20), settings.GAME_TITLE.upper(), 90)
         tf_headline.align(tf_headline.CENTER)
-        tf_version = Textbox("tf_version", (self.title.width() - 5, 5), f"v{settings.GAME_VERSION}", 14)
+        tf_version = Label("tf_version", (self.title.width() - 5, 5), f"v{settings.GAME_VERSION}", 14)
         tf_version.align(tf_version.RIGHT)
-        tf_credits = Textbox("tf_credits", (int(self.title.width() / 2), self.title.height() - 24), self.__credits, 14)
+        tf_credits = Label("tf_credits", (int(self.title.width() / 2), self.title.height() - 24), self.__credits, 14)
         tf_credits.align(tf_credits.CENTER)
         # buttons
         width, height = tf_headline.get_dimensions()
@@ -103,7 +102,7 @@ class GameLoadScreen(object):
     def __init__(self):
         self.name = "load_screen"
         self.bg_image = None
-        self.bg_color = settings.COLOR_BLACK
+        self.bg_color = colors.COLOR_BLACK
         self.rect = pygame.Rect((0, 0), settings.RESOLUTION)
         self.text = f"Loading world..."
 
@@ -113,8 +112,8 @@ class GameLoadScreen(object):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
         # textboxes
         position = (int(self.title.width() / 2), int(self.title.height() / 2))
-        tf_load_screen = Textbox("tf_load_screen", position, self.text, 20)
-        tf_load_screen.font_color(settings.COLOR_WHITE)
+        tf_load_screen = Label("tf_load_screen", position, self.text, 20)
+        tf_load_screen.font_color(colors.COLOR_WHITE)
         tf_load_screen.align(tf_load_screen.CENTER)
         # add form objects to title
         self.title.add(tf_load_screen)
@@ -142,7 +141,7 @@ class GamePanel(object):
     def __init__(self):
         self.name = "panel"
         self.bg_image = None
-        self.bg_color = settings.COLOR_BLACK
+        self.bg_color = colors.COLOR_BLACK
         self.rect = pygame.Rect((0, 0), (settings.RESOLUTION[0], 30))
         self._resources = f"Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0"
 
@@ -165,10 +164,10 @@ class GamePanel(object):
     def __build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
         # textboxes
-        tf_resources = Textbox("tf_resources",
-                               (int(self.title.width() / 2), 5),
-                               self.resources, 14, self.update_resources)
-        tf_resources.font_color(settings.COLOR_WHITE)
+        tf_resources = Label("tf_resources",
+                             (int(self.title.width() / 2), 5),
+                             self.resources, 14, self.update_resources)
+        tf_resources.font_color(colors.COLOR_WHITE)
         tf_resources.align(tf_resources.CENTER)
         # buttons
         b_quit = Button(
@@ -219,7 +218,7 @@ class DebugScreen(object):
         self.name = "debug"
         self.bg_image = None
         self.alpha = 192
-        self.bg_color = settings.COLOR_BLACK
+        self.bg_color = colors.COLOR_BLACK
         self.rect = pygame.Rect((0, 0), (int(settings.RESOLUTION[0] / 3), settings.RESOLUTION[1]))
         self._timer = '00:00:00'
         self._text_boxes = text_boxes
@@ -238,33 +237,33 @@ class DebugScreen(object):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(self.alpha)
 
-        tf_title = Textbox("tf_title", (15, 40), f'Debug Screen', 18)
-        tf_title.font_color(settings.COLOR_WHITE)
+        tf_title = Label("tf_title", (15, 40), f'Debug Screen', 18)
+        tf_title.font_color(colors.COLOR_WHITE)
         tf_title.align(tf_title.LEFT)
 
         y = tf_title.pos_y + tf_title.height() + 10
 
-        tf_version = Textbox("tf_version", (15, y), f'Version: v{settings.GAME_VERSION}', 14)
-        tf_version.font_color(settings.COLOR_WHITE)
+        tf_version = Label("tf_version", (15, y), f'Version: v{settings.GAME_VERSION}', 14)
+        tf_version.font_color(colors.COLOR_WHITE)
         tf_version.align(tf_version.LEFT)
 
         y = tf_version.pos_y + tf_version.height() + 10
 
-        tf_date = Textbox("tf_date", (15, y), f'Date: {datetime.datetime.now().strftime("%A, %d. %B %Y")}', 14)
-        tf_date.font_color(settings.COLOR_WHITE)
+        tf_date = Label("tf_date", (15, y), f'Date: {datetime.datetime.now().strftime("%A, %d. %B %Y")}', 14)
+        tf_date.font_color(colors.COLOR_WHITE)
         tf_date.align(tf_date.LEFT)
 
         y = tf_date.pos_y + tf_date.height() + 10
 
-        tf_playtime = Textbox("tf_playtime", (15, y), f'Current play game: {self.timer}', 14, self.update_timer)
-        tf_playtime.font_color(settings.COLOR_WHITE)
+        tf_playtime = Label("tf_playtime", (15, y), f'Current play game: {self.timer}', 14, self.update_timer)
+        tf_playtime.font_color(colors.COLOR_WHITE)
         tf_playtime.align(tf_playtime.LEFT)
 
         y = tf_playtime.pos_y + tf_playtime.height() + 10
 
         for key, value in self._text_boxes.items():
-            textbox = Textbox(key, (15, y), f'{key}', 14, lambda: self.__callback(value, key))
-            textbox.font_color(settings.COLOR_WHITE)
+            textbox = Label(key, (15, y), f'{key}', 14, lambda: self.__callback(value, key))
+            textbox.font_color(colors.COLOR_WHITE)
             textbox.align(tf_playtime.LEFT)
             y = textbox.pos_y + textbox.height() + 10
             self.title.add(textbox)
@@ -276,7 +275,7 @@ class DebugScreen(object):
 
     def __callback(self, func, text):
         return f'{text}: {func()}'
-        
+
     def update_timer(self):
         return f'Current play game: {self.timer}'
 
