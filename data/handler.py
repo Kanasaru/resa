@@ -9,8 +9,6 @@ from ast import literal_eval
 import pygame
 import xml.etree.ElementTree as ETree
 
-from data.helpers.time import seconds_to_clock
-
 
 class DebugHandler(object):
     def __init__(self, mode: int = 0):
@@ -46,8 +44,6 @@ class DebugHandler(object):
             self.mode = self.LOUD
         else:
             self.mode = self.QUIET
-
-        print(self.mode)
 
     def __bool__(self):
         if self.mode == self.LOUD:
@@ -123,6 +119,7 @@ class GameDataHandler(object):
         res = {}
         rect = None
         fields = []
+        trees = []
         for child in root:
             # read in-game time
             if child.tag == 'general':
@@ -145,9 +142,14 @@ class GameDataHandler(object):
                             sprite_data = literal_eval(field.attrib['sprite_data'])
                             solid = literal_eval(field.attrib['solid'])
                             fields.append([pos, sprite_data, solid])
+                    if sub_child.tag == 'trees':
+                        for field in sub_child.iter('tree'):
+                            pos = literal_eval(field.attrib['pos'])
+                            sprite_data = literal_eval(field.attrib['sprite_data'])
+                            trees.append([pos, sprite_data])
 
         self.resources = res
-        self.world_data = (rect, fields)
+        self.world_data = (rect, fields, trees)
 
     def save_to_file(self, filepath: str):
         root = ETree.Element("data")
@@ -169,6 +171,11 @@ class GameDataHandler(object):
                              pos=str(raw_field[0]),
                              sprite_data=str(raw_field[1]),
                              solid=str(raw_field[2]))
+        trees = ETree.SubElement(world, "trees")
+        for raw_tree in self.world_data[2]:
+            ETree.SubElement(trees, "tree",
+                             pos=str(raw_tree[0]),
+                             sprite_data=str(raw_tree[1]))
 
         # write file
         tree = ETree.ElementTree(root)

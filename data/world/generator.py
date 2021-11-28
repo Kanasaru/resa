@@ -8,6 +8,7 @@
 import random
 import pygame
 from data.world.field import Field
+from data.world.nature import Tree
 from data.helpers.spritesheet import SpriteSheet
 
 
@@ -21,6 +22,7 @@ class Generator(object):
         self.world_size = world_size
         self.grid_size = grid_size
         self.fields = pygame.sprite.Group()
+        self.trees = pygame.sprite.Group()
         self.rect = pygame.Rect(
             (0, 0),
             (self.world_size[0] * self.grid_size[0], self.world_size[1] * self.grid_size[1])
@@ -29,12 +31,12 @@ class Generator(object):
         self.field_dict = {}
         self.field_dict_id = 0
 
-    def get_world(self) -> tuple[pygame.sprite.Group, pygame.Rect]:
+    def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
         """ Returns the generated world values
 
         :return: sprites and rectangle of the created world
         """
-        return self.fields, self.rect
+        return self.fields, self.trees, self.rect
 
     def add_sprite_sheet(self, sprite_sheet: str) -> None:
         """ Adds a sprite sheet that can be used for world generation
@@ -217,6 +219,22 @@ class Generator(object):
 
                     self.fields.add(field)
 
+        # add trees
+        for field in self.fields:
+            if field.solid and random.randrange(0, 100, 1) >= 15:
+                sprite_sheet_id = 14
+                sprite_id = random.choice([78, 79, 80])
+                image = self.sprite_sheets[sprite_sheet_id].image_at(
+                    self.field_dict[sprite_id]["sprite_rect"],
+                    self.field_dict[sprite_id]["colorkey"]
+                )
+                pos = field.rect.bottomleft
+                tree = Tree(pos, field.size, image)
+                tree.sprite_sheet_id = sprite_sheet_id
+                tree.sprite_id = sprite_id
+
+                self.trees.add(tree)
+
     def load_fields_by_dict(self, fields_data: dict) -> None:
         """ Loads fields into empty world by using raw field data from game handler
 
@@ -239,3 +257,19 @@ class Generator(object):
             field.set_solid(solid)
 
             self.fields.add(field)
+
+    def load_trees_by_dict(self, trees_data: dict) -> None:
+        self.trees.empty()
+        for tree_data in trees_data:
+            pos = tree_data[0]
+            sprite_sheet_id = tree_data[1][0]
+            field_dict_id = tree_data[1][1]
+            image = self.sprite_sheets[sprite_sheet_id].image_at(
+                self.field_dict[field_dict_id]["sprite_rect"],
+                self.field_dict[field_dict_id]["colorkey"]
+            )
+            tree = Tree(pos, self.grid_size, image)
+            tree.sprite_sheet_id = sprite_sheet_id
+            tree.sprite_id = field_dict_id
+
+            self.trees.add(tree)

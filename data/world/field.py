@@ -21,6 +21,8 @@ class Field(pygame.sprite.Sprite):
         self.pos = position
         self.image = image
         self.size = size
+        self.visible = True
+        self.temperature = 20
 
         self.image = pygame.transform.scale(self.image, self.size)
         self.rect = self.image.get_rect()

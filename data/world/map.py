@@ -27,6 +27,7 @@ class Loader(object):
         self.moving = False
         self.move_steps = (False, False, False, False)
         self.fields = None
+        self.trees = None
         self.rect = None
 
     def get_fields(self):
@@ -37,6 +38,12 @@ class Loader(object):
         for field in self.fields:
             raw_fields.append([field.position(), (field.sprite_sheet_id, field.sprite_id), field.solid])
         return raw_fields
+
+    def get_raw_treess(self):
+        raw_trees = []
+        for tree in self.trees:
+            raw_trees.append([tree.position, (tree.sprite_sheet_id, tree.sprite_id)])
+        return raw_trees
 
     def get_rect(self):
         return self.rect
@@ -94,14 +101,15 @@ class Loader(object):
         else:
             pass
 
-    def build_world(self, world_data: tuple[pygame.Rect, dict] = None):
+    def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None):
         if world_data is not None:
-            rect, field_data = world_data
+            rect, field_data, tree_data = world_data
             world = Generator(rect.size, self.grid_size)
             for sheet in fields.SPRITE_SHEETS:
                 world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
             world.set_field_dict(fields.FIELD_DICT)
             world.load_fields_by_dict(field_data)
+            world.load_trees_by_dict(tree_data)
             world.rect = rect
         else:
             world = Generator(settings.WORLD_SIZE, self.grid_size)
@@ -112,7 +120,7 @@ class Loader(object):
             # todo: using random island method
             world.add_island((-2, 2))
 
-        self.fields, self.rect = world.get_world()
+        self.fields, self.trees, self.rect = world.get_world()
 
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
@@ -160,8 +168,11 @@ class Loader(object):
             # move layer
             for field in self.fields:
                 field.move(move_field)
+            for tree in self.trees:
+                tree.move(move_field)
 
         self.fields.update()
+        self.trees.update()
 
     def render(self) -> None:
         """ Renders all fields of the world on its surface
@@ -170,6 +181,7 @@ class Loader(object):
         """
         self.surface.fill(colors.COLOR_BLACK)
         self.fields.draw(self.surface)
+        self.trees.draw(self.surface)
 
     def get_surface(self) -> pygame.Surface:
         """ Returns the current state of the world surface

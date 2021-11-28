@@ -6,7 +6,6 @@
 """
 
 import datetime
-
 import pygame
 import data.helpers.color as colors
 from data.forms.label import Label
@@ -30,7 +29,7 @@ class MainMenu(object):
 
     def __build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
-        # textboxes
+        # labels
         tf_headline = Label("tf_headline", (int(self.title.width() / 2), 20), settings.GAME_TITLE.upper(), 90)
         tf_headline.align(tf_headline.CENTER)
         tf_version = Label("tf_version", (self.title.width() - 5, 5), f"v{settings.GAME_VERSION}", 14)
@@ -110,7 +109,7 @@ class GameLoadScreen(object):
 
     def __build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
-        # textboxes
+        # labels
         position = (int(self.title.width() / 2), int(self.title.height() / 2))
         tf_load_screen = Label("tf_load_screen", position, self.text, 20)
         tf_load_screen.font_color(colors.COLOR_WHITE)
@@ -163,7 +162,7 @@ class GamePanel(object):
 
     def __build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
-        # textboxes
+        # labels
         tf_resources = Label("tf_resources",
                              (int(self.title.width() / 2), 5),
                              self.resources, 14, self.update_resources)

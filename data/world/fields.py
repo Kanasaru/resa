@@ -20,6 +20,7 @@ SPRITE_SHEETS = {
     11: "resources/images/sprites/map/128x64 Grass A to Grass B.png",
     12: "resources/images/sprites/map/128x64 Grass A to Sand A.png",
     13: "resources/images/sprites/map/128x64 Grass B to Dirt A.png",
+    14: "resources/images/sprites/nature/tree_broadleaf.png",
 }
 
 FIELD_DICT = {
@@ -104,4 +105,8 @@ FIELD_DICT = {
     75: {"sprite_sheet": (6, 7, 8, 9, 10, 11, 12, 13), "colorkey": (0, 0, 0), "sprite_rect": (128, 384, 128, 64), },
     76: {"sprite_sheet": (6, 7, 8, 9, 10, 11, 12, 13), "colorkey": (0, 0, 0), "sprite_rect": (256, 384, 128, 64), },
     77: {"sprite_sheet": (6, 7, 8, 9, 10, 11, 12, 13), "colorkey": (0, 0, 0), "sprite_rect": (384, 384, 128, 64), },
+    # tree broadleaf
+    78: {"sprite_sheet": 14, "colorkey": None, "sprite_rect": (0, 0, 128, 147)},
+    79: {"sprite_sheet": 14, "colorkey": None, "sprite_rect": (128, 0, 128, 147)},
+    80: {"sprite_sheet": 14, "colorkey": None, "sprite_rect": (256, 0, 128, 147)},
 }
