@@ -5,10 +5,13 @@
 :license: GNU General Public License v3
 """
 
+import datetime
 import data.helpers.color as colors
 import pygame
 import data.eventcodes as ecodes
-from data.interface import GameLoadScreen, GamePanel, DebugScreen
+from data.interfaces.debugscreen import DebugScreen
+from data.interfaces.loadscreen import GameLoadScreen
+from data.interfaces.gamepanel import GamePanel
 from data.world.map import Loader
 from data import settings
 from data.handler import GameDataHandler, DebugHandler
@@ -29,7 +32,10 @@ class Game(object):
         self.game_data_handler = GameDataHandler()
         self.game_data_handler.game_time_speed = settings.INGAME_SPEED
         # titles / screens
-        self.debug_screen = DebugScreen({'Game time': self.game_data_handler.get_game_time})
+        self.debug_screen = DebugScreen()
+        self.debug_screen.add('Version', lambda: settings.GAME_VERSION)
+        self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
+        self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
         self.game_panel = GamePanel()
         # loading pre-data
         self.load_msg()

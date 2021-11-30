@@ -9,7 +9,7 @@ import pygame
 import data.eventcodes as ecodes
 import data.helpers.color as colors
 from data.game import Game
-from data.interface import MainMenu
+from data.interfaces.mainmenu import MainMenu
 from data.music import Music
 from data import settings
 
