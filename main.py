@@ -5,6 +5,9 @@
 """
 
 from data.start import Start
+import logging.config
+
+logging.config.fileConfig('data/conf/logging.conf')
 
 
 def main():
