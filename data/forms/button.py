@@ -49,6 +49,7 @@ class Button(Form):
         self.clickable = True
         self.callback_event = callback_event
         self.button_down = False
+        self.colorkey = colors.COLOR_KEY
 
         self.set_font(False, self.font_size)
         self.load_sprites()
