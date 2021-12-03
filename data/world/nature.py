@@ -1,4 +1,5 @@
 import pygame
+from data.handlers.spritesheet import SpriteSheetHandler
 
 
 class Tree(pygame.sprite.Sprite):
@@ -9,14 +10,9 @@ class Tree(pygame.sprite.Sprite):
         self.image = image
         self.size = size
 
-        rect = self.image.get_rect()
-        height = rect.height
-        width = rect.width
-        ratio = self.size[0] / width
-        new_height = int(height * ratio)
-        self.size = (self.size[0], new_height)
-
+        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, self.size[0])
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
+
         self.rect = self.image.get_rect()
         self.rect.bottomleft = self.position
 
