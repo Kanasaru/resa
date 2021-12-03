@@ -20,7 +20,7 @@ SPRITE_SHEETS = {
     11: "resources/images/sprites/map/128x64 Grass A to Grass B.png",
     12: "resources/images/sprites/map/128x64 Grass A to Sand A.png",
     13: "resources/images/sprites/map/128x64 Grass B to Dirt A.png",
-    14: "resources/images/sprites/nature/tree_broadleaf.png",
+    14: "resources/images/sprites/entities/tree_broadleaf.png",
 }
 
 FIELD_DICT = {
