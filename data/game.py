@@ -14,7 +14,8 @@ from data.interfaces.loadscreen import GameLoadScreen
 from data.interfaces.gamepanel import GamePanel
 from data.world.map import Loader
 from data import settings
-from data.handler import GameDataHandler, DebugHandler
+from data.handlers.debug import DebugHandler
+from data.handlers.gamedata import GameDataHandler
 
 
 class Game(object):
