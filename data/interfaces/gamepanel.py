@@ -31,6 +31,7 @@ class GamePanel(Interface):
 
         # labels
         tf_resources = Label('tf_resources', (self.title.width() // 2, 5), self.resources, 14, self.update_resources)
+        tf_resources.set_font(settings.BASIC_FONT)
         tf_resources.font_color(colors.COLOR_WHITE)
         tf_resources.align(tf_resources.CENTER)
         # buttons

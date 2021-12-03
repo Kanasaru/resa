@@ -35,7 +35,7 @@ class DebugScreen(Interface):
 
         self._y = tf_title.pos_y + tf_title.height() + 10
 
-        tf_playtime = Label('tf_playtime', (15, self._y), f'Current play game: {self.timer}', 14, self.update_timer)
+        tf_playtime = Label('tf_playtime', (15, self._y), f'Current play game: {self.timer}', 14, self.__update_timer)
         tf_playtime.font_color(colors.COLOR_WHITE)
         tf_playtime.align(tf_playtime.LEFT)
 
@@ -63,5 +63,5 @@ class DebugScreen(Interface):
     def __callback(self, text, func):
         return f'{text}: {func()}'
 
-    def update_timer(self):
+    def __update_timer(self):
         return f'Current play game: {self.timer}'

@@ -25,7 +25,8 @@ class GameLoadScreen(Interface):
 
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
 
-        tf_load_screen = Label('tf_load_screen', (self.title.width() // 2, self.title.height() // 2), self.text, 20)
+        tf_load_screen = Label('tf_load_screen', (self.title.width() // 2, self.title.height() // 2), self.text)
+        tf_load_screen.set_font(settings.BASIC_FONT, 20)
         tf_load_screen.font_color(colors.COLOR_WHITE)
         tf_load_screen.align(tf_load_screen.CENTER)
 

@@ -29,11 +29,14 @@ class MainMenu(Interface):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
 
         # labels
-        tf_headline = Label('tf_headline', (int(self.title.width() / 2), 20), settings.GAME_TITLE.upper(), 90)
+        tf_headline = Label('tf_headline', (int(self.title.width() / 2), 20), settings.GAME_TITLE.upper())
+        tf_headline.set_font(settings.BASIC_FONT, 90)
         tf_headline.align(tf_headline.CENTER)
-        tf_version = Label('tf_version', (self.title.width() - 5, 5), f'v{settings.GAME_VERSION}', 14)
+        tf_version = Label('tf_version', (self.title.width() - 5, 5), f'v{settings.GAME_VERSION}')
+        tf_version.set_font(settings.BASIC_FONT, 14)
         tf_version.align(tf_version.RIGHT)
-        tf_credits = Label('tf_credits', (int(self.title.width() / 2), self.title.height() - 24), self.__credits, 14)
+        tf_credits = Label('tf_credits', (int(self.title.width() / 2), self.title.height() - 24), self.__credits)
+        tf_credits.set_font(settings.BASIC_FONT, 14)
         tf_credits.align(tf_credits.CENTER)
         # buttons
         width, height = tf_headline.get_dimensions()
@@ -46,6 +49,7 @@ class MainMenu(Interface):
             'New Game',
             Event(ecodes.STARTGAME, ecodes.STARTGAME)
         )
+        b_newgame.set_font(settings.BASIC_FONT)
         b_newgame.align(b_newgame.CENTER)
         b_newgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_newgame.height() + 20
@@ -57,6 +61,7 @@ class MainMenu(Interface):
             'Load Game',
             Event(ecodes.LOADGAME, ecodes.LOADGAME)
         )
+        b_loadgame.set_font(settings.BASIC_FONT)
         b_loadgame.align(b_loadgame.CENTER)
         try:
             f = open(settings.SAVE_FILE)
@@ -72,6 +77,7 @@ class MainMenu(Interface):
             'Quit Game',
             Event(ecodes.QUITGAME, ecodes.QUITGAME)
         )
+        b_quitgame.set_font(settings.BASIC_FONT)
         b_quitgame.align(b_quitgame.CENTER)
         # add form objects to title
         self.title.add([tf_headline, tf_version, tf_credits])

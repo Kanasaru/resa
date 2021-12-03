@@ -53,6 +53,8 @@ class Label(Form):
         else:
             self.font = pygame.font.SysFont('Arial', self.font_size)
 
+        self.render_text()
+
     def render_text(self) -> None:
         """ Renders text on its own image
 
