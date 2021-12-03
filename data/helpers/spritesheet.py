@@ -8,8 +8,8 @@
 
 __version__ = '1.0'
 
+import logging
 import pygame
-from data import errorcodes
 
 
 class SpriteSheet(object):
@@ -21,8 +21,9 @@ class SpriteSheet(object):
         try:
             self.sheet = pygame.image.load(filename).convert()
             self.sheet_size = self.sheet.get_size()
-        except FileNotFoundError:
-            print(errorcodes.resa_error_list.get_error_by_key(errorcodes.E_FILE))
+        except FileNotFoundError as e:
+            logging.error(e)
+            self.sheet = pygame.Surface((0, 0))
 
     def image_at(self, rectangle: tuple[int, int, int, int], colorkey: tuple[int, int, int] = None) -> pygame.Surface:
         """ Returns an image from the sprite sheet by given rectangle and colorkey
