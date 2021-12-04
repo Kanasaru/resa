@@ -12,6 +12,7 @@ import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
 from data.interfaces.loadscreen import GameLoadScreen
 from data.interfaces.gamepanel import GamePanel
+from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.world.map import Loader
 from data import settings
 from data.handlers.debug import DebugHandler
@@ -37,7 +38,15 @@ class Game(object):
         self.debug_screen.add('Version', lambda: settings.GAME_VERSION)
         self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
         self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
-        self.game_panel = GamePanel()
+        game_panel_sheet_handler = SpriteSheetHandler()
+        buttons = SpriteSheet(
+            settings.SPRITES_MENU_BUTTONS_KEY,
+            settings.SPRITES_MENU_BUTTONS,
+            settings.SPRITES_MENU_BUTTONS_SIZE
+        )
+        buttons.colorkey = (1, 0, 0)
+        game_panel_sheet_handler.add(buttons)
+        self.game_panel = GamePanel(game_panel_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
         # loading pre-data
         self.load_msg()
         self.load_map(load)

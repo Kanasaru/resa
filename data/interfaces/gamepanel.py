@@ -7,6 +7,7 @@
 
 import logging
 import pygame
+from data.handlers.spritesheet import SpriteSheetHandler
 from data.interfaces.interface import Interface
 from data.forms.label import Label
 from data.forms.title import Title
@@ -18,8 +19,11 @@ from data import settings
 
 
 class GamePanel(Interface):
-    def __init__(self):
+    def __init__(self, sheet_handler: SpriteSheetHandler, sheet_key):
         super().__init__()
+
+        self.sheet_handler = sheet_handler
+        self.sheet_key = sheet_key
 
         self.name = 'panel'
         self.rect = pygame.Rect((0, 0), (settings.RESOLUTION[0], 30))
@@ -38,8 +42,8 @@ class GamePanel(Interface):
         b_quit = Button(
             'b_quit',
             pygame.Rect(self.title.width() - 5, 3, 70, 24),
-            settings.SPRITES_MENU_BUTTONS,
-            (220, 60),
+            self.sheet_handler,
+            self.sheet_key,
             'Quit',
             Event(ecodes.STOPGAME, ecodes.STOPGAME)
         )
@@ -48,8 +52,8 @@ class GamePanel(Interface):
         b_save = Button(
             'b_save',
             pygame.Rect(self.title.width() - 80, 3, 70, 24),
-            settings.SPRITES_MENU_BUTTONS,
-            (220, 60),
+            self.sheet_handler,
+            self.sheet_key,
             'Save',
             Event(ecodes.SAVEGAME, ecodes.SAVEGAME)
         )

@@ -10,6 +10,7 @@ import data.eventcodes as ecodes
 import data.helpers.color as colors
 from data.game import Game
 from data.interfaces.mainmenu import MainMenu
+from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.music import Music
 from data import settings
 
@@ -30,7 +31,15 @@ class Start(object):
 
         pygame.display.set_caption(f"{settings.GAME_TITLE}")
 
-        self.title_main = MainMenu()
+        main_menu_sheet_handler = SpriteSheetHandler()
+        buttons = SpriteSheet(
+            settings.SPRITES_MENU_BUTTONS_KEY,
+            settings.SPRITES_MENU_BUTTONS,
+            settings.SPRITES_MENU_BUTTONS_SIZE
+        )
+        buttons.colorkey = (1, 0, 0)
+        main_menu_sheet_handler.add(buttons)
+        self.title_main = MainMenu(main_menu_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
 
         self.music.load_music()
         self.loop()

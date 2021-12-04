@@ -53,11 +53,11 @@ class GameDataHandler(object):
         return f'Day {day}'
 
     @property
-    def world_data(self) -> tuple[pygame.Rect, dict]:
+    def world_data(self) -> tuple[pygame.Rect, dict, dict]:
         return self._world_data
 
     @world_data.setter
-    def world_data(self, data: tuple[pygame.Rect, dict]) -> None:
+    def world_data(self, data: tuple[pygame.Rect, dict, dict]) -> None:
         self._world_data = data
 
     def update(self) -> None:

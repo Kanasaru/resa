@@ -7,18 +7,15 @@
 
 import random
 import pygame
+
+from data import settings
 from data.world.field import Field
 from data.world.nature import Tree
-from data.helpers.spritesheet import SpriteSheet
+from data.handlers.spritesheet import SpriteSheetHandler, SpriteSheet
 
 
 class Generator(object):
     def __init__(self, world_size: tuple[int, int], grid_size: tuple[int, int]) -> None:
-        """ Creates basic world and its parameters
-
-        :param world_size: width and height as number of fields of the world
-        :param grid_size: width and height in px as size of used tile-grid
-        """
         self.world_size = world_size
         self.grid_size = grid_size
         self.fields = pygame.sprite.Group()
@@ -27,53 +24,29 @@ class Generator(object):
             (0, 0),
             (self.world_size[0] * self.grid_size[0], self.world_size[1] * self.grid_size[1])
         )
-        self.sprite_sheets = []
-        self.field_dict = {}
-        self.field_dict_id = 0
+
+        self.sprite_sheet_handler = SpriteSheetHandler()
+        for key, value in settings.SPRITE_SHEETS_WORLD.items():
+            sheet = SpriteSheet(key, value[0], value[1])
+            sheet.colorkey = (0, 0, 0)
+            self.sprite_sheet_handler.add(sheet)
 
     def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
-        """ Returns the generated world values
-
-        :return: sprites and rectangle of the created world
-        """
         return self.fields, self.trees, self.rect
 
-    def add_sprite_sheet(self, sprite_sheet: str) -> None:
-        """ Adds a sprite sheet that can be used for world generation
-
-        :param sprite_sheet: path to a sprite map/sheet
-        :return: None
-        """
-        self.sprite_sheets.append(SpriteSheet(sprite_sheet))
-
-    def set_field_dict(self, field_dict: dict) -> None:
-        """ Sets the field dict as reference dictionary for added sprite sheets
-
-        :param field_dict:
-        :return: None
-        """
-        self.field_dict = field_dict
-
-    def fill(self, field_dict_id: int) -> None:
-        """ Uses given id to create all fields of the world
-
-        :param field_dict_id: id of a field in field dictionary, set by set_field_dict
-        :return: None
-        """
+    def fill(self) -> None:
         self.fields.empty()
-        self.field_dict_id = field_dict_id
+        sprite_sheet = '0'
+        sprite_index = 5
 
         pos_x = self.grid_size[0] / 2
         pos_y = 0
         for row in range(self.world_size[1] * 2 - 1):
             for col in range(self.world_size[0]):
-                image = self.sprite_sheets[self.get_sprite_sheet_id("Water", self.field_dict_id)].image_at(
-                    self.field_dict[self.field_dict_id]["sprite_rect"],
-                    self.field_dict[self.field_dict_id]["colorkey"]
-                )
+                image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
                 new_field = Field((pos_x, pos_y), self.grid_size, image)
-                new_field.sprite_sheet_id = 0
-                new_field.sprite_id = field_dict_id
+                new_field.sprite_sheet_id = sprite_sheet
+                new_field.sprite_id = sprite_index
                 self.fields.add(new_field)
                 pos_x += self.grid_size[0]
             pos_y += self.grid_size[1] / 2
@@ -82,34 +55,7 @@ class Generator(object):
             else:
                 pos_x = self.grid_size[0] / 2
 
-    def get_sprite_sheet_id(self, name: str, field_dict_id: int) -> int:
-        """ Returns an id of a sprite sheet by comparing wished sheet with fields dictionary sheets
-
-        :param name: name that will be compared with names dictionary
-        :param field_dict_id: id from fields dictionary
-        :return: sprite sheet id that was identified by name
-        :todo: needs a lot improvement (o.O)
-        """
-        sheet_names = {"Dirt A": 1, "Dirt B": 2, "Grass A": 3, "Grass B": 4, "Sand": 5, }
-        sprite_sheet_id = self.field_dict[field_dict_id]["sprite_sheet"]
-        if isinstance(sprite_sheet_id, tuple):
-            for sheet_id in sprite_sheet_id:
-                try:
-                    if sheet_names[name] == sheet_id:
-                        return sheet_id
-                finally:
-                    pass
-            print("ERROR: Given name not allowed with field identifier")
-            return 0
-        else:
-            return sprite_sheet_id
-
     def add_island(self, position: tuple[int, int]) -> None:
-        """ Adds an island to the world
-
-        :param position: top and left position the island should be placed
-        :return: None
-        """
         island_data_set = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -139,8 +85,8 @@ class Generator(object):
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
 
-        solid_tile = "Grass A"
-        water_to_solid = "Dirt B"
+        sprite_sheet_solid = '0'
+        sprite_sheet_transition = '3'
 
         # identify isometric x-shift and calculate top-left-position
         offset = divmod(len(island_data_set), 2)
@@ -165,33 +111,33 @@ class Generator(object):
                     ]
                     # sides
                     if neighbors[0] == 1 and neighbors[1] == 1 and neighbors[2] == 0 and neighbors[3] == 1:
-                        field_dict_id = random.choice([30, 34, 38, 42, 46])
+                        sprite_index = random.choice([24, 28, 32, 36, 40])
                     elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 1:
-                        field_dict_id = random.choice([31, 35, 39, 43, 47])
+                        sprite_index = random.choice([25, 29, 33, 37, 41])
                     elif neighbors[0] == 1 and neighbors[1] == 0 and neighbors[2] == 1 and neighbors[3] == 1:
-                        field_dict_id = random.choice([32, 36, 40, 44, 48])
+                        sprite_index = random.choice([26, 30, 34, 38, 42])
                     elif neighbors[0] == 1 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 0:
-                        field_dict_id = random.choice([33, 37, 41, 45, 49])
+                        sprite_index = random.choice([27, 31, 35, 39, 43])
                     # inner corner
                     elif neighbors[0] == 1 and neighbors[1] == 0 and neighbors[2] == 1 and neighbors[3] == 0:
-                        field_dict_id = random.choice([6, 10, 14])
+                        sprite_index = random.choice([0, 4, 8])
                     elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 0 and neighbors[3] == 1:
-                        field_dict_id = random.choice([7, 11, 15])
+                        sprite_index = random.choice([1, 5, 9])
                     elif neighbors[0] == 1 and neighbors[1] == 0 and neighbors[2] == 0 and neighbors[3] == 1:
-                        field_dict_id = random.choice([8, 12, 16])
+                        sprite_index = random.choice([2, 6, 10])
                     elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 0:
-                        field_dict_id = random.choice([9, 13, 17])
+                        sprite_index = random.choice([3, 7, 11])
                     # inner corner side
                     elif neighbors[7] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
-                        field_dict_id = random.choice([18, 22])
+                        sprite_index = random.choice([12, 16])
                     elif neighbors[4] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
-                        field_dict_id = random.choice([19, 23])
+                        sprite_index = random.choice([13, 17])
                     elif neighbors[6] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
-                        field_dict_id = random.choice([20, 24])
+                        sprite_index = random.choice([14, 18])
                     elif neighbors[5] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
-                        field_dict_id = random.choice([21, 25])
+                        sprite_index = random.choice([15, 19])
                     else:
-                        field_dict_id = 1
+                        sprite_index = 1
                         solid = True
 
                     # transform 2d position into isometric coordinates
@@ -207,53 +153,44 @@ class Generator(object):
                             field.delete()
 
                     # add field
-                    sprite_sheet_id = self.get_sprite_sheet_id(water_to_solid, field_dict_id)
-                    image = self.sprite_sheets[sprite_sheet_id].image_at(
-                        self.field_dict[field_dict_id]["sprite_rect"],
-                        self.field_dict[field_dict_id]["colorkey"]
-                    )
+                    if solid:
+                        sprite_sheet = sprite_sheet_solid
+                    else:
+                        sprite_sheet = sprite_sheet_transition
+
+                    image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
                     field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
-                    field.sprite_sheet_id = sprite_sheet_id
-                    field.sprite_id = field_dict_id
+                    field.sprite_sheet_id = sprite_sheet
+                    field.sprite_id = sprite_index
                     field.set_solid(solid)
 
                     self.fields.add(field)
 
         # add trees
         for field in self.fields:
+            sprite_sheet = '14'
+
             if field.solid and random.randrange(0, 100, 1) >= 15:
-                sprite_sheet_id = 14
-                sprite_id = random.choice([78, 79, 80])
-                image = self.sprite_sheets[sprite_sheet_id].image_at(
-                    self.field_dict[sprite_id]["sprite_rect"],
-                    self.field_dict[sprite_id]["colorkey"]
-                )
+                sprite_index = random.choice([0, 1, 2])
+                image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
                 pos = field.rect.bottomleft
                 tree = Tree(pos, field.size, image)
-                tree.sprite_sheet_id = sprite_sheet_id
-                tree.sprite_id = sprite_id
+                tree.sprite_sheet_id = sprite_sheet
+                tree.sprite_id = sprite_index
 
                 self.trees.add(tree)
 
     def load_fields_by_dict(self, fields_data: dict) -> None:
-        """ Loads fields into empty world by using raw field data from game handler
-
-        :param fields_data: raw field data from game handler
-        :return: None
-        """
         self.fields.empty()
         for field_data in fields_data:
             pos = field_data[0]
-            sprite_sheet_id = field_data[1][0]
-            field_dict_id = field_data[1][1]
+            sprite_sheet = field_data[1][0]
+            sprite_index = field_data[1][1]
             solid = field_data[2]
-            image = self.sprite_sheets[sprite_sheet_id].image_at(
-                self.field_dict[field_dict_id]["sprite_rect"],
-                self.field_dict[field_dict_id]["colorkey"]
-            )
+            image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
             field = Field(pos, self.grid_size, image)
-            field.sprite_sheet_id = sprite_sheet_id
-            field.sprite_id = field_dict_id
+            field.sprite_sheet_id = sprite_sheet
+            field.sprite_id = sprite_index
             field.set_solid(solid)
 
             self.fields.add(field)
@@ -262,14 +199,11 @@ class Generator(object):
         self.trees.empty()
         for tree_data in trees_data:
             pos = tree_data[0]
-            sprite_sheet_id = tree_data[1][0]
-            field_dict_id = tree_data[1][1]
-            image = self.sprite_sheets[sprite_sheet_id].image_at(
-                self.field_dict[field_dict_id]["sprite_rect"],
-                self.field_dict[field_dict_id]["colorkey"]
-            )
+            sprite_sheet = tree_data[1][0]
+            sprite_index = tree_data[1][1]
+            image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
             tree = Tree(pos, self.grid_size, image)
-            tree.sprite_sheet_id = sprite_sheet_id
-            tree.sprite_id = field_dict_id
+            tree.sprite_sheet_id = sprite_sheet
+            tree.sprite_id = sprite_index
 
             self.trees.add(tree)

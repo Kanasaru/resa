@@ -8,20 +8,22 @@
 __version__ = '1.1'
 
 import pygame
+from data.handlers.spritesheet import SpriteSheetHandler
 import data.helpers.color as colors
 from data.forms.form import Form
 
 
 class Button(Form):
     def __init__(self, name: str, rect: pygame.Rect,
-                 sprite_sheet: str, sprite_size: tuple[int, int],
+                 sprite_sheet_handler: SpriteSheetHandler, sprite_key: str = '',
                  text: str = "", callback_event: object = None) -> None:
         """ Initializes a button form object
 
         :param name: name of the textbox
         :param rect: rectangle with dimension and position
-        :param sprite_sheet: filepath to sprite sheet
+        :param sprite_sheet_handler: sprite sheet handler
         :param sprite_size: size of a single sprite in sprite sheet
+        :param sprite_key: key of sheet for handler
         :param text: displayed text
         :param callback_event: event which is called if button gets clicked
         """
@@ -30,7 +32,8 @@ class Button(Form):
         self.COLOR_BUTTON_HOVER = (120, 117, 98)
         self.COLOR_BUTTON_PRESSED = (120, 117, 98)
 
-        self.set_spritesheet(sprite_sheet, sprite_size)
+        self.sprite_sheet_handler = sprite_sheet_handler
+        self.sprite_sheet_key = sprite_key
 
         self.rect = rect
         self.pos_x = self.rect.x
@@ -134,22 +137,10 @@ class Button(Form):
         :return: None
         """
         self.surf_images = {
-            "standard": self.sprite_sheet.image_at(
-                (0, 0, self.sprite_size[0], self.sprite_size[1]),
-                self.colorkey
-            ),
-            "hover": self.sprite_sheet.image_at(
-                (0, self.sprite_size[1], self.sprite_size[0], self.sprite_size[1]),
-                self.colorkey
-            ),
-            "pressed": self.sprite_sheet.image_at(
-                (0, self.sprite_size[1] * 2, self.sprite_size[0], self.sprite_size[1]),
-                self.colorkey
-            ),
-            "disabled": self.sprite_sheet.image_at(
-                (0, self.sprite_size[1] * 3, self.sprite_size[0], self.sprite_size[1]),
-                self.colorkey
-            )
+            "standard": self.sprite_sheet_handler.image_by_index(self.sprite_sheet_key, 0),
+            "hover": self.sprite_sheet_handler.image_by_index(self.sprite_sheet_key, 1),
+            "pressed": self.sprite_sheet_handler.image_by_index( self.sprite_sheet_key, 2),
+            "disabled": self.sprite_sheet_handler.image_by_index( self.sprite_sheet_key, 3)
         }
 
     def render_text(self) -> None:

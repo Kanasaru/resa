@@ -6,6 +6,7 @@
 """
 
 import pygame
+from data.handlers.spritesheet import SpriteSheetHandler
 from data.interfaces.interface import Interface
 from data.forms.label import Label
 from data.forms.title import Title
@@ -17,8 +18,11 @@ from data import settings
 
 
 class MainMenu(Interface):
-    def __init__(self):
+    def __init__(self, sheet_handler: SpriteSheetHandler, sheet_key):
         super().__init__()
+
+        self.sheet_handler = sheet_handler
+        self.sheet_key = sheet_key
 
         self.name = 'main'
         self.rect = pygame.Rect((0, 0), settings.RESOLUTION)
@@ -44,20 +48,17 @@ class MainMenu(Interface):
         b_newgame = Button(
             'b_newgame',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
-            settings.SPRITES_MENU_BUTTONS,
-            (220, 60),
+            self.sheet_handler, self.sheet_key,
             'New Game',
             Event(ecodes.STARTGAME, ecodes.STARTGAME)
         )
         b_newgame.set_font(settings.BASIC_FONT)
         b_newgame.align(b_newgame.CENTER)
-        b_newgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_newgame.height() + 20
         b_loadgame = Button(
             'b_loadgame',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
-            settings.SPRITES_MENU_BUTTONS,
-            (220, 60),
+            self.sheet_handler, self.sheet_key,
             'Load Game',
             Event(ecodes.LOADGAME, ecodes.LOADGAME)
         )
@@ -68,12 +69,11 @@ class MainMenu(Interface):
             f.close()
         except FileNotFoundError:
             b_loadgame.disable()
-        b_loadgame.set_spritesheet(settings.SPRITES_MENU_BUTTONS, (220, 60))
         position_y += b_loadgame.height() + 20
         b_quitgame = Button(
             'b_quitgame',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
-            settings.SPRITES_MENU_BUTTONS, (220, 60),
+            self.sheet_handler, self.sheet_key,
             'Quit Game',
             Event(ecodes.QUITGAME, ecodes.QUITGAME)
         )

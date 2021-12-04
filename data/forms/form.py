@@ -8,7 +8,7 @@
 __version__ = '1.3'
 
 import pygame
-from data.helpers.spritesheet import SpriteSheet
+from data.handlers.spritesheet import SpriteSheetHandler
 
 
 class Form(pygame.sprite.Sprite):
@@ -30,18 +30,7 @@ class Form(pygame.sprite.Sprite):
         self.pos_y = 0
         self.alignment = self.LEFT
         self.events = []
-        self.sprite_size = (0, 0)
-        self.sprite_sheet = None
-
-    def set_spritesheet(self, sprite_sheet: str, sprite_size: tuple[int, int]) -> None:
-        """ Sets the sprite sheet of the form
-
-        :param sprite_sheet: path with filename of the sprite sheet
-        :param sprite_size: size of a single sprite in the sprite sheet
-        :return: None
-        """
-        self.sprite_sheet = SpriteSheet(sprite_sheet)
-        self.sprite_size = sprite_size
+        self.sprite_sheet_handler = None
 
     def set_alpha(self, value):
         self.image.set_alpha(value)

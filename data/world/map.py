@@ -8,7 +8,6 @@
 import pygame.sprite
 import data.helpers.color as colors
 from data import settings
-from data.world import fields
 from data.world.generator import Generator
 
 
@@ -105,18 +104,12 @@ class Loader(object):
         if world_data is not None:
             rect, field_data, tree_data = world_data
             world = Generator(rect.size, self.grid_size)
-            for sheet in fields.SPRITE_SHEETS:
-                world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
-            world.set_field_dict(fields.FIELD_DICT)
             world.load_fields_by_dict(field_data)
             world.load_trees_by_dict(tree_data)
             world.rect = rect
         else:
             world = Generator(settings.WORLD_SIZE, self.grid_size)
-            for sheet in fields.SPRITE_SHEETS:
-                world.add_sprite_sheet(fields.SPRITE_SHEETS[sheet])
-            world.set_field_dict(fields.FIELD_DICT)
-            world.fill(5)
+            world.fill()
             # todo: using random island method
             world.add_island((-2, 2))
 
