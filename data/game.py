@@ -35,6 +35,7 @@ class Game(object):
         self.game_data_handler.game_time_speed = settings.INGAME_SPEED
         # titles / screens
         self.debug_screen = DebugScreen()
+        self.debug_screen.add('FPS', self.clock.get_fps)
         self.debug_screen.add('Version', lambda: settings.GAME_VERSION)
         self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
         self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
@@ -55,7 +56,7 @@ class Game(object):
 
     def load_map(self, load: bool):
         self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2),
-                          (40, 20))
+                          settings.GRID)
         if load:
             self.game_data_handler.read_from_file(settings.SAVE_FILE)
             self.map.build_world(self.game_data_handler.world_data)

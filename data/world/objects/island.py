@@ -41,4 +41,3 @@ class Island(object):
             ])
         else:
             self.data_set = [[1]]
-

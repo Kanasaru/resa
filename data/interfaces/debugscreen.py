@@ -18,6 +18,8 @@ class DebugScreen(Interface):
     def __init__(self):
         super().__init__()
 
+        self.clock = pygame.time.Clock()
+
         self.name = 'debug'
         self.rect = pygame.Rect((0, 0), (int(settings.RESOLUTION[0] / 3), settings.RESOLUTION[1]))
         self.bg_color = colors.COLOR_BLACK

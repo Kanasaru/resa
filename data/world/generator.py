@@ -142,28 +142,35 @@ class Generator(object):
                         field.set_solid(solid)
                         world_islands[key].data_fields.add(field)
 
-        # add island to world
-        for key, island in world_islands.items():
-            # delete possible duplicate and replace it
-            for island_field in island.data_fields:
-                for field in self.fields:
-                    if field.position() == island_field.position():
-                        field.delete()
-                        self.fields.add(island_field)
+                        # delete possible duplicate and replace it
+                        for island_field in island.data_fields:
+                            for field in self.fields:
+                                if field.position() == island_field.position():
+                                    field.delete()
+                                    self.fields.add(island_field)
 
     def __plant_trees(self):
         for field in self.fields:
-            sprite_sheet = '14'
-
             if field.solid:
-                if field.temperature == 20 and random.randrange(0, 100, 1) >= 15:
+                plant = True
+                if field.temperature == 20 and random.randrange(0, 100, 1) >= 30:
+                    sprite_sheet = '14'
                     sprite_index = random.choice([0, 1, 2])
+                elif field.temperature == -20 and random.randrange(0, 100, 1) >= 15:
+                    sprite_sheet = '15'
+                    sprite_index = random.choice([0, 1, 2, 3, 4, 5])
+                elif field.temperature == 40 and random.randrange(0, 100, 1) >= 30:
+                    sprite_sheet = '16'
+                    sprite_index = random.choice([0, 1, 2])
+                else:
+                    plant = False
+
+                if plant:
                     image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
                     pos = field.rect.bottomleft
                     tree = Tree(pos, field.size, image)
                     tree.sprite_sheet_id = sprite_sheet
                     tree.sprite_id = sprite_index
-
                     self.trees.add(tree)
 
     @staticmethod

@@ -86,5 +86,11 @@ SPRITE_SHEETS_WORLD = {
         literal_eval(Sprites.get('Objects', 'FieldTilesGrassBtoDirtASize'))),
     Sprites.get('Entities', 'EntityTreesBroadleafID'): (
         Sprites.get('Entities', 'EntityTreesBroadleaf'),
-        literal_eval(Sprites.get('Entities', 'EntityTreesBroadleafSize')))
+        literal_eval(Sprites.get('Entities', 'EntityTreesBroadleafSize'))),
+    Sprites.get('Entities', 'EntityTreesEvergreenID'): (
+        Sprites.get('Entities', 'EntityTreesEvergreen'),
+        literal_eval(Sprites.get('Entities', 'EntityTreesEvergreenSize'))),
+    Sprites.get('Entities', 'EntityTreesPalmsID'): (
+        Sprites.get('Entities', 'EntityTreesPalms'),
+        literal_eval(Sprites.get('Entities', 'EntityTreesPalmsSize')))
 }
