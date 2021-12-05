@@ -27,7 +27,6 @@ MENU_BG_IMG = Config.get('Screen', 'BackgroundImage')
 # GameSettings
 SAVE_FILE = Config.get('GameSettings', 'SaveFile')
 INGAME_SPEED = Config.getint('GameSettings', 'InGameSpeed')
-WORLD_SIZE = literal_eval(Config.get('GameSettings', 'WorldSize'))
 GRID = literal_eval(Config.get('GameSettings', 'Grid'))
 MAP_PACE = Config.getint('GameSettings', 'MapPace')
 

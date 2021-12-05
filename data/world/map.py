@@ -103,15 +103,14 @@ class Loader(object):
     def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None):
         if world_data is not None:
             rect, field_data, tree_data = world_data
-            world = Generator(rect.size, self.grid_size)
+            world = Generator(self.grid_size)
+            world.size = rect.size
             world.load_fields_by_dict(field_data)
             world.load_trees_by_dict(tree_data)
             world.rect = rect
         else:
-            world = Generator(settings.WORLD_SIZE, self.grid_size)
-            world.fill()
-            # todo: using random island method
-            world.add_island((-2, 2))
+            world = Generator(self.grid_size)
+            world.create()
 
         self.fields, self.trees, self.rect = world.get_world()
 
