@@ -7,7 +7,6 @@
 
 import random
 import pygame
-
 from data import settings
 from data.world.objects.field import Field
 from data.world.entities.tree import Tree
@@ -139,13 +138,13 @@ class Generator(object):
                         field.sprite_sheet_id = sprite_sheet
                         field.sprite_id = sprite_index
                         field.temperature = island.temperature
-                        field.set_solid(solid)
+                        field.solid = solid
                         world_islands[key].data_fields.add(field)
 
                         # delete possible duplicate and replace it
                         for island_field in island.data_fields:
                             for field in self.fields:
-                                if field.position() == island_field.position():
+                                if field.position == island_field.position:
                                     field.delete()
                                     self.fields.add(island_field)
 
@@ -238,7 +237,7 @@ class Generator(object):
             field = Field(pos, self.grid_size, image)
             field.sprite_sheet_id = sprite_sheet
             field.sprite_id = sprite_index
-            field.set_solid(solid)
+            field.solid = solid
 
             self.fields.add(field)
 
