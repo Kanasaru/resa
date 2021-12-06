@@ -61,6 +61,8 @@ class Options(Interface):
         )
         b_1920x1080.set_font(settings.BASIC_FONT)
         b_1920x1080.align(b_1920x1080.CENTER)
+        if settings.RESOLUTION == (1920, 1080):
+            b_1920x1080.disable()
         position_y += b_1920x1080.height() + 20
         b_1000x600 = Button(
             'b_1000x600',
@@ -71,6 +73,8 @@ class Options(Interface):
         )
         b_1000x600.set_font(settings.BASIC_FONT)
         b_1000x600.align(b_1000x600.CENTER)
+        if settings.RESOLUTION == (1000, 600):
+            b_1000x600.disable()
         position_y += b_1000x600.height() + 20
         b_800x600 = Button(
             'b_800x600',
@@ -81,6 +85,8 @@ class Options(Interface):
         )
         b_800x600.set_font(settings.BASIC_FONT)
         b_800x600.align(b_800x600.CENTER)
+        if settings.RESOLUTION == (800, 600):
+            b_800x600.disable()
         position_y += b_800x600.height() + 20
         b_back = Button(
             'b_back',
