@@ -70,7 +70,7 @@ class Game(object):
         :return: None
         """
         while not self.exit_game:
-            self.clock.tick(settings.FPS)
+            self.clock.tick()  # settings.FPS
             self.handle_events()
             self.run_logic()
             self.render()

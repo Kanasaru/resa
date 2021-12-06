@@ -10,6 +10,7 @@ import data.eventcodes as ecodes
 import data.helpers.color as colors
 from data.game import Game
 from data.interfaces.mainmenu import MainMenu
+from data.interfaces.options import Options
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.music import Music
 from data import settings
@@ -40,6 +41,9 @@ class Start(object):
         buttons.colorkey = (1, 0, 0)
         main_menu_sheet_handler.add(buttons)
         self.title_main = MainMenu(main_menu_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
+        self.title_options = Options(main_menu_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
+        self.options = False
+        self.resolution_update = None
 
         self.music.load_music()
         self.loop()
@@ -69,8 +73,22 @@ class Start(object):
             elif event.code == ecodes.LOADGAME:
                 self.start_game = True
                 self.load_game = True
+            elif event.code == ecodes.OPTIONS:
+                self.options = True
             elif event.code == ecodes.QUITGAME:
                 self.leave_game = True
+            else:
+                pass
+
+        for event in self.title_options.get_events():
+            if event.code == ecodes.MAINMENU:
+                self.options = False
+            elif event.code == ecodes.RES_1920:
+                self.resolution_update = (1920, 1080)
+            elif event.code == ecodes.RES_1000:
+                self.resolution_update = (1000, 600)
+            elif event.code == ecodes.RES_800:
+                self.resolution_update = (800, 600)
             else:
                 pass
 
@@ -86,9 +104,13 @@ class Start(object):
                     self.music.change_volume(self.music.volume - 0.1)
             else:
                 pass
-            self.title_main.handle_event(event)
+            if self.options:
+                self.title_options.handle_event(event)
+            else:
+                self.title_main.handle_event(event)
 
         self.title_main.clear_events()
+        self.title_options.clear_events()
 
     def run_logic(self) -> None:
         """ Runs the game logic
@@ -106,8 +128,18 @@ class Start(object):
                 self.clr_screen()
                 self.music.stop_music()
                 self.game = Game(self.surface, self.load_game)
-
-        self.title_main.run_logic()
+        if self.options:
+            if self.resolution_update is not None:
+                settings.RESOLUTION = self.resolution_update
+                pygame.display.set_mode(settings.RESOLUTION)
+                self.title_main.rect = pygame.Rect((0, 0), settings.RESOLUTION)
+                self.title_main.build()
+                self.title_options.rect = pygame.Rect((0, 0), settings.RESOLUTION)
+                self.title_options.build()
+                self.resolution_update = None
+            self.title_options.run_logic()
+        else:
+            self.title_main.run_logic()
 
     def render(self) -> None:
         """ Renders everything to the display
@@ -115,7 +147,10 @@ class Start(object):
         :return: None
         """
         self.surface.fill(colors.COLOR_WHITE)
-        self.title_main.render(self.surface)
+        if self.options:
+            self.title_options.render(self.surface)
+        else:
+            self.title_main.render(self.surface)
         pygame.display.flip()
 
     def exit(self):
