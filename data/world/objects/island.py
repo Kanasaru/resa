@@ -10,22 +10,13 @@ class Island(object):
     MEDIUM = 1
     SMALL = 2
 
-    def __init__(self, position, size, temperature):
-        self._position = position
+    def __init__(self, size, temperature):
         self._size = size
         self._temperature = temperature
         self._data_set = None
         self._data_fields = pygame.sprite.Group()
 
         self.__calc_data_set()
-
-    @property
-    def position(self):
-        return self._position
-
-    @position.setter
-    def position(self, value):
-        self._position = value
 
     @property
     def size(self):
@@ -57,6 +48,15 @@ class Island(object):
     @data_fields.setter
     def data_fields(self, value):
         self._data_fields = value
+
+    def calc_size(self):
+        grid_size = (40, 20)
+        width_in_px = height_in_px = 0
+        if self.data_set is not None:
+            # only works with even len result...need to re-think
+            width_in_px = (len(self.data_set) + len(self.data_set[0])) * (grid_size[0] / 2)
+            height_in_px = (len(self.data_set) + len(self.data_set[0])) * (grid_size[1] / 2)
+        return width_in_px, height_in_px
 
     def __calc_data_set(self):
         if self.size == 0:
@@ -92,14 +92,14 @@ class Island(object):
 
     def __str__(self):
         return f'Island - ' \
-               f'Pos: {self.position} | ' \
+               f'Size px: {self.calc_size()} | ' \
                f'Size: {self.size} | ' \
                f'Temp: {self.temperature} | ' \
                f'Fields: {len(self.data_fields)}'
 
     def __repr__(self):
         return f'Island - ' \
-               f'Pos: {self.position} | ' \
+               f'Size px: {self.calc_size()} | ' \
                f'Size: {self.size} | ' \
                f'Temp: {self.temperature} | ' \
                f'Fields: {len(self.data_fields)}'

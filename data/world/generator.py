@@ -16,14 +16,10 @@ from data.world.objects.island import Island
 
 class Generator(object):
     def __init__(self, grid_size: tuple[int, int]) -> None:
-        self.world_size = (70, 60)
         self.grid_size = grid_size
         self.fields = pygame.sprite.Group()
         self.trees = pygame.sprite.Group()
-        self.rect = pygame.Rect(
-            (0, 0),
-            (self.world_size[0] * self.grid_size[0], self.world_size[1] * self.grid_size[1])
-        )
+        self.rect = pygame.Rect((0, 0), (0, 0))
         self.sprite_sheet_handler = None
 
         self.__load_sprite_sheets()
@@ -38,10 +34,12 @@ class Generator(object):
     def create(self):
         # fill world with water
         print('Fill world with water...')
-        self.__fill()
+        # self.__fill()
         # create islands
         print('Create islands...')
-        self.__create_islands()
+        size = self.__create_islands()
+        # set world_size
+        self.rect = pygame.Rect((0, 0), (size[0] * 3, size[1] * 3))
         # raise mountains
         print('Raise mountains...')
         # plant trees
@@ -75,21 +73,48 @@ class Generator(object):
     def __create_islands(self):
         # islands in world
         world_islands = {
-            'North_West': Island((0, 0), Island.MEDIUM, -20),
-            'North': Island((20, 0), Island.SMALL, -20),
-            'North_East': Island((40, 0), Island.MEDIUM, -20),
-            'Center_West': Island((0, 20), Island.SMALL, 20),
-            'Center': Island((20, 20), Island.BIG, 20),
-            'Center_East': Island((40, 20), Island.SMALL, 20),
-            'South_West': Island((0, 40), Island.MEDIUM, 40),
-            'South': Island((20, 40), Island.SMALL, 40),
-            'South_East': Island((40, 40), Island.MEDIUM, 40),
+            'North_West': Island(Island.MEDIUM, -20),
+            'North': Island(Island.SMALL, -20),
+            'North_East': Island(Island.MEDIUM, -20),
+            'Center_West': Island(Island.SMALL, 20),
+            'Center': Island(Island.BIG, 20),
+            'Center_East': Island(Island.SMALL, 20),
+            'South_West': Island(Island.MEDIUM, 40),
+            'South': Island(Island.SMALL, 40),
+            'South_East': Island(Island.MEDIUM, 40),
         }
 
         # create data fields
+        big_width, big_height = world_islands['Center'].calc_size()
         for key, island in world_islands.items():
             # identify isometric x-shift and calculate top-left-position
-            start_x, start_y = self.calc_isometric_field_shift(island.data_set, island.position, self.grid_size)
+            start_x, start_y = self.calc_isometric_field_shift(island.data_set, self.grid_size)
+
+            b_x, b_y = island.calc_size()
+            start_x += (big_width - b_x) // 2
+            start_y += (big_height - b_y) // 2
+            if key == 'North_West':
+                pass
+            elif key == 'North':
+                start_x += big_width
+            elif key == 'North_East':
+                start_x += big_width * 2
+            elif key == 'Center_West':
+                start_y += big_height
+            elif key == 'Center':
+                start_y += big_height
+                start_x += big_width
+            elif key == 'Center_East':
+                start_y += big_height
+                start_x += big_width * 2
+            elif key == 'South_West':
+                start_y += big_height * 2
+            elif key == 'South':
+                start_y += big_height * 2
+                start_x += big_width
+            elif key == 'South_East':
+                start_y += big_height * 2
+                start_x += big_width * 2
 
             # run through island data set and add fields
             for row_nb, row in enumerate(island.data_set):
@@ -128,25 +153,30 @@ class Generator(object):
                             else:
                                 sprite_sheet = '1'
                             solid = False
+                    else:
+                        sprite_sheet = '0'
+                        sprite_index = 5
+                        solid = False
 
-                        # transform 2d position into isometric coordinates
-                        pos_x, pos_y = self.isometric_transform((row_nb, col_nb), self.grid_size)
+                    # transform 2d position into isometric coordinates
+                    pos_x, pos_y = self.isometric_transform((row_nb, col_nb), self.grid_size)
 
-                        # add field to island
-                        image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-                        field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
-                        field.sprite_sheet_id = sprite_sheet
-                        field.sprite_id = sprite_index
-                        field.temperature = island.temperature
-                        field.solid = solid
-                        world_islands[key].data_fields.add(field)
+                    # add field to island
+                    image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
+                    field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
+                    field.sprite_sheet_id = sprite_sheet
+                    field.sprite_id = sprite_index
+                    field.temperature = island.temperature
+                    field.solid = solid
+                    world_islands[key].data_fields.add(field)
 
-                        # delete possible duplicate and replace it
-                        for island_field in island.data_fields:
-                            for field in self.fields:
-                                if field.position == island_field.position:
-                                    field.delete()
-                            self.fields.add(island_field)
+                    # delete possible duplicate and replace it
+                    for island_field in island.data_fields:
+                        for field in self.fields:
+                            if field.position == island_field.position:
+                                field.delete()
+                        self.fields.add(island_field)
+        return world_islands['Center'].calc_size()
 
     def __plant_trees(self):
         for field in self.fields:
@@ -207,10 +237,10 @@ class Generator(object):
         return sprite_index
 
     @staticmethod
-    def calc_isometric_field_shift(data_set, position, grid_size):
-        offset = divmod(len(data_set), 2)
-        start_x = (position[0] + offset[0] + 1) * grid_size[0]
-        start_y = position[1] * grid_size[1] - grid_size[1] / 2
+    def calc_isometric_field_shift(data_set, grid_size):
+        offset = len(data_set) * grid_size[0] / 2
+        start_x = offset - grid_size[0] / 2  # grid_size[0] + offset - grid_size[0] / 2
+        start_y = 0  # grid_size[1] / 2
 
         return start_x, start_y
 
