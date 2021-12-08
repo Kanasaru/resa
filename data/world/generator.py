@@ -146,7 +146,7 @@ class Generator(object):
                             for field in self.fields:
                                 if field.position == island_field.position:
                                     field.delete()
-                                    self.fields.add(island_field)
+                            self.fields.add(island_field)
 
     def __plant_trees(self):
         for field in self.fields:
@@ -176,31 +176,31 @@ class Generator(object):
     def calc_field_transition_sprite_index(neighbors):
         # sides
         if neighbors[0] == 1 and neighbors[1] == 1 and neighbors[2] == 0 and neighbors[3] == 1:
-            sprite_index = random.choice([24, 28, 32, 36, 40])
-        elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 1:
             sprite_index = random.choice([25, 29, 33, 37, 41])
+        elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 1:
+            sprite_index = random.choice([24, 28, 32, 36, 40])
         elif neighbors[0] == 1 and neighbors[1] == 0 and neighbors[2] == 1 and neighbors[3] == 1:
-            sprite_index = random.choice([26, 30, 34, 38, 42])
-        elif neighbors[0] == 1 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 0:
             sprite_index = random.choice([27, 31, 35, 39, 43])
+        elif neighbors[0] == 1 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 0:
+            sprite_index = random.choice([26, 30, 34, 38, 42])
         # inner corner
         elif neighbors[0] == 1 and neighbors[1] == 0 and neighbors[2] == 1 and neighbors[3] == 0:
             sprite_index = random.choice([0, 4, 8])
         elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 0 and neighbors[3] == 1:
             sprite_index = random.choice([1, 5, 9])
         elif neighbors[0] == 1 and neighbors[1] == 0 and neighbors[2] == 0 and neighbors[3] == 1:
-            sprite_index = random.choice([2, 6, 10])
-        elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 0:
             sprite_index = random.choice([3, 7, 11])
+        elif neighbors[0] == 0 and neighbors[1] == 1 and neighbors[2] == 1 and neighbors[3] == 0:
+            sprite_index = random.choice([2, 6, 10])
         # inner corner side
         elif neighbors[7] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
             sprite_index = random.choice([12, 16])
         elif neighbors[4] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
             sprite_index = random.choice([13, 17])
         elif neighbors[6] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
-            sprite_index = random.choice([14, 18])
-        elif neighbors[5] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
             sprite_index = random.choice([15, 19])
+        elif neighbors[5] == 0 and neighbors[0] == 1 and neighbors[2] == 1:
+            sprite_index = random.choice([14, 18])
         else:
             sprite_index = None
 
@@ -219,8 +219,8 @@ class Generator(object):
         # transform 2d position into isometric coordinates
         # thanks to 'ThiPi' | https://python-forum.io/thread-14617.html
         row_nb, col_nb = row_col
-        cart_x = row_nb * (grid_size[0] / 2)
-        cart_y = col_nb * grid_size[1]
+        cart_x = col_nb * (grid_size[0] / 2)
+        cart_y = row_nb * grid_size[1]
         pos_x = (cart_x - cart_y)
         pos_y = (cart_x + cart_y) / 2
 
