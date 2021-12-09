@@ -28,8 +28,10 @@ class Start(object):
 
         self.game = None
         self.clock = pygame.time.Clock()
+        # self.desktop_resolutions = pygame.display.get_desktop_sizes()
+        # self.full_screen_resolutions = pygame.display.list_modes()
         self.surface = pygame.display.set_mode(settings.RESOLUTION)
-
+        pygame.display.set_icon(pygame.image.load('resources/images/icon.png').convert())
         pygame.display.set_caption(f"{settings.GAME_TITLE}")
 
         main_menu_sheet_handler = SpriteSheetHandler()

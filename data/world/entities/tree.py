@@ -8,9 +8,8 @@ class Tree(pygame.sprite.Sprite):
 
         self._position = position
         self.image = image
-        self.size = size
 
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, self.size[0])
+        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, size[0])
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
 
         self.rect = self.image.get_rect()

@@ -23,7 +23,7 @@ class Field(pygame.sprite.Sprite):
         self._visible = True
         self._temperature = 20
         self._solid = False
-        self.image = pygame.transform.scale(image, self.size)
+        self.image = pygame.transform.scale(image, self.size).convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.topleft = self._position
         self.sprite_sheet_id = None
