@@ -8,6 +8,7 @@
 import random
 import pygame
 from data import settings
+from data.interfaces.loadscreen import GameLoadScreen
 from data.world.objects.field import Field
 from data.world.entities.tree import Tree
 from data.handlers.spritesheet import SpriteSheetHandler, SpriteSheet
@@ -22,6 +23,8 @@ class Generator(object):
         self.rect = pygame.Rect((0, 0), (0, 0))
         self.sprite_sheet_handler = None
         self.world_size = (0, 0)
+        self.load_msg = ""
+        self.load_screen = GameLoadScreen(self.load_cb)
 
         self.world_islands = {
             'North_West': Island(Island.MEDIUM, -20),
@@ -53,18 +56,29 @@ class Generator(object):
             sheet.colorkey = (0, 0, 0)
             self.sprite_sheet_handler.add(sheet)
 
+    def __update_load_screen(self):
+        self.load_screen.run_logic()
+        self.load_screen.render(pygame.display.get_surface())
+        pygame.display.flip()
+
+    def load_cb(self):
+        return self.load_msg
+
     def create(self):
         # fill world with water
-        print('Fill world with water...')
-        # self.__fill()
+        self.load_msg = 'Fill the world with water...'
+        self.__update_load_screen()
+        self.__fill()
         # create islands
-        print('Create islands...')
+        self.load_msg = 'Creating islands...'
+        self.__update_load_screen()
         self.__create_islands()
-        print(len(self.fields))
         # raise mountains
-        print('Raise mountains...')
+        self.load_msg = 'Raising mountains...'
+        self.__update_load_screen()
         # plant trees
-        print('Plant trees...')
+        self.load_msg = 'Planting trees...'
+        self.__update_load_screen()
         self.__plant_trees()
 
     def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
