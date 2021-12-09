@@ -21,6 +21,28 @@ class Generator(object):
         self.trees = pygame.sprite.Group()
         self.rect = pygame.Rect((0, 0), (0, 0))
         self.sprite_sheet_handler = None
+        self.world_size = (0, 0)
+
+        self.world_islands = {
+            'North_West': Island(Island.MEDIUM, -20),
+            'North': Island(Island.SMALL, -20),
+            'North_East': Island(Island.MEDIUM, -20),
+            'Center_West': Island(Island.SMALL, 20),
+            'Center': Island(Island.BIG, 20),
+            'Center_East': Island(Island.SMALL, 20),
+            'South_West': Island(Island.MEDIUM, 40),
+            'South': Island(Island.SMALL, 40),
+            'South_East': Island(Island.MEDIUM, 40),
+        }
+
+        # create data fields
+        big_width, big_height = self.world_islands['Center'].calc_size()
+        if big_width % self.grid_size[0] != 0:
+            big_width += self.grid_size[0] / 2
+        if big_height % self.grid_size[1] != 0:
+            big_height += self.grid_size[1] / 2
+        self.world_size = (big_width * 3, big_height * 3)
+        self.rect = pygame.Rect((0, 0), self.world_size)
 
         self.__load_sprite_sheets()
 
@@ -37,9 +59,8 @@ class Generator(object):
         # self.__fill()
         # create islands
         print('Create islands...')
-        size = self.__create_islands()
-        # set world_size
-        self.rect = pygame.Rect((0, 0), (size[0] * 3, size[1] * 3))
+        self.__create_islands()
+        print(len(self.fields))
         # raise mountains
         print('Raise mountains...')
         # plant trees
@@ -56,8 +77,8 @@ class Generator(object):
 
         pos_x = self.grid_size[0] / 2
         pos_y = 0
-        for row in range(self.world_size[1] * 2 - 1):
-            for col in range(self.world_size[0]):
+        for row in range(int(self.world_size[0] / (self.grid_size[0] / 2)) - 1):
+            for col in range(int(self.world_size[1] / (self.grid_size[1]))):
                 image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
                 new_field = Field((pos_x, pos_y), self.grid_size, image)
                 new_field.sprite_sheet_id = sprite_sheet
@@ -71,50 +92,14 @@ class Generator(object):
                 pos_x = self.grid_size[0] / 2
 
     def __create_islands(self):
-        # islands in world
-        world_islands = {
-            'North_West': Island(Island.MEDIUM, -20),
-            'North': Island(Island.SMALL, -20),
-            'North_East': Island(Island.MEDIUM, -20),
-            'Center_West': Island(Island.SMALL, 20),
-            'Center': Island(Island.BIG, 20),
-            'Center_East': Island(Island.SMALL, 20),
-            'South_West': Island(Island.MEDIUM, 40),
-            'South': Island(Island.SMALL, 40),
-            'South_East': Island(Island.MEDIUM, 40),
-        }
-
-        # create data fields
-        big_width, big_height = world_islands['Center'].calc_size()
-        for key, island in world_islands.items():
+        for key, island in self.world_islands.items():
             # identify isometric x-shift and calculate top-left-position
             start_x, start_y = self.calc_isometric_field_shift(island.data_set, self.grid_size)
 
-            b_x, b_y = island.calc_size()
-            start_x += (big_width - b_x) // 2
-            start_y += (big_height - b_y) // 2
-            if key == 'North_West':
-                pass
-            elif key == 'North':
-                start_x += big_width
-            elif key == 'North_East':
-                start_x += big_width * 2
-            elif key == 'Center_West':
-                start_y += big_height
-            elif key == 'Center':
-                start_y += big_height
-                start_x += big_width
-            elif key == 'Center_East':
-                start_y += big_height
-                start_x += big_width * 2
-            elif key == 'South_West':
-                start_y += big_height * 2
-            elif key == 'South':
-                start_y += big_height * 2
-                start_x += big_width
-            elif key == 'South_East':
-                start_y += big_height * 2
-                start_x += big_width * 2
+            # calculate island position
+            pos_x, pos_y = self.__calc_island_position(island.calc_size(), key)
+            start_x += pos_x
+            start_y += pos_y
 
             # run through island data set and add fields
             for row_nb, row in enumerate(island.data_set):
@@ -168,7 +153,7 @@ class Generator(object):
                     field.sprite_id = sprite_index
                     field.temperature = island.temperature
                     field.solid = solid
-                    world_islands[key].data_fields.add(field)
+                    self.world_islands[key].data_fields.add(field)
 
                     # delete possible duplicate and replace it
                     for island_field in island.data_fields:
@@ -176,21 +161,24 @@ class Generator(object):
                             if field.position == island_field.position:
                                 field.delete()
                         self.fields.add(island_field)
-        return world_islands['Center'].calc_size()
 
     def __plant_trees(self):
         for field in self.fields:
+            sprite_sheet = None
+            sprite_index = 0
             if field.solid:
-                plant = True
                 if field.temperature == 20 and random.randrange(0, 100, 1) >= 30:
                     sprite_sheet = '14'
                     sprite_index = random.choice([0, 1, 2])
+                    plant = True
                 elif field.temperature == -20 and random.randrange(0, 100, 1) >= 15:
                     sprite_sheet = '15'
                     sprite_index = random.choice([0, 1, 2, 3, 4, 5])
+                    plant = True
                 elif field.temperature == 40 and random.randrange(0, 100, 1) >= 30:
                     sprite_sheet = '16'
                     sprite_index = random.choice([0, 1, 2])
+                    plant = True
                 else:
                     plant = False
 
@@ -201,6 +189,47 @@ class Generator(object):
                     tree.sprite_sheet_id = sprite_sheet
                     tree.sprite_id = sprite_index
                     self.trees.add(tree)
+
+    def __calc_island_position(self, island_size, key):
+        pos_x = pos_y = 0
+        island_width, island_height = island_size
+        sector_width = self.world_size[0] / 3
+        sector_height = self.world_size[1] / 3
+
+        diff_x = int(((sector_width - island_width) / self.grid_size[0]) / 2) * self.grid_size[0]
+        diff_y = int(((sector_height - island_height) / self.grid_size[1]) / 2)
+        if diff_y % 2 == 0:
+            diff_y = diff_y * self.grid_size[1] / 2
+        else:
+            diff_y = (diff_y + 1) * self.grid_size[1] / 2
+
+        pos_x += diff_x
+        pos_y += diff_y * 2
+
+        if key == 'North':
+            pos_x += sector_width
+        elif key == 'North_East':
+            pos_x += sector_width * 2
+        elif key == 'Center_West':
+            pos_y += sector_height
+        elif key == 'Center':
+            pos_y += sector_height
+            pos_x += sector_width
+        elif key == 'Center_East':
+            pos_y += sector_height
+            pos_x += sector_width * 2
+        elif key == 'South_West':
+            pos_y += sector_height * 2
+        elif key == 'South':
+            pos_y += sector_height * 2
+            pos_x += sector_width
+        elif key == 'South_East':
+            pos_y += sector_height * 2
+            pos_x += sector_width * 2
+        else:
+            pass
+
+        return pos_x, pos_y
 
     @staticmethod
     def calc_field_transition_sprite_index(neighbors):
@@ -238,9 +267,11 @@ class Generator(object):
 
     @staticmethod
     def calc_isometric_field_shift(data_set, grid_size):
-        offset = len(data_set) * grid_size[0] / 2
-        start_x = offset - grid_size[0] / 2  # grid_size[0] + offset - grid_size[0] / 2
-        start_y = 0  # grid_size[1] / 2
+        if len(data_set) % 2 == 0:
+            start_x = (len(data_set) - 1) * grid_size[0] / 2
+        else:
+            start_x = (len(data_set)) * grid_size[0] / 2
+        start_y = 0
 
         return start_x, start_y
 
