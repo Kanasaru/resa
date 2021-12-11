@@ -69,22 +69,16 @@ class Field(pygame.sprite.Sprite):
     def temperature(self, value):
         self._temperature = value
 
-    def update(self) -> None:
+    def update(self, movement=None) -> None:
         """ Updates field by its position
 
         :return: None
         """
+        if movement is not None:
+            pos_x = self._position[0] + movement[0]
+            pox_y = self._position[1] + movement[1]
+            self.position = (pos_x, pox_y)
         self.rect.topleft = self.position
-
-    def move(self, movement: tuple[int, int]) -> None:
-        """ Changes the fields position by calculating a new position by given movement
-
-        :param movement: integer of pixel shift for x and y axis
-        :return: None
-        """
-        pos_x = self._position[0] + movement[0]
-        pox_y = self._position[1] + movement[1]
-        self.position = (pos_x, pox_y)
 
     def delete(self) -> None:
         """ Deletes the field

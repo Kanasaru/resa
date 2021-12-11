@@ -157,14 +157,11 @@ class Loader(object):
                 else:
                     self.rect.y -= self.map_pace
                     move_field = (move_field[0], -self.map_pace)
-            # move layer
-            for field in self.fields:
-                field.move(move_field)
-            for tree in self.trees:
-                tree.move(move_field)
-
-        self.fields.update()
-        self.trees.update()
+            self.fields.update(move_field)
+            self.trees.update(move_field)
+        else:
+            self.fields.update()
+            self.trees.update()
 
     def render(self) -> None:
         """ Renders all fields of the world on its surface

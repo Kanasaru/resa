@@ -35,13 +35,12 @@ class Tree(pygame.sprite.Sprite):
     def position(self, value):
         self._position = value
 
-    def update(self) -> None:
+    def update(self, movement=None) -> None:
+        if movement is not None:
+            pos_x = self.position[0] + movement[0]
+            pox_y = self.position[1] + movement[1]
+            self.position = (pos_x, pox_y)
         self.rect.bottomleft = self.position
-
-    def move(self, movement: tuple[int, int]) -> None:
-        pos_x = self.position[0] + movement[0]
-        pox_y = self.position[1] + movement[1]
-        self.position = (pos_x, pox_y)
 
     def delete(self) -> None:
         self.kill()
