@@ -21,6 +21,7 @@ class Loader(object):
         self.size = size
         self.grid_size = grid_size
         self.surface = pygame.Surface(self.size)
+        self.bg_surface = pygame.Surface(self.size)
         self.surface.fill(colors.COLOR_BLACK)
         self.map_pace = settings.MAP_PACE
         self.moving = False
@@ -28,6 +29,7 @@ class Loader(object):
         self.fields = None
         self.trees = None
         self.rect = None
+        self.water = None
 
     def get_fields(self):
         return self.fields
@@ -108,11 +110,14 @@ class Loader(object):
             world.load_fields_by_dict(field_data)
             world.load_trees_by_dict(tree_data)
             world.rect = rect
+            world.fill()
         else:
             world = Generator(self.grid_size)
             world.create()
 
-        self.fields, self.trees, self.rect = world.get_world()
+        self.water, self.fields, self.trees, self.rect = world.get_world()
+        self.water.update((-50, -50))
+        self.water.draw(self.bg_surface)
 
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
@@ -168,7 +173,7 @@ class Loader(object):
 
         :return: None
         """
-        self.surface.fill(colors.COLOR_BLACK)
+        self.surface.blit(self.bg_surface, (0, 0))
         self.fields.draw(self.surface)
         self.trees.draw(self.surface)
 
@@ -178,6 +183,10 @@ class Loader(object):
         :return: current world surface
         """
         return self.surface
+
+    def get_bg_surface(self) -> pygame.Surface:
+
+        return self.bg_surface
 
     def __bool__(self):
         if isinstance(self.fields, pygame.sprite.Group) and \

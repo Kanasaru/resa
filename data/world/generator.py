@@ -26,6 +26,8 @@ class Generator(object):
         self.load_msg = ""
         self.load_screen = GameLoadScreen(self.load_cb)
 
+        self.water = pygame.sprite.Group()
+
         self.world_islands = {
             'North_West': Island(Island.MEDIUM, -20),
             'North': Island(Island.SMALL, -20),
@@ -68,7 +70,7 @@ class Generator(object):
         # fill world with water
         self.load_msg = 'Fill the world with water...'
         self.__update_load_screen()
-        self.__fill()
+        self.fill()
         # create islands
         self.load_msg = 'Creating islands...'
         self.__update_load_screen()
@@ -81,11 +83,11 @@ class Generator(object):
         self.__update_load_screen()
         self.__plant_trees()
 
-    def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
-        return self.fields, self.trees, self.rect
+    def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
+        return self.water, self.fields, self.trees, self.rect
 
-    def __fill(self) -> None:
-        self.fields.empty()
+    def fill(self) -> None:
+        self.water.empty()
         sprite_sheet = '0'
         sprite_index = 5
 
@@ -97,7 +99,7 @@ class Generator(object):
                 new_field = Field((pos_x, pos_y), self.grid_size, image)
                 new_field.sprite_sheet_id = sprite_sheet
                 new_field.sprite_id = sprite_index
-                self.fields.add(new_field)
+                self.water.add(new_field)
                 pos_x += self.grid_size[0]
             pos_y += self.grid_size[1] / 2
             if (row % 2) == 0:
@@ -152,22 +154,18 @@ class Generator(object):
                             else:
                                 sprite_sheet = '1'
                             solid = False
-                    else:
-                        sprite_sheet = '0'
-                        sprite_index = 5
-                        solid = False
 
-                    # transform 2d position into isometric coordinates
-                    pos_x, pos_y = self.isometric_transform((row_nb, col_nb), self.grid_size)
+                        # transform 2d position into isometric coordinates
+                        pos_x, pos_y = self.isometric_transform((row_nb, col_nb), self.grid_size)
 
-                    # add field to island
-                    image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-                    field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
-                    field.sprite_sheet_id = sprite_sheet
-                    field.sprite_id = sprite_index
-                    field.temperature = island.temperature
-                    field.solid = solid
-                    self.world_islands[key].data_fields.add(field)
+                        # add field to island
+                        image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
+                        field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
+                        field.sprite_sheet_id = sprite_sheet
+                        field.sprite_id = sprite_index
+                        field.temperature = island.temperature
+                        field.solid = solid
+                        self.world_islands[key].data_fields.add(field)
 
             # delete possible duplicate and replace it
             for island_field in island.data_fields:
