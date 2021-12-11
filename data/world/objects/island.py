@@ -49,8 +49,8 @@ class Island(object):
     def data_fields(self, value):
         self._data_fields = value
 
-    def calc_size(self):
-        grid_size = (40, 20)
+    def calc_size(self, grid_size):
+        grid_size = grid_size
         width_in_px = height_in_px = 0
 
         if self.data_set is not None:

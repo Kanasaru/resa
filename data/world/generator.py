@@ -41,7 +41,7 @@ class Generator(object):
         }
 
         # create data fields
-        big_width, big_height = self.world_islands['Center'].calc_size()
+        big_width, big_height = self.world_islands['Center'].calc_size(self.grid_size)
         if big_width % self.grid_size[0] != 0:
             big_width += self.grid_size[0] / 2
         if big_height % self.grid_size[1] != 0:
@@ -113,7 +113,7 @@ class Generator(object):
             start_x, start_y = self.calc_isometric_field_shift(island.data_set, self.grid_size)
 
             # calculate island position
-            pos_x, pos_y = self.__calc_island_position(island.calc_size(), key)
+            pos_x, pos_y = self.__calc_island_position(island.calc_size(self.grid_size), key)
             start_x += pos_x
             start_y += pos_y
 
