@@ -5,6 +5,7 @@
 :license: GNU General Public License v3
 """
 
+from data.settings import conf
 import datetime
 import data.helpers.color as colors
 import pygame
@@ -14,7 +15,6 @@ from data.interfaces.loadscreen import GameLoadScreen
 from data.interfaces.gamepanel import GamePanel
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.world.map import Loader
-from data import settings
 from data.handlers.debug import DebugHandler
 from data.handlers.gamedata import GameDataHandler
 
@@ -32,22 +32,22 @@ class Game(object):
         # handler
         self.debug_handler = DebugHandler()
         self.game_data_handler = GameDataHandler()
-        self.game_data_handler.game_time_speed = settings.INGAME_SPEED
+        self.game_data_handler.game_time_speed = conf.game_speed
         # titles / screens
         self.debug_screen = DebugScreen()
         self.debug_screen.add('FPS', self.clock.get_fps)
-        self.debug_screen.add('Version', lambda: settings.GAME_VERSION)
+        self.debug_screen.add('Version', lambda: conf.version)
         self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
         self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
         game_panel_sheet_handler = SpriteSheetHandler()
         buttons = SpriteSheet(
-            settings.SPRITES_MENU_BUTTONS_KEY,
-            settings.SPRITES_MENU_BUTTONS,
-            settings.SPRITES_MENU_BUTTONS_SIZE
+            conf.sp_menu_btn_key,
+            conf.sp_menu_btn,
+            conf.sp_menu_btn_size
         )
         buttons.colorkey = (1, 0, 0)
         game_panel_sheet_handler.add(buttons)
-        self.game_panel = GamePanel(game_panel_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
+        self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
         # loading pre-data
         self.load_msg()
         self.load_map(load)
@@ -55,10 +55,10 @@ class Game(object):
         self.loop()
 
     def load_map(self, load: bool):
-        self.map = Loader((settings.RESOLUTION[0] - 2, settings.RESOLUTION[1] - self.game_panel.rect.height - 2),
-                          settings.GRID)
+        self.map = Loader((conf.resolution[0] - 2, conf.resolution[1] - self.game_panel.rect.height - 2),
+                          conf.grid_size)
         if load:
-            self.game_data_handler.read_from_file(settings.SAVE_FILE)
+            self.game_data_handler.read_from_file(conf.save_file)
             self.map.build_world(self.game_data_handler.world_data)
         else:
             self.map.build_world()
@@ -85,8 +85,8 @@ class Game(object):
             if event.code == ecodes.STOPGAME:
                 self.exit_game = True
             elif event.code == ecodes.SAVEGAME:
-                self.game_data_handler.world_data = (self.map.get_rect(), self.map.get_raw_fields(), self.map.get_raw_treess())
-                self.game_data_handler.save_to_file(settings.SAVE_FILE)
+                self.game_data_handler.world_data = (self.map.get_rect(), self.map.get_raw_fields(), self.map.get_raw_trees())
+                self.game_data_handler.save_to_file(conf.save_file)
             else:
                 pass
         # pygame events

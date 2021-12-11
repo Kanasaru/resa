@@ -6,6 +6,7 @@
 """
 
 import pygame
+from data.settings import conf
 import data.eventcodes as ecodes
 import data.helpers.color as colors
 from data.game import Game
@@ -13,10 +14,10 @@ from data.interfaces.mainmenu import MainMenu
 from data.interfaces.options import Options
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.music import Music
-from data import settings
 
 
 class Start(object):
+
     def __init__(self) -> None:
         """ Initializes the game """
         pygame.init()
@@ -30,20 +31,20 @@ class Start(object):
         self.clock = pygame.time.Clock()
         # self.desktop_resolutions = pygame.display.get_desktop_sizes()
         # self.full_screen_resolutions = pygame.display.list_modes()
-        self.surface = pygame.display.set_mode(settings.RESOLUTION)
+        self.surface = pygame.display.set_mode(conf.resolution)
         pygame.display.set_icon(pygame.image.load('resources/images/icon.png').convert())
-        pygame.display.set_caption(f"{settings.GAME_TITLE}")
+        pygame.display.set_caption(f"{conf.title}")
 
         main_menu_sheet_handler = SpriteSheetHandler()
         buttons = SpriteSheet(
-            settings.SPRITES_MENU_BUTTONS_KEY,
-            settings.SPRITES_MENU_BUTTONS,
-            settings.SPRITES_MENU_BUTTONS_SIZE
+            conf.sp_menu_btn_key,
+            conf.sp_menu_btn,
+            conf.sp_menu_btn_size
         )
         buttons.colorkey = (1, 0, 0)
         main_menu_sheet_handler.add(buttons)
-        self.title_main = MainMenu(main_menu_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
-        self.title_options = Options(main_menu_sheet_handler, settings.SPRITES_MENU_BUTTONS_KEY)
+        self.title_main = MainMenu(main_menu_sheet_handler, conf.sp_menu_btn_key)
+        self.title_options = Options(main_menu_sheet_handler, conf.sp_menu_btn_key)
         self.options = False
         self.resolution_update = None
 
@@ -57,7 +58,7 @@ class Start(object):
         """
         self.music.start_music()
         while not self.leave_game:
-            self.clock.tick(settings.FPS)
+            self.clock.tick(conf.fps)
             self.handle_events()
             self.run_logic()
             self.render()
@@ -132,11 +133,11 @@ class Start(object):
                 self.game = Game(self.surface, self.load_game)
         if self.options:
             if self.resolution_update is not None:
-                settings.RESOLUTION = self.resolution_update
-                pygame.display.set_mode(settings.RESOLUTION)
-                self.title_main.rect = pygame.Rect((0, 0), settings.RESOLUTION)
+                conf.resolution = self.resolution_update
+                pygame.display.set_mode(conf.resolution)
+                self.title_main.rect = pygame.Rect((0, 0), conf.resolution)
                 self.title_main.build()
-                self.title_options.rect = pygame.Rect((0, 0), settings.RESOLUTION)
+                self.title_options.rect = pygame.Rect((0, 0), conf.resolution)
                 self.title_options.build()
                 self.resolution_update = None
             self.title_options.run_logic()

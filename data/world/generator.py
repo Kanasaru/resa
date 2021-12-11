@@ -5,9 +5,9 @@
 :license: GNU General Public License v3
 """
 
+from data.settings import conf
 import random
 import pygame
-from data import settings
 from data.interfaces.loadscreen import GameLoadScreen
 from data.world.objects.field import Field
 from data.world.entities.tree import Tree
@@ -53,7 +53,7 @@ class Generator(object):
 
     def __load_sprite_sheets(self):
         self.sprite_sheet_handler = SpriteSheetHandler()
-        for key, value in settings.SPRITE_SHEETS_WORLD.items():
+        for key, value in conf.sp_world.items():
             sheet = SpriteSheet(key, value[0], value[1])
             sheet.colorkey = (0, 0, 0)
             self.sprite_sheet_handler.add(sheet)

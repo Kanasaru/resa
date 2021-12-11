@@ -5,6 +5,7 @@
 :license: GNU General Public License v3
 """
 
+from data.settings import conf
 import logging
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
@@ -15,7 +16,6 @@ from data.forms.button import Button
 from data.helpers.event import Event
 import data.eventcodes as ecodes
 import data.helpers.color as colors
-from data import settings
 
 
 class GamePanel(Interface):
@@ -26,7 +26,7 @@ class GamePanel(Interface):
         self.sheet_key = sheet_key
 
         self.name = 'panel'
-        self.rect = pygame.Rect((0, 0), (settings.RESOLUTION[0], 30))
+        self.rect = pygame.Rect((0, 0), (conf.resolution[0], 30))
         self.bg_color = colors.COLOR_BLACK
         self.bg_image = None
         self._resources = f'Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0'
@@ -35,7 +35,7 @@ class GamePanel(Interface):
 
         # labels
         tf_resources = Label('tf_resources', (self.title.width() // 2, 5), self.resources, 14, self.update_resources)
-        tf_resources.set_font(settings.BASIC_FONT)
+        tf_resources.set_font(conf.std_font)
         tf_resources.font_color(colors.COLOR_WHITE)
         tf_resources.align(tf_resources.CENTER)
         # buttons
@@ -48,7 +48,7 @@ class GamePanel(Interface):
             Event(ecodes.STOPGAME, ecodes.STOPGAME)
         )
         b_quit.align(b_quit.RIGHT)
-        b_quit.set_font(settings.BASIC_FONT, 13)
+        b_quit.set_font(conf.std_font, 13)
         b_save = Button(
             'b_save',
             pygame.Rect(self.title.width() - 80, 3, 70, 24),
@@ -58,7 +58,7 @@ class GamePanel(Interface):
             Event(ecodes.SAVEGAME, ecodes.SAVEGAME)
         )
         b_save.align(b_save.RIGHT)
-        b_save.set_font(settings.BASIC_FONT, 13)
+        b_save.set_font(conf.std_font, 13)
 
         self.title.add(tf_resources)
         self.title.add([b_save, b_quit])

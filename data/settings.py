@@ -8,89 +8,102 @@
 import configparser
 from ast import literal_eval
 
-Config = configparser.ConfigParser()
-Config.read('data/conf/config.ini')
-Sprites = configparser.ConfigParser()
-Sprites.read('data/conf/sprites.ini')
 
-# GameInformation
-GAME_TITLE = Config.get('GameInformation', 'Title')
-GAME_VERSION = Config.get('GameInformation', 'Version')
-GAME_AUTHOR = Config.get('GameInformation', 'Author')
-GAME_WWW = Config.get('GameInformation', 'www')
+class Settings(object):
+    def __init__(self):
+        self.parser = configparser.ConfigParser()
 
-# Screen
-RESOLUTION = literal_eval(Config.get('Screen', 'Resolution'))
-FPS = Config.getint('Screen', 'FPS')
-MENU_BG_IMG = Config.get('Screen', 'BackgroundImage')
+        self.title = 'Resa'
+        self.version = '0.4.1-alpha'
+        self.author = 'Kanasaru'
+        self.www = 'bitbyteopen.org'
+        self.fps = 60
+        self.resolution = (1000, 600)
+        self.grid_size = (40, 20)
+        self.background_image = None
+        self.game_speed = 1440
+        self.map_pace = 10
+        self.save_file = 'saves/game.xml'
+        self.std_font = None
+        self.volume = .2
+        self.bg_music = None
 
-# GameSettings
-SAVE_FILE = Config.get('GameSettings', 'SaveFile')
-INGAME_SPEED = Config.getint('GameSettings', 'InGameSpeed')
-GRID = literal_eval(Config.get('GameSettings', 'Grid'))
-MAP_PACE = Config.getint('GameSettings', 'MapPace')
+        self.sp_menu_btn_key = None
+        self.sp_menu_btn = None
+        self.sp_menu_btn_size = None
+        self.sp_world = None
 
-# Fonts
-BASIC_FONT = Config.get('Fonts', 'Standard')
+    def load_config_file(self, filepath):
+        self.parser.read(filepath)
 
-# Music
-MUSIC_BG_1 = Config.get('Music', 'BackgroundMusic')
-MUSIC_VOLUME = Config.getfloat('Music', 'StartVolume')
+        self.resolution = literal_eval(self.parser.get('Screen', 'Resolution'))
+        self.background_image = self.parser.get('Screen', 'BackgroundImage')
+        self.save_file = self.parser.get('GameSettings', 'SaveFile')
+        self.std_font = self.parser.get('Fonts', 'Standard')
+        self.bg_music = self.parser.get('Music', 'BackgroundMusic')
+        self.volume = self.parser.getfloat('Music', 'StartVolume')
 
-# SpriteSheets
-SPRITES_MENU_BUTTONS_KEY = Sprites.get('Buttons', 'MenuButtonsKey')
-SPRITES_MENU_BUTTONS = Sprites.get('Buttons', 'MenuButtons')
-SPRITES_MENU_BUTTONS_SIZE = literal_eval(Sprites.get('Buttons', 'MenuButtonsSize'))
-SPRITE_SHEETS_WORLD = {
-    Sprites.get('Objects', 'FieldTilesSolidID'): (
-        Sprites.get('Objects', 'FieldTilesSolid'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesSolidSize'))),
-    Sprites.get('Objects', 'FieldTilesDirtAtoWaterID'): (
-        Sprites.get('Objects', 'FieldTilesDirtAtoWater'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesDirtAtoWaterSize'))),
-    Sprites.get('Objects', 'FieldTilesDirtBtoWaterID'): (
-        Sprites.get('Objects', 'FieldTilesDirtBtoWater'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesDirtBtoWaterSize'))),
-    Sprites.get('Objects', 'FieldTilesGrassAtoWaterID'): (
-        Sprites.get('Objects', 'FieldTilesGrassAtoWater'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassAtoWaterSize'))),
-    Sprites.get('Objects', 'FieldTilesGrassBtoWaterID'): (
-        Sprites.get('Objects', 'FieldTilesGrassBtoWater'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassBtoWaterSize'))),
-    Sprites.get('Objects', 'FieldTilesSandAtoWaterID'): (
-        Sprites.get('Objects', 'FieldTilesSandAtoWater'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesSandAtoWaterSize'))),
-    Sprites.get('Objects', 'FieldTilesDirtAtoDirtBID'): (
-        Sprites.get('Objects', 'FieldTilesDirtAtoDirtB'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesDirtAtoDirtBSize'))),
-    Sprites.get('Objects', 'FieldTilesDirtAtoSandAID'): (
-        Sprites.get('Objects', 'FieldTilesDirtAtoSandA'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesDirtAtoSandASize'))),
-    Sprites.get('Objects', 'FieldTilesDirtBtoSandAID'): (
-        Sprites.get('Objects', 'FieldTilesDirtBtoSandA'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesDirtBtoSandASize'))),
-    Sprites.get('Objects', 'FieldTilesGrassAtoDirtAID'): (
-        Sprites.get('Objects', 'FieldTilesGrassAtoDirtA'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassAtoDirtASize'))),
-    Sprites.get('Objects', 'FieldTilesGrassAtoDirtBID'): (
-        Sprites.get('Objects', 'FieldTilesGrassAtoDirtB'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassAtoDirtBSize'))),
-    Sprites.get('Objects', 'FieldTilesGrassAtoGrassBID'): (
-        Sprites.get('Objects', 'FieldTilesGrassAtoGrassB'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassAtoGrassBSize'))),
-    Sprites.get('Objects', 'FieldTilesGrassAtoSandAID'): (
-        Sprites.get('Objects', 'FieldTilesGrassAtoSandA'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassAtoSandASize'))),
-    Sprites.get('Objects', 'FieldTilesGrassBtoDirtAID'): (
-        Sprites.get('Objects', 'FieldTilesGrassBtoDirtA'),
-        literal_eval(Sprites.get('Objects', 'FieldTilesGrassBtoDirtASize'))),
-    Sprites.get('Entities', 'EntityTreesBroadleafID'): (
-        Sprites.get('Entities', 'EntityTreesBroadleaf'),
-        literal_eval(Sprites.get('Entities', 'EntityTreesBroadleafSize'))),
-    Sprites.get('Entities', 'EntityTreesEvergreenID'): (
-        Sprites.get('Entities', 'EntityTreesEvergreen'),
-        literal_eval(Sprites.get('Entities', 'EntityTreesEvergreenSize'))),
-    Sprites.get('Entities', 'EntityTreesPalmsID'): (
-        Sprites.get('Entities', 'EntityTreesPalms'),
-        literal_eval(Sprites.get('Entities', 'EntityTreesPalmsSize')))
-}
+    def load_sprite_file(self, filepath):
+        self.parser.read(filepath)
+
+        self.sp_menu_btn_key = self.parser.get('Buttons', 'MenuButtonsKey')
+        self.sp_menu_btn = self.parser.get('Buttons', 'MenuButtons')
+        self.sp_menu_btn_size = literal_eval(self.parser.get('Buttons', 'MenuButtonsSize'))
+        self.sp_world = {
+            self.parser.get('Objects', 'FieldTilesSolidID'): (
+                self.parser.get('Objects', 'FieldTilesSolid'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesSolidSize'))),
+            self.parser.get('Objects', 'FieldTilesDirtAtoWaterID'): (
+                self.parser.get('Objects', 'FieldTilesDirtAtoWater'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesDirtAtoWaterSize'))),
+            self.parser.get('Objects', 'FieldTilesDirtBtoWaterID'): (
+                self.parser.get('Objects', 'FieldTilesDirtBtoWater'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesDirtBtoWaterSize'))),
+            self.parser.get('Objects', 'FieldTilesGrassAtoWaterID'): (
+                self.parser.get('Objects', 'FieldTilesGrassAtoWater'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoWaterSize'))),
+            self.parser.get('Objects', 'FieldTilesGrassBtoWaterID'): (
+                self.parser.get('Objects', 'FieldTilesGrassBtoWater'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassBtoWaterSize'))),
+            self.parser.get('Objects', 'FieldTilesSandAtoWaterID'): (
+                self.parser.get('Objects', 'FieldTilesSandAtoWater'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesSandAtoWaterSize'))),
+            self.parser.get('Objects', 'FieldTilesDirtAtoDirtBID'): (
+                self.parser.get('Objects', 'FieldTilesDirtAtoDirtB'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesDirtAtoDirtBSize'))),
+            self.parser.get('Objects', 'FieldTilesDirtAtoSandAID'): (
+                self.parser.get('Objects', 'FieldTilesDirtAtoSandA'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesDirtAtoSandASize'))),
+            self.parser.get('Objects', 'FieldTilesDirtBtoSandAID'): (
+                self.parser.get('Objects', 'FieldTilesDirtBtoSandA'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesDirtBtoSandASize'))),
+            self.parser.get('Objects', 'FieldTilesGrassAtoDirtAID'): (
+                self.parser.get('Objects', 'FieldTilesGrassAtoDirtA'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoDirtASize'))),
+            self.parser.get('Objects', 'FieldTilesGrassAtoDirtBID'): (
+                self.parser.get('Objects', 'FieldTilesGrassAtoDirtB'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoDirtBSize'))),
+            self.parser.get('Objects', 'FieldTilesGrassAtoGrassBID'): (
+                self.parser.get('Objects', 'FieldTilesGrassAtoGrassB'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoGrassBSize'))),
+            self.parser.get('Objects', 'FieldTilesGrassAtoSandAID'): (
+                self.parser.get('Objects', 'FieldTilesGrassAtoSandA'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoSandASize'))),
+            self.parser.get('Objects', 'FieldTilesGrassBtoDirtAID'): (
+                self.parser.get('Objects', 'FieldTilesGrassBtoDirtA'),
+                literal_eval(self.parser.get('Objects', 'FieldTilesGrassBtoDirtASize'))),
+            self.parser.get('Entities', 'EntityTreesBroadleafID'): (
+                self.parser.get('Entities', 'EntityTreesBroadleaf'),
+                literal_eval(self.parser.get('Entities', 'EntityTreesBroadleafSize'))),
+            self.parser.get('Entities', 'EntityTreesEvergreenID'): (
+                self.parser.get('Entities', 'EntityTreesEvergreen'),
+                literal_eval(self.parser.get('Entities', 'EntityTreesEvergreenSize'))),
+            self.parser.get('Entities', 'EntityTreesPalmsID'): (
+                self.parser.get('Entities', 'EntityTreesPalms'),
+                literal_eval(self.parser.get('Entities', 'EntityTreesPalmsSize')))
+        }
+
+
+conf = Settings()
+conf.load_config_file('data/conf/config.ini')
+conf.load_sprite_file('data/conf/sprites.ini')

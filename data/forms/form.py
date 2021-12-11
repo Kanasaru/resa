@@ -8,7 +8,6 @@
 __version__ = '1.3'
 
 import pygame
-from data.handlers.spritesheet import SpriteSheetHandler
 
 
 class Form(pygame.sprite.Sprite):

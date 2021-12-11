@@ -1,5 +1,5 @@
+from data.settings import conf
 import pygame
-from data import settings
 
 
 class Music(object):
@@ -23,7 +23,7 @@ class Music(object):
 
         :return: None
         """
-        pygame.mixer.music.load(settings.MUSIC_BG_1)
+        pygame.mixer.music.load(conf.bg_music)
 
     def start_music(self) -> None:
         """ Starts the background music

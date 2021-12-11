@@ -5,13 +5,13 @@
 :license: GNU General Public License v3
 """
 
+from data.settings import conf
 import pygame
 from data.interfaces.interface import Interface
 from data.forms.label import Label
 from data.forms.title import Title
 from data.helpers.time import seconds_to_clock
 import data.helpers.color as colors
-from data import settings
 
 
 class DebugScreen(Interface):
@@ -21,7 +21,7 @@ class DebugScreen(Interface):
         self.clock = pygame.time.Clock()
 
         self.name = 'debug'
-        self.rect = pygame.Rect((0, 0), (int(settings.RESOLUTION[0] / 3), settings.RESOLUTION[1]))
+        self.rect = pygame.Rect((0, 0), (int(conf.resolution[0] / 3), conf.resolution[1]))
         self.bg_color = colors.COLOR_BLACK
         self.bg_image = None
         self.alpha = 192
