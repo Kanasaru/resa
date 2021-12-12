@@ -85,7 +85,9 @@ class Start(object):
                     pass
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
                 if len(self.music.playlist) > 0:
-                    pygame.mixer.music.queue(self.music.playlist.pop())
+                    self.music.load_next()
+                else:
+                    self.music.refill()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_p:
                     self.music.pause()

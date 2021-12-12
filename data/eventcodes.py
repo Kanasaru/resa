@@ -15,8 +15,9 @@ RESA_MUSIC_ENDED_EVENT = pygame.USEREVENT + 2
 # pygame.USEREVENT + 6
 # pygame.USEREVENT + 7
 # pygame.USEREVENT + 8
+# pygame.USEREVENT
 
-# Resa title events
+# Resa title events 1xxx
 RESA_STARTGAME = 1000
 RESA_QUITGAME = 1001
 RESA_LOADGAME = 1002

@@ -1,3 +1,4 @@
+import random
 from data.settings import conf
 import data.eventcodes as ecodes
 import pygame
@@ -10,6 +11,7 @@ class Music(object):
         self._volume = .2
         self.loop = 0
         self.playlist = list()
+        self.shuffle = True
 
         pygame.mixer.music.set_endevent(ecodes.RESA_MUSIC_ENDED_EVENT)
 
@@ -33,7 +35,24 @@ class Music(object):
                 file = filename
                 self.playlist.append(f'{conf.bg_music}/{file}')
 
+        if self.shuffle:
+            random.shuffle(self.playlist)
+
         pygame.mixer.music.load(self.playlist.pop())
+        pygame.mixer.music.queue(self.playlist.pop())
+
+    def load_next(self):
+        pygame.mixer.music.queue(self.playlist.pop())
+
+    def refill(self):
+        for filename in os.listdir(conf.bg_music):
+            if filename.endswith(".mp3"):
+                file = filename
+                self.playlist.append(f'{conf.bg_music}/{file}')
+
+        if self.shuffle:
+            random.shuffle(self.playlist)
+
         pygame.mixer.music.queue(self.playlist.pop())
 
     def start(self, volume: float) -> None:
