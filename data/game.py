@@ -10,7 +10,6 @@ import datetime
 import pygame
 import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
-from data.interfaces.loadscreen import GameLoadScreen
 from data.interfaces.gamepanel import GamePanel
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.world.map import Loader
@@ -19,44 +18,66 @@ from data.handlers.gamedata import GameDataHandler
 
 
 class Game(object):
-    def __init__(self, surface, load: bool = False):
-        """ Initializes the in-game
+    def __init__(self, load: bool = False) -> None:
+        """ Initializes the game
 
-        :param surface: surface the in-game should be rendered on
+        :param load: load game from file if true
         """
+        # event handling varibales
         self.exit_game = False
+        self.map_load = load
+
+        # set timers and clocks
         self.clock = pygame.time.Clock()
-        self.surface = surface
-        self.map = None
-        # handler
+
+        # set handler
         self.debug_handler = DebugHandler()
         self.game_data_handler = GameDataHandler()
         self.game_data_handler.game_time_speed = conf.game_speed
-        # titles / screens
+
+        # screen settings, build screens and panels
+        self.surface = pygame.display.get_surface()
+        self.border_thickness = conf.map_border_thickness
+        self.border_color = conf.COLOR_WHITE
+        # debug screen
         self.debug_screen = DebugScreen()
         self.debug_screen.add('FPS', self.clock.get_fps)
         self.debug_screen.add('Version', lambda: conf.version)
         self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
         self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
+        # game panel
         game_panel_sheet_handler = SpriteSheetHandler()
         buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
         buttons.colorkey = (1, 0, 0)
         game_panel_sheet_handler.add(buttons)
         self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
-        # loading pre-data
-        self.load_msg()
-        self.load_map(load)
-        # start game loop
+
+        # loading map
+        self.map = None
+        self.load_map()
+
+        # start the game loop
         self.loop()
 
-    def load_map(self, load: bool):
-        self.map = Loader((conf.resolution[0] - 2, conf.resolution[1] - self.game_panel.rect.height - 2),
-                          conf.grid_size)
-        if load:
+    def load_map(self) -> None:
+        """ Loads the map from file or builds a new one
+
+        :return: None
+        """
+        # map instance with shrinked surface size to provide border and room for game panel
+        surface_width = conf.resolution[0] - self.border_thickness * 2
+        surface_height = conf.resolution[1] - self.game_panel.rect.height - self.border_thickness * 2
+        self.map = Loader((surface_width, surface_height))
+
+        if self.map_load:
+            # load world from file
             self.game_data_handler.read_from_file(conf.save_file)
             self.map.build_world(self.game_data_handler.world_data)
         else:
+            # build a new world
             self.map.build_world()
+
+        # update resources in game panel
         self.game_panel.resources = self.game_data_handler.resources
 
     def loop(self) -> None:
@@ -65,7 +86,7 @@ class Game(object):
         :return: None
         """
         while not self.exit_game:
-            self.clock.tick()  # settings.FPS
+            self.clock.tick(conf.fps)
             self.handle_events()
             self.run_logic()
             self.render()
@@ -75,10 +96,21 @@ class Game(object):
 
         :return: None
         """
-        # pygame events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.exit_game = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_F2:
+                    pass
+                elif event.key == pygame.K_F3:
+                    self.debug_handler.toggle()
+                else:
+                    pass
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    pass
+                if event.button == 2:
+                    pass
             elif event.type == ecodes.RESA_TITLE_EVENT:
                 if event.code == ecodes.RESA_STOPGAME:
                     self.exit_game = True
@@ -91,20 +123,10 @@ class Game(object):
                     self.game_data_handler.save_to_file(conf.save_file)
                 else:
                     pass
-            elif event.type == pygame.MOUSEBUTTONUP:
-                if event.button == 1:
-                    pass
-                    # z = pygame.mouse.get_pos()
-                if event.button == 2:
-                    pass
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_F3:
-                    self.debug_handler.toggle()
-                if event.key == pygame.K_F2:
-                    pass  # pygame.image.save(self.surface, 'screenshot.png')
             else:
                 pass
-            # event handler
+
+            # push event into title and map event handling
             self.debug_screen.handle_event(event)
             self.game_panel.handle_event(event)
             self.map.handle_event(event)
@@ -114,16 +136,19 @@ class Game(object):
 
         :return: None
         """
+        # update game data
         self.game_data_handler.update()
-        # debugging
-        self.debug_handler.update()
-        self.debug_screen.timer = self.debug_handler.play_time
-        self.debug_screen.run_logic()
 
-        # game panel
+        # update debug data if activated
+        if self.debug_handler:
+            self.debug_handler.update()
+            self.debug_screen.timer = self.debug_handler.play_time
+            self.debug_screen.run_logic()
+
+        # update game panel
         self.game_panel.run_logic()
 
-        # map
+        # update map
         self.map.run_logic()
 
     def render(self) -> None:
@@ -131,24 +156,21 @@ class Game(object):
 
         :return: None
         """
-        # basic
-        self.surface.fill(conf.COLOR_WHITE)
-        # map
+        # fill surface, will be the border color
+        self.surface.fill(self.border_color)
+
+        # render the map and blit its surface to main surface with border thickness
         self.map.render()
-        pygame.Surface.blit(self.surface, self.map.get_surface(), (1, self.game_panel.rect.height + 1))
-        # game panel
+        pos_x = self.border_thickness
+        pos_y = self.game_panel.rect.height + self.border_thickness
+        pygame.Surface.blit(self.surface, self.map.get_surface(), (pos_x, pos_y))
+
+        # render the game panel
         self.game_panel.render(self.surface)
-        # debug screen
+
+        # render debug screen if activated
         if self.debug_handler:
             self.debug_screen.render(self.surface)
 
-        pygame.display.flip()
-
-    def load_msg(self) -> None:
-        """ Creates and displays the world loading title
-
-        :return: None
-        """
-        load_screen = GameLoadScreen()
-        load_screen.render(self.surface)
+        # display surface
         pygame.display.flip()

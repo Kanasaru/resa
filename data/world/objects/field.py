@@ -6,20 +6,20 @@
 """
 
 import pygame
+from data.settings import conf
 
 
 class Field(pygame.sprite.Sprite):
-    def __init__(self, position: tuple[int, int], size: tuple[int, int], image: pygame.image) -> None:
+    def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
         """ Initializes a field
 
         :param position: position on world surface
-        :param size: field size
         :param image: field image
         """
         pygame.sprite.Sprite.__init__(self)
 
         self._position = position
-        self._size = size
+        self._size = conf.grid.size
         self._visible = True
         self._temperature = 20
         self._solid = False

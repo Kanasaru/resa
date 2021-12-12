@@ -1,4 +1,4 @@
-""" This module provides starting routine for the game
+""" This module provides the starting routine for the game
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
@@ -16,25 +16,26 @@ from data.handlers.music import Music
 
 
 class Start(object):
-
     def __init__(self) -> None:
-        """ Initializes the game """
+        """ Initializes the titles """
         pygame.init()
 
+        # event handling varibales
         self.start_game = False
         self.load_game = False
         self.leave_game = False
         self.options = False
         self.resolution_update = None
-        self.game = None
-        self.music = Music()
-        self.clock = pygame.time.Clock()
-        # self.desktop_resolutions = pygame.display.get_desktop_sizes()
-        # self.full_screen_resolutions = pygame.display.list_modes()
-        self.surface = pygame.display.set_mode(conf.resolution)
-        pygame.display.set_icon(pygame.image.load('resources/images/icon.png').convert())
-        pygame.display.set_caption(f"{conf.title}")
 
+        # set timers and clocks
+        self.clock = pygame.time.Clock()
+
+        # build window
+        self.surface = pygame.display.set_mode(conf.resolution)
+        pygame.display.set_icon(pygame.image.load(conf.icon).convert())
+        pygame.display.set_caption(f'Welcome to {conf.title}')
+
+        # create titles
         hdl_sp_main_menu = SpriteSheetHandler()
         buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
         buttons.colorkey = (1, 0, 0)
@@ -42,15 +43,21 @@ class Start(object):
         self.title_main = MainMenu(hdl_sp_main_menu, conf.sp_menu_btn_key)
         self.title_options = Options(hdl_sp_main_menu, conf.sp_menu_btn_key)
 
+        # load music
+        self.music = Music()
         self.music.load()
+
+        # start the game loop
+        self.game = None
         self.loop()
 
     def loop(self) -> None:
-        """ game loop
+        """ Game loop
 
         :return: None
         """
         self.music.start(conf.volume)
+
         while not self.leave_game:
             self.clock.tick(conf.fps)
             self.handle_events()
@@ -97,6 +104,8 @@ class Start(object):
                     self.music.volume -= .1
             else:
                 pass
+
+            # push event into current title event handling
             if self.options:
                 self.title_options.handle_event(event)
             else:
@@ -108,16 +117,19 @@ class Start(object):
         :return: None
         """
         if self.start_game:
+            # current game play ended and back to main menu
             if self.game is not None and self.game.exit_game:
                 self.music.load()
                 self.music.start(conf.volume)
                 self.start_game = False
                 self.load_game = False
                 self.game = None
+            # start a game
             else:
                 self.music.stop()
-                self.game = Game(self.surface, self.load_game)
+                self.game = Game(self.load_game)
         if self.options:
+            # change resolution and rebuild titles
             if self.resolution_update is not None:
                 conf.resolution = self.resolution_update
                 pygame.display.set_mode(conf.resolution)
@@ -126,6 +138,7 @@ class Start(object):
                 self.title_options.rect = pygame.Rect((0, 0), conf.resolution)
                 self.title_options.build()
                 self.resolution_update = None
+
             self.title_options.run_logic()
         else:
             self.title_main.run_logic()
@@ -136,13 +149,18 @@ class Start(object):
         :return: None
         """
         self.surface.fill(conf.COLOR_WHITE)
+
+        # render current title
         if self.options:
             self.title_options.render(self.surface)
         else:
             self.title_main.render(self.surface)
+
+        # display surface
         pygame.display.flip()
 
-    def exit(self):
+    @staticmethod
+    def exit():
         """ Exit routine of the game
 
         :return: None

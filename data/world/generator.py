@@ -16,8 +16,7 @@ from data.world.objects.island import Island
 
 
 class Generator(object):
-    def __init__(self, grid_size: tuple[int, int]) -> None:
-        self.grid_size = grid_size
+    def __init__(self) -> None:
         self.fields = pygame.sprite.Group()
         self.trees = pygame.sprite.Group()
         self.rect = pygame.Rect((0, 0), (0, 0))
@@ -41,11 +40,11 @@ class Generator(object):
         }
 
         # create data fields
-        big_width, big_height = self.world_islands['Center'].calc_size(self.grid_size)
-        if big_width % self.grid_size[0] != 0:
-            big_width += self.grid_size[0] / 2
-        if big_height % self.grid_size[1] != 0:
-            big_height += self.grid_size[1] / 2
+        big_width, big_height = self.world_islands['Center'].calc_size()
+        if big_width % conf.grid.width != 0:
+            big_width += conf.grid.width / 2
+        if big_height % conf.grid.height != 0:
+            big_height += conf.grid.height / 2
         self.world_size = (big_width * 3, big_height * 3)
         self.rect = pygame.Rect((0, 0), self.world_size)
 
@@ -91,29 +90,29 @@ class Generator(object):
         sprite_sheet = '0'
         sprite_index = 5
 
-        pos_x = self.grid_size[0] / 2
+        pos_x = conf.grid.width / 2
         pos_y = 0
-        for row in range(int(self.world_size[0] / (self.grid_size[0] / 2)) - 1):
-            for col in range(int(self.world_size[1] / (self.grid_size[1]))):
+        for row in range(int(self.world_size[0] / (conf.grid.width / 2)) - 1):
+            for col in range(int(self.world_size[1] / conf.grid.height)):
                 image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-                new_field = Field((pos_x, pos_y), self.grid_size, image)
+                new_field = Field((pos_x, pos_y), image)
                 new_field.sprite_sheet_id = sprite_sheet
                 new_field.sprite_id = sprite_index
                 self.water.add(new_field)
-                pos_x += self.grid_size[0]
-            pos_y += self.grid_size[1] / 2
+                pos_x += conf.grid.width
+            pos_y += conf.grid.height / 2
             if (row % 2) == 0:
                 pos_x = 0
             else:
-                pos_x = self.grid_size[0] / 2
+                pos_x = conf.grid.width / 2
 
     def __create_islands(self):
         for key, island in self.world_islands.items():
             # identify isometric x-shift and calculate top-left-position
-            start_x, start_y = self.calc_isometric_field_shift(island.data_set, self.grid_size)
+            start_x, start_y = self.calc_isometric_field_shift(island.data_set)
 
             # calculate island position
-            pos_x, pos_y = self.__calc_island_position(island.calc_size(self.grid_size), key)
+            pos_x, pos_y = self.__calc_island_position(island.calc_size(), key)
             start_x += pos_x
             start_y += pos_y
 
@@ -156,11 +155,11 @@ class Generator(object):
                             solid = False
 
                         # transform 2d position into isometric coordinates
-                        pos_x, pos_y = self.isometric_transform((row_nb, col_nb), self.grid_size)
+                        pos_x, pos_y = self.isometric_transform((row_nb, col_nb))
 
                         # add field to island
                         image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-                        field = Field((int(start_x + pos_x), int(start_y + pos_y)), self.grid_size, image)
+                        field = Field((int(start_x + pos_x), int(start_y + pos_y)), image)
                         field.sprite_sheet_id = sprite_sheet
                         field.sprite_id = sprite_index
                         field.temperature = island.temperature
@@ -197,7 +196,7 @@ class Generator(object):
                 if plant:
                     image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
                     pos = field.rect.bottomleft
-                    tree = Tree(pos, field.size, image)
+                    tree = Tree(pos, image)
                     tree.sprite_sheet_id = sprite_sheet
                     tree.sprite_id = sprite_index
                     self.trees.add(tree)
@@ -208,12 +207,12 @@ class Generator(object):
         sector_width = self.world_size[0] / 3
         sector_height = self.world_size[1] / 3
 
-        diff_x = int(((sector_width - island_width) / self.grid_size[0]) / 2) * self.grid_size[0]
-        diff_y = int(((sector_height - island_height) / self.grid_size[1]) / 2)
+        diff_x = int(((sector_width - island_width) / conf.grid.width) / 2) * conf.grid.width
+        diff_y = int(((sector_height - island_height) / conf.grid.height) / 2)
         if diff_y % 2 == 0:
-            diff_y = diff_y * self.grid_size[1] / 2
+            diff_y = diff_y * conf.grid.height / 2
         else:
-            diff_y = (diff_y + 1) * self.grid_size[1] / 2
+            diff_y = (diff_y + 1) * conf.grid.height / 2
 
         pos_x += diff_x
         pos_y += diff_y * 2
@@ -278,22 +277,22 @@ class Generator(object):
         return sprite_index
 
     @staticmethod
-    def calc_isometric_field_shift(data_set, grid_size):
+    def calc_isometric_field_shift(data_set):
         if len(data_set) % 2 == 0:
-            start_x = (len(data_set) - 1) * grid_size[0] / 2
+            start_x = (len(data_set) - 1) * conf.grid.width / 2
         else:
-            start_x = (len(data_set)) * grid_size[0] / 2
+            start_x = (len(data_set)) * conf.grid.width / 2
         start_y = 0
 
         return start_x, start_y
 
     @staticmethod
-    def isometric_transform(row_col, grid_size):
+    def isometric_transform(row_col):
         # transform 2d position into isometric coordinates
         # thanks to 'ThiPi' | https://python-forum.io/thread-14617.html
         row_nb, col_nb = row_col
-        cart_x = col_nb * (grid_size[0] / 2)
-        cart_y = row_nb * grid_size[1]
+        cart_x = col_nb * (conf.grid.width / 2)
+        cart_y = row_nb * conf.grid.height
         pos_x = (cart_x - cart_y)
         pos_y = (cart_x + cart_y) / 2
 
@@ -307,7 +306,7 @@ class Generator(object):
             sprite_index = field_data[1][1]
             solid = field_data[2]
             image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-            field = Field(pos, self.grid_size, image)
+            field = Field(pos, image)
             field.sprite_sheet_id = sprite_sheet
             field.sprite_id = sprite_index
             field.solid = solid
@@ -321,7 +320,7 @@ class Generator(object):
             sprite_sheet = tree_data[1][0]
             sprite_index = tree_data[1][1]
             image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-            tree = Tree(pos, self.grid_size, image)
+            tree = Tree(pos, image)
             tree.sprite_sheet_id = sprite_sheet
             tree.sprite_id = sprite_index
 

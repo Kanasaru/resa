@@ -1,15 +1,16 @@
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
+from data.settings import conf
 
 
 class Tree(pygame.sprite.Sprite):
-    def __init__(self, position: tuple[int, int], size: tuple[int, int], image: pygame.image) -> None:
+    def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
         pygame.sprite.Sprite.__init__(self)
 
         self._position = position
         self.image = image
 
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, size[0])
+        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, conf.grid.width)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
 
         self.rect = self.image.get_rect()

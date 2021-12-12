@@ -7,20 +7,29 @@
 
 import configparser
 from ast import literal_eval
+from data.world.grid import Grid
 
 
 class Settings(object):
-    def __init__(self):
+    def __init__(self) -> None:
+        """ Provides standard game settings and consts """
         self.parser = configparser.ConfigParser()
 
+        # information
         self.title = 'Resa'
         self.version = '0.4.2-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
+
+        # display settings
+        self.icon = 'resources/images/icon.png'
         self.fps = 60
         self.resolution = (1000, 600)
-        self.grid_size = (40, 20)
+        self.grid = Grid((self.resolution, 40, 20))
         self.background_image = None
+        self.map_border_thickness = 5
+
+        # standard game values
         self.game_speed = 1440
         self.map_pace = 10
         self.save_file = 'saves/game.xml'
@@ -28,11 +37,13 @@ class Settings(object):
         self.volume = .2
         self.bg_music = None
 
+        # sprite sheets
         self.sp_menu_btn_key = None
         self.sp_menu_btn = None
         self.sp_menu_btn_size = None
         self.sp_world = None
 
+        # standard colors
         self.COLOR_KEY = (1, 0, 0)
         self.COLOR_BLACK = (0, 0, 0)
         self.COLOR_WHITE = (255, 255, 255)
@@ -43,7 +54,12 @@ class Settings(object):
         self.COLOR_GRAY = (128, 128, 128)
         self.COLOR_GREEN = (0, 128, 0)
 
-    def load_config_file(self, filepath):
+    def load_config_file(self, filepath: str) -> None:
+        """ Loads settings from file and replaces standard value
+
+        :param filepath: config filepath
+        :return: None
+        """
         self.parser.read(filepath)
 
         self.resolution = literal_eval(self.parser.get('Screen', 'Resolution'))
@@ -53,7 +69,12 @@ class Settings(object):
         self.bg_music = self.parser.get('Music', 'BackgroundMusic')
         self.volume = self.parser.getfloat('Music', 'StartVolume')
 
-    def load_sprite_file(self, filepath):
+    def load_sprite_file(self, filepath: str) -> None:
+        """ Loads sprite sheets from config file
+
+        :param filepath: sprite sheet config filepath
+        :return: None
+        """
         self.parser.read(filepath)
 
         self.sp_menu_btn_key = self.parser.get('Buttons', 'MenuButtonsKey')
@@ -114,6 +135,7 @@ class Settings(object):
         }
 
 
+# global config object
 conf = Settings()
 conf.load_config_file('data/conf/config.ini')
 conf.load_sprite_file('data/conf/sprites.ini')

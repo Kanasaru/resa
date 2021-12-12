@@ -3,6 +3,7 @@ import pygame.sprite
 import data.world.islands.big_islands as big_islands
 import data.world.islands.medium_islands as medium_islands
 import data.world.islands.small_islands as small_islands
+from data.settings import conf
 
 
 class Island(object):
@@ -49,13 +50,12 @@ class Island(object):
     def data_fields(self, value):
         self._data_fields = value
 
-    def calc_size(self, grid_size):
-        grid_size = grid_size
+    def calc_size(self):
         width_in_px = height_in_px = 0
 
         if self.data_set is not None:
-            width_in_px = (len(self.data_set) + len(self.data_set[0])) * (grid_size[0] / 2)
-            height_in_px = (len(self.data_set) + len(self.data_set[0])) * (grid_size[1] / 2)
+            width_in_px = (len(self.data_set) + len(self.data_set[0])) * (conf.grid.width / 2)
+            height_in_px = (len(self.data_set) + len(self.data_set[0])) * (conf.grid.height / 2)
 
         return width_in_px, height_in_px
 

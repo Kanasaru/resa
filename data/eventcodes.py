@@ -6,7 +6,7 @@
 """
 import pygame
 
-"""pygame.USEREVENTs"""
+""" pygame.USEREVENTs """
 RESA_TITLE_EVENT = pygame.USEREVENT + 1
 RESA_MUSIC_ENDED_EVENT = pygame.USEREVENT + 2
 # pygame.USEREVENT + 3
@@ -17,7 +17,7 @@ RESA_MUSIC_ENDED_EVENT = pygame.USEREVENT + 2
 # pygame.USEREVENT + 8
 # pygame.USEREVENT
 
-# Resa title events 1xxx
+""" Resa title events | 1xxx """
 RESA_STARTGAME = 1000
 RESA_QUITGAME = 1001
 RESA_LOADGAME = 1002

@@ -11,14 +11,12 @@ from data.world.generator import Generator
 
 
 class Loader(object):
-    def __init__(self, size: tuple[int, int], grid_size: tuple[int, int]) -> None:
+    def __init__(self, size: tuple[int, int]) -> None:
         """ Initializes a world loading instance
 
         :param size: tuple of screen size
-        :param grid_size: tuple of single grid (field) size
         """
         self.size = size
-        self.grid_size = grid_size
         self.surface = pygame.Surface(self.size)
         self.bg_surface = pygame.Surface(self.size)
         self.surface.fill(conf.COLOR_BLACK)
@@ -104,14 +102,14 @@ class Loader(object):
     def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None):
         if world_data is not None:
             rect, field_data, tree_data = world_data
-            world = Generator(self.grid_size)
+            world = Generator()
             world.size = rect.size
             world.load_fields_by_dict(field_data)
             world.load_trees_by_dict(tree_data)
             world.rect = rect
             world.fill()
         else:
-            world = Generator(self.grid_size)
+            world = Generator()
             world.create()
 
         self.water, self.fields, self.trees, self.rect = world.get_world()
@@ -124,7 +122,7 @@ class Loader(object):
         :return: None
         """
         if self.moving:
-            movable_px_right = self.rect.width - self.size[0] - abs(0 - self.rect.x) + self.grid_size[0] / 2
+            movable_px_right = self.rect.width - self.size[0] - abs(0 - self.rect.x) + conf.grid.width / 2
             movable_px_left = abs(0 - self.rect.x)
             movable_px_up = abs(0 - self.rect.y)
             movable_px_down = self.rect.height - self.size[1] - abs(0 - self.rect.y)
