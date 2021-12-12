@@ -1,31 +1,41 @@
 from data.settings import conf
 import pygame
+import os
 
 
 class Music(object):
     def __init__(self):
         self.pause = False
-        self.volume = .2
-        self.loop = -1
+        self._volume = .2
+        self.loop = 0
+        self.playlist = list()
 
-    def change_volume(self, volume: float) -> None:
-        """ Changes the current volume
+        pygame.mixer.music.set_endevent(pygame.USEREVENT)
 
-        :param volume: amount of increase or decrease of current volume
-        :return: None
-        """
-        if 0.0 < volume < 1.0:
-            pygame.mixer.music.set_volume(volume)
-            self.volume = volume
+    @property
+    def volume(self):
+        return self._volume
 
-    def load_music(self) -> None:
+    @volume.setter
+    def volume(self, value):
+        if 0.0 < value < 1.0:
+            pygame.mixer.music.set_volume(value)
+            self._volume = value
+
+    def load(self) -> None:
         """ Loads the background music into the mixer
 
         :return: None
         """
-        pygame.mixer.music.load(conf.bg_music)
+        for filename in os.listdir(conf.bg_music):
+            if filename.endswith(".mp3"):
+                file = filename
+                self.playlist.append(f'{conf.bg_music}/{file}')
 
-    def start_music(self) -> None:
+        pygame.mixer.music.load(self.playlist.pop())
+        pygame.mixer.music.queue(self.playlist.pop())
+
+    def start(self, volume: float) -> None:
         """ Starts the background music
 
         :param volume: volume the music starts at
@@ -33,9 +43,9 @@ class Music(object):
         :return: None
         """
         pygame.mixer.music.play(self.loop)
-        pygame.mixer.music.set_volume(self.volume)
+        pygame.mixer.music.set_volume(volume)
 
-    def pause_music(self) -> None:
+    def pause(self) -> None:
         """ Toggles background music on and off
 
         :return: None
@@ -47,7 +57,7 @@ class Music(object):
             pygame.mixer.music.pause()
             self.pause = True
 
-    def stop_music(self) -> None:
+    def stop(self) -> None:
         """ Stops the background music
 
         :return: None

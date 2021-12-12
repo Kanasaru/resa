@@ -25,9 +25,10 @@ class Start(object):
         self.start_game = False
         self.load_game = False
         self.leave_game = False
-        self.music = Music()
-
+        self.options = False
+        self.resolution_update = None
         self.game = None
+        self.music = Music()
         self.clock = pygame.time.Clock()
         # self.desktop_resolutions = pygame.display.get_desktop_sizes()
         # self.full_screen_resolutions = pygame.display.list_modes()
@@ -35,20 +36,14 @@ class Start(object):
         pygame.display.set_icon(pygame.image.load('resources/images/icon.png').convert())
         pygame.display.set_caption(f"{conf.title}")
 
-        main_menu_sheet_handler = SpriteSheetHandler()
-        buttons = SpriteSheet(
-            conf.sp_menu_btn_key,
-            conf.sp_menu_btn,
-            conf.sp_menu_btn_size
-        )
+        hdl_sp_main_menu = SpriteSheetHandler()
+        buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
         buttons.colorkey = (1, 0, 0)
-        main_menu_sheet_handler.add(buttons)
-        self.title_main = MainMenu(main_menu_sheet_handler, conf.sp_menu_btn_key)
-        self.title_options = Options(main_menu_sheet_handler, conf.sp_menu_btn_key)
-        self.options = False
-        self.resolution_update = None
+        hdl_sp_main_menu.add(buttons)
+        self.title_main = MainMenu(hdl_sp_main_menu, conf.sp_menu_btn_key)
+        self.title_options = Options(hdl_sp_main_menu, conf.sp_menu_btn_key)
 
-        self.music.load_music()
+        self.music.load()
         self.loop()
 
     def loop(self) -> None:
@@ -56,7 +51,7 @@ class Start(object):
 
         :return: None
         """
-        self.music.start_music()
+        self.music.start(conf.volume)
         while not self.leave_game:
             self.clock.tick(conf.fps)
             self.handle_events()
@@ -70,6 +65,7 @@ class Start(object):
 
         :return: None
         """
+        # title events
         for event in self.title_main.get_events():
             if event.code == ecodes.STARTGAME:
                 self.start_game = True
@@ -100,11 +96,14 @@ class Start(object):
                 self.leave_game = True
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_p:
-                    self.music.pause_music()
+                    self.music.pause()
                 if event.key == pygame.K_PLUS:
-                    self.music.change_volume(self.music.volume + 0.1)
+                    self.music.volume += .1
                 if event.key == pygame.K_MINUS:
-                    self.music.change_volume(self.music.volume - 0.1)
+                    self.music.volume -= .1
+            elif event.type == pygame.USEREVENT:
+                if len(self.music.playlist) > 0:
+                    pygame.mixer.music.queue(self.music.playlist.pop())
             else:
                 pass
             if self.options:
@@ -122,14 +121,13 @@ class Start(object):
         """
         if self.start_game:
             if self.game is not None and self.game.exit_game:
-                self.music.load_music()
-                self.music.start_music()
+                self.music.load()
+                self.music.start()
                 self.start_game = False
                 self.load_game = False
                 self.game = None
             else:
-                self.clr_screen()
-                self.music.stop_music()
+                self.music.stop()
                 self.game = Game(self.surface, self.load_game)
         if self.options:
             if self.resolution_update is not None:
@@ -163,11 +161,3 @@ class Start(object):
         """
         pygame.quit()
         print("Bye bye!")
-
-    def clr_screen(self) -> None:
-        """ Clears the display of the game
-
-        :return: None
-        """
-        self.surface.fill(colors.COLOR_BLACK)
-        pygame.display.flip()
