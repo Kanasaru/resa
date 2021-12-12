@@ -14,7 +14,7 @@ class Settings(object):
         self.parser = configparser.ConfigParser()
 
         self.title = 'Resa'
-        self.version = '0.4.1-alpha'
+        self.version = '0.4.2-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
         self.fps = 60

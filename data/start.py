@@ -12,7 +12,7 @@ from data.game import Game
 from data.interfaces.mainmenu import MainMenu
 from data.interfaces.options import Options
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
-from data.music import Music
+from data.handlers.music import Music
 
 
 class Start(object):
