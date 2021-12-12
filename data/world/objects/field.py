@@ -11,6 +11,7 @@ from data.settings import conf
 
 class RawField(object):
     def __init__(self):
+        """ Dataclass for raw fields """
         self.pos = None
         self.sprite_index = None
         self.sprite_sheet = None
@@ -26,16 +27,21 @@ class Field(pygame.sprite.Sprite):
         """
         pygame.sprite.Sprite.__init__(self)
 
-        self._position = position
+        # basic settings
         self._size = conf.grid.size
         self._visible = True
-        self._temperature = 20
+        self._temperature = conf.temp_center
         self._solid = False
+
+        # image and sprite settings
         self.image = pygame.transform.scale(image, self.size).convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.topleft = self._position
         self.sprite_sheet_id = None
         self.sprite_id = None
+
+        # positions
+        self._position = position
+        self.rect = self.image.get_rect()
+        self.rect.topleft = self._position
 
     @property
     def position(self):
@@ -80,6 +86,7 @@ class Field(pygame.sprite.Sprite):
     def update(self, movement=None) -> None:
         """ Updates field by its position
 
+        :param movement: optional movement of the field
         :return: None
         """
         if movement is not None:

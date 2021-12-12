@@ -5,8 +5,6 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.1'
-
 from data.settings import conf
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
@@ -22,15 +20,14 @@ class Button(Form):
         :param name: name of the textbox
         :param rect: rectangle with dimension and position
         :param sprite_sheet_handler: sprite sheet handler
-        :param sprite_size: size of a single sprite in sprite sheet
         :param sprite_key: key of sheet for handler
         :param text: displayed text
         :param callback_event: event which is called if button gets clicked
         """
         Form.__init__(self, rect.size)
 
-        self.COLOR_BUTTON_HOVER = (120, 117, 98)
-        self.COLOR_BUTTON_PRESSED = (120, 117, 98)
+        self.COLOR_BUTTON_HOVER = conf.COLOR_BTN_HOVER
+        self.COLOR_BUTTON_PRESSED = conf.COLOR_BTN_PRESSED
 
         self.sprite_sheet_handler = sprite_sheet_handler
         self.sprite_sheet_key = sprite_key
@@ -41,7 +38,7 @@ class Button(Form):
         self.name = name
         self.text = text
         self.font = None
-        self.font_size = 20
+        self.font_size = conf.std_font_size
         self.font_colors = {
             "standard": conf.COLOR_BLACK,
             "hover": self.COLOR_BUTTON_HOVER,

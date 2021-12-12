@@ -1,3 +1,10 @@
+""" This module provides music handling
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
 import random
 from data.settings import conf
 import data.eventcodes as ecodes
@@ -6,21 +13,23 @@ import os
 
 
 class Music(object):
-    def __init__(self):
+    def __init__(self) -> None:
+        """ Creates a music handler """
         self.pause = False
         self._volume = .2
         self.loop = 0
         self.playlist = list()
         self.shuffle = True
 
+        # set event for music ending
         pygame.mixer.music.set_endevent(ecodes.RESA_MUSIC_ENDED_EVENT)
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         return self._volume
 
     @volume.setter
-    def volume(self, value):
+    def volume(self, value) -> None:
         if 0.0 < value < 1.0:
             pygame.mixer.music.set_volume(value)
             self._volume = value
@@ -41,10 +50,18 @@ class Music(object):
         pygame.mixer.music.load(self.playlist.pop())
         pygame.mixer.music.queue(self.playlist.pop())
 
-    def load_next(self):
+    def load_next(self) -> None:
+        """ Loads the next piece into the queue.
+
+        :return: None
+        """
         pygame.mixer.music.queue(self.playlist.pop())
 
-    def refill(self):
+    def refill(self) -> None:
+        """ Refills the playlist and fills the queue with the first piece.
+
+        :return: None
+        """
         for filename in os.listdir(conf.bg_music):
             if filename.endswith(".mp3"):
                 file = filename
@@ -58,8 +75,7 @@ class Music(object):
     def start(self, volume: float) -> None:
         """ Starts the background music
 
-        :param volume: volume the music starts at
-        :param loop: if true the music plays infinitely
+        :param volume: volume the music starts with
         :return: None
         """
         pygame.mixer.music.play(self.loop)
@@ -77,7 +93,8 @@ class Music(object):
             pygame.mixer.music.pause()
             self.pause = True
 
-    def stop(self) -> None:
+    @staticmethod
+    def stop() -> None:
         """ Stops the background music
 
         :return: None

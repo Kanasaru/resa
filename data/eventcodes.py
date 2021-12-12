@@ -4,6 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
+
 import pygame
 
 """ pygame.USEREVENTs """

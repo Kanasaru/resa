@@ -5,28 +5,35 @@ from data.settings import conf
 
 class RawTree(object):
     def __init__(self):
+        """ Dataclass for raw trees """
         self.pos = None
         self.sprite_index = None
         self.sprite_sheet = None
-        self.solid = None
 
 
 class Tree(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
+        """ Initializes a field
+
+        :param position: position on world surface
+        :param image: tree image
+        """
         pygame.sprite.Sprite.__init__(self)
 
-        self._position = position
-        self.image = image
+        # basic settings
+        self._growth = 3
 
+        # image and sprite settings
+        self.image = image
         self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, conf.grid.width)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
-
-        self.rect = self.image.get_rect()
-        self.rect.bottomleft = self.position
-
         self.sprite_sheet_id = None
         self.sprite_id = None
-        self._growth = 3
+
+        # positions
+        self._position = position
+        self.rect = self.image.get_rect()
+        self.rect.bottomleft = self.position
 
     @property
     def growth(self):
@@ -45,6 +52,11 @@ class Tree(pygame.sprite.Sprite):
         self._position = value
 
     def update(self, movement=None) -> None:
+        """ Updates tree by its position
+
+        :param movement: optional movement of the tree
+        :return: None
+        """
         if movement is not None:
             pos_x = self.position[0] + movement[0]
             pox_y = self.position[1] + movement[1]
@@ -52,4 +64,18 @@ class Tree(pygame.sprite.Sprite):
         self.rect.bottomleft = self.position
 
     def delete(self) -> None:
+        """ Deletes the tree
+
+        :return: None
+        """
         self.kill()
+
+    def __str__(self):
+        return f'Tree - ' \
+               f'Pos: {self.position} | ' \
+               f'Solid: {self.growth} | '
+
+    def __repr__(self):
+        return f'Tree - ' \
+               f'Pos: {self.position} | ' \
+               f'Solid: {self.growth} | '

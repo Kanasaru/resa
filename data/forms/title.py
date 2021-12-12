@@ -5,8 +5,6 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.1'
-
 from data.settings import conf
 import pygame
 from data.forms.form import Form

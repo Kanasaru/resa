@@ -7,7 +7,9 @@
 
 from data.settings import conf
 import pygame.sprite
+from data.world.entities.tree import RawTree
 from data.world.generator import Generator
+from data.world.objects.field import RawField
 
 
 class Moving(object):
@@ -56,7 +58,12 @@ class Map(object):
         """
         raw_fields = []
         for field in self.fields:
-            raw_fields.append([field.position, (field.sprite_sheet_id, field.sprite_id), field.solid])
+            raw_field = RawField()
+            raw_field.pos = field.position
+            raw_field.sprite_index = field.sprite_id
+            raw_field.sprite_sheet = field.sprite_sheet_id
+            raw_field.solid = field.solid
+            raw_fields.append(raw_field)
 
         return raw_fields
 
@@ -67,7 +74,11 @@ class Map(object):
         """
         raw_trees = []
         for tree in self.trees:
-            raw_trees.append([tree.position, (tree.sprite_sheet_id, tree.sprite_id)])
+            raw_tree = RawTree()
+            raw_tree.pos = tree.position
+            raw_tree.sprite_index = tree.sprite_id
+            raw_tree.sprite_sheet = tree.sprite_sheet_id
+            raw_trees.append(raw_tree)
 
         return raw_trees
 

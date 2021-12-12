@@ -17,7 +17,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.4.2-alpha'
+        self.version = '0.4.3-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
@@ -34,6 +34,7 @@ class Settings(object):
         self.map_pace = 10
         self.save_file = 'saves/game.xml'
         self.std_font = None
+        self.std_font_size = 20
         self.volume = .2
         self.bg_music = None
 
@@ -63,6 +64,10 @@ class Settings(object):
         self.COLOR_CYAN = (0, 255, 255)
         self.COLOR_GRAY = (128, 128, 128)
         self.COLOR_GREEN = (0, 128, 0)
+
+        # menu button colors
+        self.COLOR_BTN_HOVER = (120, 117, 98)
+        self.COLOR_BTN_PRESSED = (120, 117, 98)
 
     def load_config_file(self, filepath: str) -> None:
         """ Loads settings from file and replaces standard value

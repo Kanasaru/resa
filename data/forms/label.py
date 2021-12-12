@@ -5,8 +5,6 @@
 :license: GNU General Public License v3
 """
 
-__version__ = '1.1'
-
 from data.settings import conf
 import pygame
 from data.forms.form import Form
@@ -14,7 +12,7 @@ from data.forms.form import Form
 
 class Label(Form):
     def __init__(self, name: str, position: tuple[int, int],
-                 text: str = "", font_size: int = 20, callback=None) -> None:
+                 text: str = "", font_size: int = conf.std_font_size, callback=None) -> None:
         """ Initializes a text box form object
 
         :param name: name of the label

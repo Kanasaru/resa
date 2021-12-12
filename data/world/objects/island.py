@@ -1,3 +1,10 @@
+""" This module provides Island class
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
 import random
 import pygame.sprite
 import data.world.islands.big_islands as big_islands
@@ -12,6 +19,12 @@ class Island(object):
     SMALL = 2
 
     def __init__(self, size, temperature):
+        """ Creates an island.
+
+        :param size: SMALL | MEDIUM | BIG
+        :param temperature: temperature of the island
+        """
+        # basic settings
         self._size = size
         self._temperature = temperature
         self._data_set = None
@@ -50,7 +63,11 @@ class Island(object):
     def data_fields(self, value):
         self._data_fields = value
 
-    def calc_size(self):
+    def calc_size(self) -> tuple[int, int]:
+        """ Calculates width and height of the island in pixel.
+
+        :return: width and height of the island
+        """
         width_in_px = height_in_px = 0
 
         if self.data_set is not None:
@@ -59,19 +76,23 @@ class Island(object):
 
         return width_in_px, height_in_px
 
-    def __calc_data_set(self):
-        if self.size == 0:
+    def __calc_data_set(self) -> None:
+        """ Chooses randomly a data set for the island by its size.
+
+        :return: None
+        """
+        if self.size == Island.BIG:
             self._data_set = random.choice([
                 big_islands.big_island_1,
                 big_islands.big_island_2
             ])
-        elif self.size == 1:
+        elif self.size == Island.MEDIUM:
             self._data_set = random.choice([
                 medium_islands.med_island_1,
                 medium_islands.med_island_2,
                 medium_islands.med_island_3
             ])
-        elif self.size == 2:
+        else:
             self._data_set = random.choice([
                 small_islands.small_island_1,
                 small_islands.small_island_2,
@@ -79,8 +100,6 @@ class Island(object):
                 small_islands.small_island_4,
                 small_islands.small_island_5
             ])
-        else:
-            self._data_set = [[1]]
 
     def __bool__(self):
         if len(self.data_fields) > 0:

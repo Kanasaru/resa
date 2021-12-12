@@ -403,7 +403,7 @@ class Generator(object):
         return sprite_index
 
     @staticmethod
-    def calc_isometric_field_shift(data_set) -> tuple[int, int]:
+    def calc_isometric_field_shift(data_set: list) -> tuple[int, int]:
         """ Calculates the isometric field shift (left shift)
 
         :param data_set: islands data set

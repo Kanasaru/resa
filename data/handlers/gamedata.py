@@ -1,3 +1,10 @@
+""" This module provides game data handling
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: GNU General Public License v3
+"""
+
 from ast import literal_eval
 import pygame
 import xml.etree.ElementTree as ETree
@@ -7,6 +14,7 @@ from data.world.objects.field import RawField
 
 class GameDataHandler(object):
     def __init__(self) -> None:
+        """ Creates a game data handler """
         self._resources = {
             "Wood": 0,
             "Stone": 0,
@@ -20,11 +28,11 @@ class GameDataHandler(object):
         self._game_time_speed = 1
 
     @property
-    def game_time_speed(self):
+    def game_time_speed(self) -> int:
         return self._game_time_speed
 
     @game_time_speed.setter
-    def game_time_speed(self, value: int):
+    def game_time_speed(self, value: int) -> None:
         if value >= 1:
             self._game_time_speed = value
         else:
@@ -50,7 +58,11 @@ class GameDataHandler(object):
     def game_time(self, time: int) -> None:
         self._game_time = time
 
-    def get_game_time(self):
+    def get_game_time(self) -> str:
+        """ Returns the in-game time.
+
+        :return: in-game time
+        """
         day = ((self.game_time // 1000) * self.game_time_speed) // (24 * 3600)
         return f'Day {day}'
 
@@ -63,10 +75,19 @@ class GameDataHandler(object):
         self._world_data = data
 
     def update(self) -> None:
+        """ Updates the handler information.
+
+        :return: None
+        """
         self._game_timer.tick()
         self.game_time += self._game_timer.get_time()
 
     def read_from_file(self, filepath: str) -> None:
+        """ Read game data from file.
+
+        :param filepath: Resa save file
+        :return: None
+        """
         tree = ETree.parse(filepath)
         root = tree.getroot()
 
@@ -111,7 +132,12 @@ class GameDataHandler(object):
         self.resources = res
         self.world_data = (rect, fields, trees)
 
-    def save_to_file(self, filepath: str):
+    def save_to_file(self, filepath: str) -> None:
+        """ Saves game data into a file.
+
+        :param filepath: filepath to save data in
+        :return: None
+        """
         root = ETree.Element("data")
 
         # general
@@ -128,14 +154,14 @@ class GameDataHandler(object):
         fields = ETree.SubElement(world, "fields")
         for raw_field in self.world_data[1]:
             ETree.SubElement(fields, "field",
-                             pos=str(raw_field[0]),
-                             sprite_data=str(raw_field[1]),
-                             solid=str(raw_field[2]))
+                             pos=str(raw_field.pos),
+                             sprite_data=str((raw_field.sprite_sheet, raw_field.sprite_index)),
+                             solid=str(raw_field.solid))
         trees = ETree.SubElement(world, "trees")
         for raw_tree in self.world_data[2]:
             ETree.SubElement(trees, "tree",
-                             pos=str(raw_tree[0]),
-                             sprite_data=str(raw_tree[1]))
+                             pos=str(raw_tree.pos),
+                             sprite_data=str((raw_tree.sprite_sheet, raw_tree.sprite_index)))
 
         # write file
         tree = ETree.ElementTree(root)

@@ -10,7 +10,7 @@ from data.forms.title import Title
 
 
 class Interface(object):
-    """Base class for interfaces. Should not used directly.
+    """Base class for interfaces. Should not be used directly.
 
     :raises TypeError: if a method is called without assigning a title or assigned title is not <object> Title(Form)
     """
@@ -43,7 +43,7 @@ class Interface(object):
         else:
             raise TypeError('title has to be <object> Title(Form)')
 
-    def handle_event(self, event):
+    def handle_event(self, event: pygame.Event):
         if self.__bool__():
             self.title.handle_event(event)
         else:
