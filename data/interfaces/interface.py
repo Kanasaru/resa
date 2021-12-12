@@ -43,7 +43,7 @@ class Interface(object):
         else:
             raise TypeError('title has to be <object> Title(Form)')
 
-    def handle_event(self, event: pygame.Event):
+    def handle_event(self, event: pygame.event.Event):
         if self.__bool__():
             self.title.handle_event(event)
         else:
