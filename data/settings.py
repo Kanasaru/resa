@@ -43,6 +43,16 @@ class Settings(object):
         self.sp_menu_btn_size = None
         self.sp_world = None
 
+        # tree spawn rate
+        self.tree_spawn_bl = 70
+        self.tree_spawn_eg = 90
+        self.tree_spawn_p = 50
+
+        # islands temperatures
+        self.temp_north = -20
+        self.temp_center = 20
+        self.temp_south = 40
+
         # standard colors
         self.COLOR_KEY = (1, 0, 0)
         self.COLOR_BLACK = (0, 0, 0)

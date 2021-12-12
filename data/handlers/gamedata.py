@@ -1,6 +1,8 @@
 from ast import literal_eval
 import pygame
 import xml.etree.ElementTree as ETree
+from data.world.entities.tree import RawTree
+from data.world.objects.field import RawField
 
 
 class GameDataHandler(object):
@@ -90,15 +92,21 @@ class GameDataHandler(object):
                     # read field data
                     if sub_child.tag == 'fields':
                         for field in sub_child.iter('field'):
-                            pos = literal_eval(field.attrib['pos'])
+                            raw_field = RawField()
+                            raw_field.pos = literal_eval(field.attrib['pos'])
                             sprite_data = literal_eval(field.attrib['sprite_data'])
-                            solid = literal_eval(field.attrib['solid'])
-                            fields.append([pos, sprite_data, solid])
+                            raw_field.sprite_sheet = sprite_data[0]
+                            raw_field.sprite_index = sprite_data[1]
+                            raw_field.solid = literal_eval(field.attrib['solid'])
+                            fields.append(raw_field)
                     if sub_child.tag == 'trees':
                         for field in sub_child.iter('tree'):
-                            pos = literal_eval(field.attrib['pos'])
+                            raw_tree = RawTree()
+                            raw_tree.pos = literal_eval(field.attrib['pos'])
                             sprite_data = literal_eval(field.attrib['sprite_data'])
-                            trees.append([pos, sprite_data])
+                            raw_tree.sprite_sheet = sprite_data[0]
+                            raw_tree.sprite_index = sprite_data[1]
+                            trees.append(raw_tree)
 
         self.resources = res
         self.world_data = (rect, fields, trees)

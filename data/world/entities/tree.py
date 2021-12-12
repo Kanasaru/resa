@@ -3,6 +3,14 @@ from data.handlers.spritesheet import SpriteSheetHandler
 from data.settings import conf
 
 
+class RawTree(object):
+    def __init__(self):
+        self.pos = None
+        self.sprite_index = None
+        self.sprite_sheet = None
+        self.solid = None
+
+
 class Tree(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
         pygame.sprite.Sprite.__init__(self)

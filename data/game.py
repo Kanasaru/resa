@@ -12,7 +12,7 @@ import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
 from data.interfaces.gamepanel import GamePanel
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
-from data.world.map import Loader
+from data.world.map import Map
 from data.handlers.debug import DebugHandler
 from data.handlers.gamedata import GameDataHandler
 
@@ -67,7 +67,7 @@ class Game(object):
         # map instance with shrinked surface size to provide border and room for game panel
         surface_width = conf.resolution[0] - self.border_thickness * 2
         surface_height = conf.resolution[1] - self.game_panel.rect.height - self.border_thickness * 2
-        self.map = Loader((surface_width, surface_height))
+        self.map = Map((surface_width, surface_height))
 
         if self.map_load:
             # load world from file
@@ -116,7 +116,7 @@ class Game(object):
                     self.exit_game = True
                 elif event.code == ecodes.RESA_SAVEGAME:
                     self.game_data_handler.world_data = (
-                        self.map.get_rect(),
+                        self.map.rect,
                         self.map.get_raw_fields(),
                         self.map.get_raw_trees()
                     )

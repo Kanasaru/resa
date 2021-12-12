@@ -10,110 +10,120 @@ import pygame.sprite
 from data.world.generator import Generator
 
 
-class Loader(object):
-    def __init__(self, size: tuple[int, int]) -> None:
+class Moving(object):
+    def __init__(self) -> None:
+        """ Dataclass for map movement """
+        self.up = False
+        self.down = False
+        self.left = False
+        self.right = False
+
+    def __bool__(self) -> bool:
+        """ Checks for any movement
+
+        :return: True if any movement is active
+        """
+        if self.up or self.down or self.left or self.right:
+            return True
+
+        return False
+
+
+class Map(object):
+    def __init__(self, screen_size: tuple[int, int]) -> None:
         """ Initializes a world loading instance
 
-        :param size: tuple of screen size
+        :param screen_size: tuple of screen size
         """
-        self.size = size
-        self.surface = pygame.Surface(self.size)
-        self.bg_surface = pygame.Surface(self.size)
-        self.surface.fill(conf.COLOR_BLACK)
-        self.map_pace = conf.map_pace
-        self.moving = False
-        self.move_steps = (False, False, False, False)
-        self.fields = None
-        self.trees = None
-        self.rect = None
-        self.water = None
+        # event handling varibales
+        self.moving = Moving()
 
-    def get_fields(self):
-        return self.fields
+        # surfaces
+        self.screen_size = screen_size
+        self.surface = pygame.Surface(self.screen_size)
+        self.bg_surface = pygame.Surface(self.screen_size)
 
-    def get_raw_fields(self):
+        # world data
+        self.rect = pygame.Rect((0, 0), (0, 0))
+        self.water = pygame.sprite.Group()
+        self.fields = pygame.sprite.Group()
+        self.trees = pygame.sprite.Group()
+
+    def get_raw_fields(self) -> list:
+        """ Returns basic information of all fields
+
+        :return: list of raw fields
+        """
         raw_fields = []
         for field in self.fields:
             raw_fields.append([field.position, (field.sprite_sheet_id, field.sprite_id), field.solid])
+
         return raw_fields
 
-    def get_raw_trees(self):
+    def get_raw_trees(self) -> list:
+        """ Returns basic information of all trees
+
+        :return: list of raw trees
+        """
         raw_trees = []
         for tree in self.trees:
             raw_trees.append([tree.position, (tree.sprite_sheet_id, tree.sprite_id)])
+
         return raw_trees
 
-    def get_rect(self):
-        return self.rect
-
-    def handle_event(self, event) -> None:
+    def handle_event(self, event: pygame.event.Event) -> None:
         """ Handles given event
 
-        :param event: pygame or resa event object
+        :param event: pygame event
         :return: None
         """
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                move_steps_l = True
-            else:
-                move_steps_l = self.move_steps[0]
+                self.moving.left = True
             if event.key == pygame.K_RIGHT:
-                move_steps_r = True
-            else:
-                move_steps_r = self.move_steps[1]
+                self.moving.right = True
             if event.key == pygame.K_UP:
-                move_steps_u = True
-            else:
-                move_steps_u = self.move_steps[2]
+                self.moving.up = True
             if event.key == pygame.K_DOWN:
-                move_steps_d = True
-            else:
-                move_steps_d = self.move_steps[3]
-            self.move_steps = (move_steps_l, move_steps_r, move_steps_u, move_steps_d)
-            if self.move_steps[0] or self.move_steps[1] or self.move_steps[2] or self.move_steps[3]:
-                self.moving = True
-            else:
-                self.moving = False
+                self.moving.down = True
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
-                move_steps_l = False
-            else:
-                move_steps_l = self.move_steps[0]
+                self.moving.left = False
             if event.key == pygame.K_RIGHT:
-                move_steps_r = False
-            else:
-                move_steps_r = self.move_steps[1]
+                self.moving.right = False
             if event.key == pygame.K_UP:
-                move_steps_u = False
-            else:
-                move_steps_u = self.move_steps[2]
+                self.moving.up = False
             if event.key == pygame.K_DOWN:
-                move_steps_d = False
-            else:
-                move_steps_d = self.move_steps[3]
-            self.move_steps = (move_steps_l, move_steps_r, move_steps_u, move_steps_d)
-            if self.move_steps[0] or self.move_steps[1] or self.move_steps[2] or self.move_steps[3]:
-                self.moving = True
-            else:
-                self.moving = False
+                self.moving.down = False
         else:
             pass
 
-    def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None):
+    def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None) -> None:
+        """ Builds the world from scratch or given world data
+
+        :param world_data: world data from game data handler
+        :return: None
+        """
+        world = Generator()
+
         if world_data is not None:
             rect, field_data, tree_data = world_data
-            world = Generator()
+            # set basic world generation value from given data
+            world.rect = rect
             world.size = rect.size
+            # fill world with water and set fields and trees from given data
+            world.fill()
             world.load_fields_by_dict(field_data)
             world.load_trees_by_dict(tree_data)
-            world.rect = rect
-            world.fill()
         else:
-            world = Generator()
+            # create a new world from scratch
             world.create()
 
+        # get all sprites from world
         self.water, self.fields, self.trees, self.rect = world.get_world()
+        # move the water sprites to avoid topleft isometric black fields
         self.water.update((-50, -50))
+        # draw water sprites to its own surface
         self.water.draw(self.bg_surface)
 
     def run_logic(self) -> None:
@@ -122,46 +132,48 @@ class Loader(object):
         :return: None
         """
         if self.moving:
-            movable_px_right = self.rect.width - self.size[0] - abs(0 - self.rect.x) + conf.grid.width / 2
+            # detect amount of movable space in each direction
+            movable_px_right = self.rect.width - self.screen_size[0] - abs(0 - self.rect.x) + conf.grid.width / 2
             movable_px_left = abs(0 - self.rect.x)
             movable_px_up = abs(0 - self.rect.y)
-            movable_px_down = self.rect.height - self.size[1] - abs(0 - self.rect.y)
+            movable_px_down = self.rect.height - self.screen_size[1] - abs(0 - self.rect.y)
+
+            # create and fill movement
             move_field = (0, 0)
-            # move left
-            if self.move_steps[0] and movable_px_left != 0:
-                if movable_px_left < self.map_pace:
+            if self.moving.left and movable_px_left != 0:
+                if movable_px_left < conf.map_pace:
                     self.rect.x += movable_px_left
                     move_field = (movable_px_left, 0)
                 else:
-                    self.rect.x += self.map_pace
-                    move_field = (self.map_pace, 0)
-            # move right
-            elif self.move_steps[1] and movable_px_right != 0:
-                if movable_px_right < self.map_pace:
+                    self.rect.x += conf.map_pace
+                    move_field = (conf.map_pace, 0)
+            elif self.moving.right and movable_px_right != 0:
+                if movable_px_right < conf.map_pace:
                     self.rect.x -= movable_px_right
                     move_field = (-movable_px_right, 0)
                 else:
-                    self.rect.x -= self.map_pace
-                    move_field = (-self.map_pace, 0)
-            # move up
-            if self.move_steps[2] and movable_px_up != 0:
-                if movable_px_up < self.map_pace:
+                    self.rect.x -= conf.map_pace
+                    move_field = (-conf.map_pace, 0)
+            if self.moving.up and movable_px_up != 0:
+                if movable_px_up < conf.map_pace:
                     self.rect.y += movable_px_up
                     move_field = (move_field[0], movable_px_up)
                 else:
-                    self.rect.y += self.map_pace
-                    move_field = (move_field[0], self.map_pace)
-            # move down
-            elif self.move_steps[3] and movable_px_down != 0:
-                if movable_px_down < self.map_pace:
+                    self.rect.y += conf.map_pace
+                    move_field = (move_field[0], conf.map_pace)
+            elif self.moving.down and movable_px_down != 0:
+                if movable_px_down < conf.map_pace:
                     self.rect.y -= movable_px_down
                     move_field = (move_field[0], -movable_px_down)
                 else:
-                    self.rect.y -= self.map_pace
-                    move_field = (move_field[0], -self.map_pace)
+                    self.rect.y -= conf.map_pace
+                    move_field = (move_field[0], -conf.map_pace)
+
+            # update sprites with movement
             self.fields.update(move_field)
             self.trees.update(move_field)
         else:
+            # updating without movement
             self.fields.update()
             self.trees.update()
 
@@ -170,24 +182,16 @@ class Loader(object):
 
         :return: None
         """
+        # render the background (water)
         self.surface.blit(self.bg_surface, (0, 0))
+
+        # render all fields and trees
         self.fields.draw(self.surface)
         self.trees.draw(self.surface)
 
     def get_surface(self) -> pygame.Surface:
-        """ Returns the current state of the world surface
+        """ Returns the current state of the map surface
 
-        :return: current world surface
+        :return: current map surface
         """
         return self.surface
-
-    def get_bg_surface(self) -> pygame.Surface:
-
-        return self.bg_surface
-
-    def __bool__(self):
-        if isinstance(self.fields, pygame.sprite.Group) and \
-                len(self.fields) > 0 and \
-                isinstance(self.rect, pygame.Rect):
-            return True
-        return False

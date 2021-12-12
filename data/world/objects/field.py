@@ -9,6 +9,14 @@ import pygame
 from data.settings import conf
 
 
+class RawField(object):
+    def __init__(self):
+        self.pos = None
+        self.sprite_index = None
+        self.sprite_sheet = None
+        self.solid = None
+
+
 class Field(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
         """ Initializes a field
