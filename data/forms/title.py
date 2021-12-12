@@ -47,7 +47,7 @@ class Title(Form):
 
         if self.bg_image is not None:
             pic = pygame.image.load(self.bg_image).convert()
-            self.bg_image = pygame.transform.scale(pic, pic.get_rect().size)
+            self.bg_image = pygame.transform.scale(pic, self.rect.size)
 
     def add(self, form_object: Form | list[Form]) -> None:
         """ Adds a form object to the title
