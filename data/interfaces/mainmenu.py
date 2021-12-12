@@ -12,9 +12,7 @@ from data.interfaces.interface import Interface
 from data.forms.label import Label
 from data.forms.title import Title
 from data.forms.button import Button
-from data.helpers.event import Event
 import data.eventcodes as ecodes
-import data.helpers.color as colors
 
 
 class MainMenu(Interface):
@@ -26,7 +24,7 @@ class MainMenu(Interface):
 
         self.name = 'main'
         self.rect = pygame.Rect((0, 0), conf.resolution)
-        self.bg_color = colors.COLOR_BLACK
+        self.bg_color = conf.COLOR_BLACK
         self.bg_image = conf.background_image
         self.__credits = f'Created and Designed by {conf.author} | {conf.www}'
 
@@ -53,7 +51,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'New Game',
-            Event(ecodes.STARTGAME, ecodes.STARTGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_STARTGAME)
         )
         b_newgame.set_font(conf.std_font)
         b_newgame.align(b_newgame.CENTER)
@@ -63,7 +61,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Load Game',
-            Event(ecodes.LOADGAME, ecodes.LOADGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_LOADGAME)
         )
         b_loadgame.set_font(conf.std_font)
         b_loadgame.align(b_loadgame.CENTER)
@@ -78,7 +76,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Options',
-            Event(ecodes.OPTIONS, ecodes.OPTIONS)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_OPTIONS)
         )
         b_options.set_font(conf.std_font)
         b_options.align(b_options.CENTER)
@@ -88,7 +86,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Quit Game',
-            Event(ecodes.QUITGAME, ecodes.QUITGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME)
         )
         b_quitgame.set_font(conf.std_font)
         b_quitgame.align(b_quitgame.CENTER)

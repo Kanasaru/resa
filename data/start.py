@@ -8,7 +8,6 @@
 import pygame
 from data.settings import conf
 import data.eventcodes as ecodes
-import data.helpers.color as colors
 from data.game import Game
 from data.interfaces.mainmenu import MainMenu
 from data.interfaces.options import Options
@@ -65,35 +64,28 @@ class Start(object):
 
         :return: None
         """
-        # title events
-        for event in self.title_main.get_events():
-            if event.code == ecodes.STARTGAME:
-                self.start_game = True
-            elif event.code == ecodes.LOADGAME:
-                self.start_game = True
-                self.load_game = True
-            elif event.code == ecodes.OPTIONS:
-                self.options = True
-            elif event.code == ecodes.QUITGAME:
-                self.leave_game = True
-            else:
-                pass
-
-        for event in self.title_options.get_events():
-            if event.code == ecodes.MAINMENU:
-                self.options = False
-            elif event.code == ecodes.RES_1920:
-                self.resolution_update = (1920, 1080)
-            elif event.code == ecodes.RES_1000:
-                self.resolution_update = (1000, 600)
-            elif event.code == ecodes.RES_800:
-                self.resolution_update = (800, 600)
-            else:
-                pass
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.leave_game = True
+            elif event.type == ecodes.RESA_TITLE_EVENT:
+                if event.code == ecodes.RESA_STARTGAME:
+                    self.start_game = True
+                elif event.code == ecodes.RESA_LOADGAME:
+                    self.start_game = True
+                    self.load_game = True
+                elif event.code == ecodes.RESA_OPTIONS:
+                    self.options = True
+                elif event.code == ecodes.RESA_QUITGAME:
+                    self.leave_game = True
+                elif event.code == ecodes.RESA_MAINMENU:
+                    self.options = False
+                elif event.code == ecodes.RESA_CHG_RESOLUTION:
+                    self.resolution_update = event.res
+                else:
+                    pass
+            elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
+                if len(self.music.playlist) > 0:
+                    pygame.mixer.music.queue(self.music.playlist.pop())
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_p:
                     self.music.pause()
@@ -101,18 +93,12 @@ class Start(object):
                     self.music.volume += .1
                 if event.key == pygame.K_MINUS:
                     self.music.volume -= .1
-            elif event.type == pygame.USEREVENT:
-                if len(self.music.playlist) > 0:
-                    pygame.mixer.music.queue(self.music.playlist.pop())
             else:
                 pass
             if self.options:
                 self.title_options.handle_event(event)
             else:
                 self.title_main.handle_event(event)
-
-        self.title_main.clear_events()
-        self.title_options.clear_events()
 
     def run_logic(self) -> None:
         """ Runs the game logic
@@ -122,7 +108,7 @@ class Start(object):
         if self.start_game:
             if self.game is not None and self.game.exit_game:
                 self.music.load()
-                self.music.start()
+                self.music.start(conf.volume)
                 self.start_game = False
                 self.load_game = False
                 self.game = None
@@ -147,7 +133,7 @@ class Start(object):
 
         :return: None
         """
-        self.surface.fill(colors.COLOR_WHITE)
+        self.surface.fill(conf.COLOR_WHITE)
         if self.options:
             self.title_options.render(self.surface)
         else:

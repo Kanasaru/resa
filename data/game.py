@@ -7,7 +7,6 @@
 
 from data.settings import conf
 import datetime
-import data.helpers.color as colors
 import pygame
 import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
@@ -40,11 +39,7 @@ class Game(object):
         self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
         self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
         game_panel_sheet_handler = SpriteSheetHandler()
-        buttons = SpriteSheet(
-            conf.sp_menu_btn_key,
-            conf.sp_menu_btn,
-            conf.sp_menu_btn_size
-        )
+        buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
         buttons.colorkey = (1, 0, 0)
         game_panel_sheet_handler.add(buttons)
         self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
@@ -80,19 +75,22 @@ class Game(object):
 
         :return: None
         """
-        # game panel events
-        for event in self.game_panel.get_events():
-            if event.code == ecodes.STOPGAME:
-                self.exit_game = True
-            elif event.code == ecodes.SAVEGAME:
-                self.game_data_handler.world_data = (self.map.get_rect(), self.map.get_raw_fields(), self.map.get_raw_trees())
-                self.game_data_handler.save_to_file(conf.save_file)
-            else:
-                pass
         # pygame events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.exit_game = True
+            elif event.type == ecodes.RESA_TITLE_EVENT:
+                if event.code == ecodes.RESA_STOPGAME:
+                    self.exit_game = True
+                elif event.code == ecodes.RESA_SAVEGAME:
+                    self.game_data_handler.world_data = (
+                        self.map.get_rect(),
+                        self.map.get_raw_fields(),
+                        self.map.get_raw_trees()
+                    )
+                    self.game_data_handler.save_to_file(conf.save_file)
+                else:
+                    pass
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     pass
@@ -102,15 +100,14 @@ class Game(object):
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_F3:
                     self.debug_handler.toggle()
+                if event.key == pygame.K_F2:
+                    pass  # pygame.image.save(self.surface, 'screenshot.png')
             else:
                 pass
             # event handler
             self.debug_screen.handle_event(event)
             self.game_panel.handle_event(event)
             self.map.handle_event(event)
-        # clear event queues
-        self.debug_screen.clear_events()
-        self.game_panel.clear_events()
 
     def run_logic(self) -> None:
         """ Runs the in-game logic
@@ -135,7 +132,7 @@ class Game(object):
         :return: None
         """
         # basic
-        self.surface.fill(colors.COLOR_WHITE)
+        self.surface.fill(conf.COLOR_WHITE)
         # map
         self.map.render()
         pygame.Surface.blit(self.surface, self.map.get_surface(), (1, self.game_panel.rect.height + 1))

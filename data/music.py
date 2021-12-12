@@ -1,4 +1,5 @@
 from data.settings import conf
+import data.eventcodes as ecodes
 import pygame
 import os
 
@@ -10,7 +11,7 @@ class Music(object):
         self.loop = 0
         self.playlist = list()
 
-        pygame.mixer.music.set_endevent(pygame.USEREVENT)
+        pygame.mixer.music.set_endevent(ecodes.RESA_MUSIC_ENDED_EVENT)
 
     @property
     def volume(self):

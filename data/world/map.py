@@ -7,7 +7,6 @@
 
 from data.settings import conf
 import pygame.sprite
-import data.helpers.color as colors
 from data.world.generator import Generator
 
 
@@ -22,7 +21,7 @@ class Loader(object):
         self.grid_size = grid_size
         self.surface = pygame.Surface(self.size)
         self.bg_surface = pygame.Surface(self.size)
-        self.surface.fill(colors.COLOR_BLACK)
+        self.surface.fill(conf.COLOR_BLACK)
         self.map_pace = conf.map_pace
         self.moving = False
         self.move_steps = (False, False, False, False)

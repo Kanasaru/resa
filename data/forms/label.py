@@ -7,8 +7,8 @@
 
 __version__ = '1.1'
 
+from data.settings import conf
 import pygame
-import data.helpers.color as colors
 from data.forms.form import Form
 
 
@@ -32,7 +32,7 @@ class Label(Form):
         self.font = None
         self.font_size = font_size
         self.font_colors = {
-            "standard": colors.COLOR_BLACK,
+            "standard": conf.COLOR_BLACK,
         }
         self.callback = callback
 

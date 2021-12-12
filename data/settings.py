@@ -33,6 +33,16 @@ class Settings(object):
         self.sp_menu_btn_size = None
         self.sp_world = None
 
+        self.COLOR_KEY = (1, 0, 0)
+        self.COLOR_BLACK = (0, 0, 0)
+        self.COLOR_WHITE = (255, 255, 255)
+        self.COLOR_RED = (255, 0, 0)
+        self.COLOR_BLUE = (0, 0, 255)
+        self.COLOR_YELLOW = (255, 255, 0)
+        self.COLOR_CYAN = (0, 255, 255)
+        self.COLOR_GRAY = (128, 128, 128)
+        self.COLOR_GREEN = (0, 128, 0)
+
     def load_config_file(self, filepath):
         self.parser.read(filepath)
 

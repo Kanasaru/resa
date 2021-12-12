@@ -10,8 +10,6 @@ import pygame
 from data.interfaces.interface import Interface
 from data.forms.label import Label
 from data.forms.title import Title
-from data.helpers.time import seconds_to_clock
-import data.helpers.color as colors
 
 
 class DebugScreen(Interface):
@@ -22,7 +20,7 @@ class DebugScreen(Interface):
 
         self.name = 'debug'
         self.rect = pygame.Rect((0, 0), (int(conf.resolution[0] / 3), conf.resolution[1]))
-        self.bg_color = colors.COLOR_BLACK
+        self.bg_color = conf.COLOR_BLACK
         self.bg_image = None
         self.alpha = 192
 
@@ -32,13 +30,13 @@ class DebugScreen(Interface):
         self._timer = '00:00:00'
 
         tf_title = Label('tf_title', (15, 40), f'Debug Screen', 18)
-        tf_title.font_color(colors.COLOR_WHITE)
+        tf_title.font_color(conf.COLOR_WHITE)
         tf_title.align(tf_title.LEFT)
 
         self._y = tf_title.pos_y + tf_title.height() + 10
 
         tf_playtime = Label('tf_playtime', (15, self._y), f'Current play game: {self.timer}', 14, self.__update_timer)
-        tf_playtime.font_color(colors.COLOR_WHITE)
+        tf_playtime.font_color(conf.COLOR_WHITE)
         tf_playtime.align(tf_playtime.LEFT)
 
         self._y = tf_playtime.pos_y + tf_playtime.height() + 10
@@ -52,11 +50,11 @@ class DebugScreen(Interface):
 
     @timer.setter
     def timer(self, value: int):
-        self._timer = seconds_to_clock(value)
+        self._timer = self.seconds_to_clock(value)
 
     def add(self, desc: str, callback):
         new_label = Label(desc, (15, self._y), f'{desc}:', 14, lambda: self.__callback(desc, callback))
-        new_label.font_color(colors.COLOR_WHITE)
+        new_label.font_color(conf.COLOR_WHITE)
         new_label.align(new_label.LEFT)
         self.title.add(new_label)
 
@@ -67,3 +65,30 @@ class DebugScreen(Interface):
 
     def __update_timer(self):
         return f'Current play game: {self.timer}'
+
+    @staticmethod
+    def seconds_to_clock(seconds: int):
+        """ Transforms seconds into time string
+
+        :param seconds: seconds to transform
+        :returns: clock format like '00:00:00'
+        """
+        seconds = abs(seconds)
+        hours = seconds // 3600
+        minutes = (seconds - (hours * 3600)) // 60
+        seconds -= (seconds - (hours * 3600)) - (seconds - (minutes * 60))
+
+        if hours < 10:
+            hours = "0" + str(hours)
+        else:
+            hours = str(hours)
+        if minutes < 10:
+            minutes = "0" + str(minutes)
+        else:
+            minutes = str(minutes)
+        if seconds < 10:
+            seconds = "0" + str(seconds)
+        else:
+            seconds = str(seconds)
+
+        return f'{hours}:{minutes}:{seconds}'

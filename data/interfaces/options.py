@@ -12,9 +12,7 @@ from data.interfaces.interface import Interface
 from data.forms.label import Label
 from data.forms.title import Title
 from data.forms.button import Button
-from data.helpers.event import Event
 import data.eventcodes as ecodes
-import data.helpers.color as colors
 
 
 class Options(Interface):
@@ -26,7 +24,7 @@ class Options(Interface):
 
         self.name = 'options'
         self.rect = pygame.Rect((0, 0), conf.resolution)
-        self.bg_color = colors.COLOR_BLACK
+        self.bg_color = conf.COLOR_BLACK
         self.bg_image = conf.background_image
         self.__credits = f'Created and Designed by {conf.author} | {conf.www}'
 
@@ -57,7 +55,7 @@ class Options(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 180, 50),
             self.sheet_handler, self.sheet_key,
             '1920x1080',
-            Event(ecodes.RES_1920, ecodes.RES_1920)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_CHG_RESOLUTION, res=(1920, 1080))
         )
         b_1920x1080.set_font(conf.std_font)
         b_1920x1080.align(b_1920x1080.CENTER)
@@ -69,7 +67,7 @@ class Options(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 180, 50),
             self.sheet_handler, self.sheet_key,
             '1000x600',
-            Event(ecodes.RES_1000, ecodes.RES_1000)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_CHG_RESOLUTION, res=(1000, 600))
         )
         b_1000x600.set_font(conf.std_font)
         b_1000x600.align(b_1000x600.CENTER)
@@ -81,7 +79,7 @@ class Options(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 180, 50),
             self.sheet_handler, self.sheet_key,
             '800x600',
-            Event(ecodes.RES_800, ecodes.RES_800)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_CHG_RESOLUTION, res=(800, 600))
         )
         b_800x600.set_font(conf.std_font)
         b_800x600.align(b_800x600.CENTER)
@@ -93,7 +91,7 @@ class Options(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Back',
-            Event(ecodes.MAINMENU, ecodes.MAINMENU)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_MAINMENU)
         )
         b_back.set_font(conf.std_font)
         b_back.align(b_back.CENTER)

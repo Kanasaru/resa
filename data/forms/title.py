@@ -7,15 +7,15 @@
 
 __version__ = '1.1'
 
+from data.settings import conf
 import pygame
 from data.forms.form import Form
-import data.helpers.color as colors
 
 
 class Title(Form):
     def __init__(self, name: str, rect: pygame.Rect,
                  bg_color: tuple[int, int, int], bg_image=None,
-                 colorkey: tuple[int, int, int] = colors.COLOR_KEY) -> None:
+                 colorkey: tuple[int, int, int] = conf.COLOR_KEY) -> None:
         """ Initializes a title that handles and arrange other form objects
 
         :param name: name of the title
@@ -60,17 +60,6 @@ class Title(Form):
                 self.form_objects.add(obj)
         else:
             self.form_objects.add(form_object)
-
-    def get_events(self) -> list:
-        """ Returns all raised form events in its own form group without emptying the event queue
-
-        :return: list of all raised form events
-        """
-        for form_object in self.form_objects:
-            self.events.extend(form_object.get_events())
-            form_object.clear_events()
-
-        return self.events
 
     def handle_event(self, event) -> None:
         """ Handles given event

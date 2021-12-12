@@ -7,16 +7,16 @@
 
 __version__ = '1.1'
 
+from data.settings import conf
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
-import data.helpers.color as colors
 from data.forms.form import Form
 
 
 class Button(Form):
     def __init__(self, name: str, rect: pygame.Rect,
                  sprite_sheet_handler: SpriteSheetHandler, sprite_key: str = '',
-                 text: str = "", callback_event: object = None) -> None:
+                 text: str = "", callback_event: pygame.event.Event = None) -> None:
         """ Initializes a button form object
 
         :param name: name of the textbox
@@ -43,16 +43,16 @@ class Button(Form):
         self.font = None
         self.font_size = 20
         self.font_colors = {
-            "standard": colors.COLOR_BLACK,
+            "standard": conf.COLOR_BLACK,
             "hover": self.COLOR_BUTTON_HOVER,
             "pressed": self.COLOR_BUTTON_PRESSED,
-            "disabled": colors.COLOR_BLACK,
+            "disabled": conf.COLOR_BLACK,
         }
         self.surf_images = {}
         self.clickable = True
         self.callback_event = callback_event
         self.button_down = False
-        self.colorkey = colors.COLOR_KEY
+        self.colorkey = conf.COLOR_KEY
 
         self.set_font(False, self.font_size)
         self.load_sprites()
@@ -175,7 +175,7 @@ class Button(Form):
             elif event.type == pygame.MOUSEBUTTONUP:
                 if self.rect.collidepoint(event.pos) and self.button_down:
                     if self.callback_event is not None:
-                        self.events.append(self.callback_event)
+                        pygame.event.post(self.callback_event)
                     self.image = self.surf_images["hover"]
                 self.button_down = False
             elif event.type == pygame.MOUSEMOTION:

@@ -28,7 +28,6 @@ class Form(pygame.sprite.Sprite):
         self.pos_x = 0
         self.pos_y = 0
         self.alignment = self.LEFT
-        self.events = []
         self.sprite_sheet_handler = None
 
     def set_alpha(self, value):
@@ -41,20 +40,6 @@ class Form(pygame.sprite.Sprite):
         :return: None
         """
         self.image.set_colorkey(key)
-
-    def get_events(self) -> list:
-        """ Returns all raised form events without emptying the event queue
-
-        :return: list of all raised form events
-        """
-        return self.events
-
-    def clear_events(self) -> None:
-        """ Empties the form event queue
-
-        :return: None
-        """
-        self.events.clear()
 
     def handle_event(self, event) -> None:
         """ Handles given event
