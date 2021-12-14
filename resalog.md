@@ -5,7 +5,7 @@
 > - [ ] add in-game sound handler
 > - [ ] add new form: switch
 > - [ ] add full screen mode
-> - [ ] add auto-save
+> - [x] add auto-save
 > - [ ] add in-game time
 > - [ ] add new form: message box
 > - [x] add screenshot function

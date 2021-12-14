@@ -8,6 +8,7 @@
 from data.settings import conf
 from datetime import datetime
 import pygame
+import logging
 import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
 from data.interfaces.gamepanel import GamePanel
@@ -56,6 +57,9 @@ class Game(object):
         # loading map
         self.map = None
         self.load_map()
+
+        # timer
+        pygame.time.set_timer(ecodes.RESA_AUTOSAVE_EVENT, conf.autosave_interval)
 
         # start the game loop
         self.loop()
@@ -107,7 +111,10 @@ class Game(object):
                     self.debug_handler.toggle()
                 else:
                     pass
-            elif event.type == pygame.MOUSEBUTTONUP:
+            elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
+                print('Saved by default')
+                self.save_game()
+            if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     pass
                 if event.button == 2:
@@ -116,12 +123,7 @@ class Game(object):
                 if event.code == ecodes.RESA_STOPGAME:
                     self.exit_game = True
                 elif event.code == ecodes.RESA_SAVEGAME:
-                    self.game_data_handler.world_data = (
-                        self.map.rect,
-                        self.map.get_raw_fields(),
-                        self.map.get_raw_trees()
-                    )
-                    self.game_data_handler.save_to_file(conf.save_file)
+                    self.save_game()
                 else:
                     pass
             else:
@@ -180,6 +182,21 @@ class Game(object):
         # display surface
         pygame.display.flip()
 
-    def take_screenshot(self):
-        pygame.image.save(pygame.display.get_surface(), f'saves/screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+    def take_screenshot(self) -> None:
+        """ Saves the current screen as an image.
+
+        :return: None
+        """
+        pygame.image.save(pygame.display.get_surface(),
+                          f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+        logging.info('Took screenshot')
         self.screenshot = False
+
+    def save_game(self) -> None:
+        """ Saves the game into its save-file.
+
+        :return: None
+        """
+        self.game_data_handler.world_data = (self.map.rect, self.map.get_raw_fields(), self.map.get_raw_trees())
+        self.game_data_handler.save_to_file(conf.save_file)
+        logging.info('Autosave')

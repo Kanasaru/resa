@@ -37,6 +37,9 @@ class Settings(object):
         self.std_font_size = 20
         self.volume = .2
         self.bg_music = None
+        self.screenshot_path = 'saves/'
+        self.autosave = False
+        self.autosave_interval = 240000
 
         # sprite sheets
         self.sp_menu_btn_key = None

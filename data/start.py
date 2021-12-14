@@ -6,6 +6,7 @@
 """
 
 import pygame
+import logging
 from datetime import datetime
 from data.settings import conf
 import data.eventcodes as ecodes
@@ -176,6 +177,12 @@ class Start(object):
         pygame.quit()
         print("Bye bye!")
 
-    def take_screenshot(self):
-        pygame.image.save(pygame.display.get_surface(), f'saves/screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+    def take_screenshot(self) -> None:
+        """ Saves the current screen as an image.
+
+        :return: None
+        """
+        pygame.image.save(pygame.display.get_surface(),
+                          f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+        logging.info('Took screenshot')
         self.screenshot = False
