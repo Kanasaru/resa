@@ -6,6 +6,7 @@
 """
 
 import pygame
+from datetime import datetime
 from data.settings import conf
 import data.eventcodes as ecodes
 from data.game import Game
@@ -26,6 +27,7 @@ class Start(object):
         self.leave_game = False
         self.options = False
         self.resolution_update = None
+        self.screenshot = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
@@ -96,6 +98,8 @@ class Start(object):
                 else:
                     self.music.refill()
             elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_F2:
+                    self.screenshot = True
                 if event.key == pygame.K_p:
                     self.music.pause()
                 if event.key == pygame.K_PLUS:
@@ -143,6 +147,10 @@ class Start(object):
         else:
             self.title_main.run_logic()
 
+        # screenshot
+        if self.screenshot:
+            self.take_screenshot()
+
     def render(self) -> None:
         """ Renders everything to the display
 
@@ -167,3 +175,7 @@ class Start(object):
         """
         pygame.quit()
         print("Bye bye!")
+
+    def take_screenshot(self):
+        pygame.image.save(pygame.display.get_surface(), f'saves/screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+        self.screenshot = False

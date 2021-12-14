@@ -30,6 +30,7 @@ class GamePanel(Interface):
         self._resources = f'Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0'
 
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
+        self.title.set_alpha(255)
 
         # labels
         tf_resources = Label('tf_resources', (self.title.width() // 2, 5), self.resources, 14, self.update_resources)

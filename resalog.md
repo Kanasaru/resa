@@ -8,7 +8,7 @@
 > - [ ] add auto-save
 > - [ ] add in-game time
 > - [ ] add new form: message box
-> - [ ] add screenshot function
+> - [x] add screenshot function
 > - [ ] add mouse handling
 
 > ### Environment Update | v0.6.0-alpha

@@ -23,6 +23,7 @@ class GameLoadScreen(Interface):
         self._text = f'Loading world...'
 
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
+        self.title.set_alpha(255)
 
         tf_load_screen = Label('tf_load_screen', (self.title.width() // 2, self.title.height() // 2), self.text, 20, cb)
         tf_load_screen.set_font(conf.std_font, 20)

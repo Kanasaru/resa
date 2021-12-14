@@ -6,7 +6,7 @@
 """
 
 from data.settings import conf
-import datetime
+from datetime import datetime
 import pygame
 import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
@@ -26,6 +26,7 @@ class Game(object):
         # event handling varibales
         self.exit_game = False
         self.map_load = load
+        self.screenshot = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
@@ -43,7 +44,7 @@ class Game(object):
         self.debug_screen = DebugScreen()
         self.debug_screen.add('FPS', self.clock.get_fps)
         self.debug_screen.add('Version', lambda: conf.version)
-        self.debug_screen.add('Date', lambda: datetime.datetime.now().strftime("%A, %d. %B %Y"))
+        self.debug_screen.add('Date', lambda: datetime.now().strftime('%A, %d. %B %Y'))
         self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
         # game panel
         game_panel_sheet_handler = SpriteSheetHandler()
@@ -101,7 +102,7 @@ class Game(object):
                 self.exit_game = True
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_F2:
-                    pass
+                    self.screenshot = True
                 elif event.key == pygame.K_F3:
                     self.debug_handler.toggle()
                 else:
@@ -172,5 +173,13 @@ class Game(object):
         if self.debug_handler:
             self.debug_screen.render(self.surface)
 
+        # screenshot
+        if self.screenshot:
+            self.take_screenshot()
+
         # display surface
         pygame.display.flip()
+
+    def take_screenshot(self):
+        pygame.image.save(pygame.display.get_surface(), f'saves/screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+        self.screenshot = False

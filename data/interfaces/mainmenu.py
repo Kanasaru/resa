@@ -32,6 +32,7 @@ class MainMenu(Interface):
 
     def build(self):
         self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
+        self.title.set_alpha(255)
 
         # labels
         tf_headline = Label('tf_headline', (int(self.title.width() / 2), 20), conf.title.upper())
