@@ -12,6 +12,7 @@ import logging
 import data.eventcodes as ecodes
 from data.interfaces.debugscreen import DebugScreen
 from data.interfaces.gamepanel import GamePanel
+from data.interfaces.pausescreen import GamePausedScreen
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.world.map import Map
 from data.handlers.debug import DebugHandler
@@ -28,6 +29,7 @@ class Game(object):
         self.exit_game = False
         self.map_load = load
         self.screenshot = False
+        self.pause_game = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
@@ -53,6 +55,10 @@ class Game(object):
         buttons.colorkey = (1, 0, 0)
         game_panel_sheet_handler.add(buttons)
         self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
+        # pause screen
+        self.paused_screen = GamePausedScreen(pygame.Rect(
+            (0, self.game_panel.rect.height),
+            (conf.resolution[0], conf.resolution[1] - self.game_panel.rect.height)))
 
         # loading map
         self.map = None
@@ -109,6 +115,8 @@ class Game(object):
                     self.screenshot = True
                 elif event.key == pygame.K_F3:
                     self.debug_handler.toggle()
+                elif event.key == pygame.K_p:
+                    self.pause_game = not self.pause_game
                 else:
                     pass
             elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
@@ -132,27 +140,29 @@ class Game(object):
             # push event into title and map event handling
             self.debug_screen.handle_event(event)
             self.game_panel.handle_event(event)
-            self.map.handle_event(event)
+            # do not run game event handler on pause
+            if not self.pause_game:
+                self.map.handle_event(event)
 
     def run_logic(self) -> None:
         """ Runs the in-game logic
 
         :return: None
         """
-        # update game data
-        self.game_data_handler.update()
+        if not self.pause_game:
+            # update game data
+            self.game_data_handler.update()
+            # update map
+            self.map.run_logic()
+
+        # update game panel
+        self.game_panel.run_logic()
 
         # update debug data if activated
         if self.debug_handler:
             self.debug_handler.update()
             self.debug_screen.timer = self.debug_handler.play_time
             self.debug_screen.run_logic()
-
-        # update game panel
-        self.game_panel.run_logic()
-
-        # update map
-        self.map.run_logic()
 
     def render(self) -> None:
         """ Renders everything to the surface
@@ -174,6 +184,10 @@ class Game(object):
         # render debug screen if activated
         if self.debug_handler:
             self.debug_screen.render(self.surface)
+
+        # render pause screen
+        if self.pause_game:
+            self.paused_screen.render(self.surface)
 
         # screenshot
         if self.screenshot:

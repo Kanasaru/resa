@@ -10,6 +10,7 @@
 > - [ ] add new form: message box
 > - [x] add screenshot function
 > - [ ] add mouse handling
+> - [x] add pause function
 
 > ### Environment Update | v0.6.0-alpha
 > - [ ] add mountains
