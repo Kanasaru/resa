@@ -26,6 +26,7 @@ class GameDataHandler(object):
         self._game_time = 0
         self._game_timer = None
         self._game_time_speed = 1
+        self._pause_timer = False
 
     @property
     def game_time_speed(self) -> int:
@@ -61,6 +62,9 @@ class GameDataHandler(object):
     def start_timer(self):
         self._game_timer = pygame.time.Clock()
 
+    def pause_ingame_time(self):
+        self._pause_timer = not self._pause_timer
+
     def get_game_time(self) -> str:
         """ Returns the in-game time.
 
@@ -89,7 +93,8 @@ class GameDataHandler(object):
         """
         if self._game_timer is not None:
             self._game_timer.tick()
-            self.game_time += self._game_timer.get_time()
+            if not self._pause_timer:
+                self.game_time += self._game_timer.get_time()
 
     def read_from_file(self, filepath: str) -> None:
         """ Read game data from file.

@@ -119,6 +119,7 @@ class Game(object):
                     self.debug_handler.toggle()
                 elif event.key == pygame.K_p:
                     self.pause_game = not self.pause_game
+                    self.game_data_handler.pause_ingame_time()
                 else:
                     pass
             elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
@@ -151,9 +152,10 @@ class Game(object):
 
         :return: None
         """
+        # update game data
+        self.game_data_handler.update()
+
         if not self.pause_game:
-            # update game data
-            self.game_data_handler.update()
             # update map
             self.map.run_logic()
 
