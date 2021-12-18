@@ -1,45 +1,46 @@
 # Road to a playable 1.0.0-alpha
 ***
-> ### Concrete Update | v0.5.0-alpha
-> - [ ] add in-game music
-> - [ ] add in-game sound handler
-> - [ ] add new form: switch
-> - [ ] add full screen mode
-> - [x] add auto-save
-> - [x] add in-game time
-> - [ ] add new form: message box
-> - [x] add screenshot function
-> - [ ] add mouse handling
-> - [x] add pause function
+### Concrete Update | v0.5.0-alpha
+- [ ] add in-game music
+- [ ] add in-game sound handler
+- [ ] add new form: switch
+- [ ] add full screen mode
+- [x] add auto-save
+- [x] add in-game time
+- [ ] add new form: message box
+- [x] add screenshot function
+- [ ] add mouse handling
+- [x] add pause function
 
-> ### Environment Update | v0.6.0-alpha
-> - [ ] add mountains
-> - [ ] add tree growth
-> - [ ] add fishes
-> - [ ] add ship wracks
-> - [ ] add rocks
+### Environment Update | v0.6.0-alpha
+- [ ] add mountains
+- [ ] add tree growth
+- [ ] add fishes
+- [ ] add ship wracks
+- [ ] add rocks
 
-> ### Infrastructure Update | v0.7.0-alpha
-> - [ ] add countinghouse
-> - [ ] add marketplace
-> - [ ] add houses
+### Infrastructure Update | v0.7.0-alpha
+- [ ] add countinghouse
+- [ ] add marketplace
+- [ ] add houses
 
-> ### Harvest Update | v0.8.0-alpha
-> - [ ] add lumberjack
-> - [ ] add stonemason
-> - [ ] add fisherman
-> - [ ] add mineshafts
-> - [ ] add sheep farm
-> - [ ] add wheat farm
-> - [ ] add weaving
-> - [ ] add mill
-> - [ ] add bakery
+### Harvest Update | v0.8.0-alpha
+- [ ] add lumberjack
+- [ ] add stonemason
+- [ ] add fisherman
+- [ ] add mineshafts
+- [ ] add sheep farm
+- [ ] add wheat farm
+- [ ] add weaving
+- [ ] add mill
+- [ ] add bakery
 
-> ### Population Update | v0.9.0-alpha
-> - [ ] ...to be continued
+### Population Update | v0.9.0-alpha
+- [ ] ...to be continued
 
 # Things done so far
-
+***
+### Island Update | v0.4.3-alpha
 - [x] music handling
 - [x] background image scale when changing resolution
 - [x] event handling by using only pygame events
