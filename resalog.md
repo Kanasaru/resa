@@ -6,7 +6,7 @@
 > - [ ] add new form: switch
 > - [ ] add full screen mode
 > - [x] add auto-save
-> - [ ] add in-game time
+> - [x] add in-game time
 > - [ ] add new form: message box
 > - [x] add screenshot function
 > - [ ] add mouse handling

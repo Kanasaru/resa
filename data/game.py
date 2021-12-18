@@ -92,12 +92,14 @@ class Game(object):
         self.game_panel.resources = self.game_data_handler.resources
 
     def loop(self) -> None:
-        """ in-game loop
+        """ in-game loopp
 
         :return: None
         """
+        self.game_data_handler.start_timer()
+
         while not self.exit_game:
-            self.clock.tick(conf.fps)
+            self.clock.tick()
             self.handle_events()
             self.run_logic()
             self.render()

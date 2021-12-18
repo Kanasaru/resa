@@ -24,7 +24,7 @@ class GameDataHandler(object):
         }
         self._world_data = None
         self._game_time = 0
-        self._game_timer = pygame.time.Clock()
+        self._game_timer = None
         self._game_time_speed = 1
 
     @property
@@ -58,13 +58,21 @@ class GameDataHandler(object):
     def game_time(self, time: int) -> None:
         self._game_time = time
 
+    def start_timer(self):
+        self._game_timer = pygame.time.Clock()
+
     def get_game_time(self) -> str:
         """ Returns the in-game time.
 
         :return: in-game time
         """
-        day = ((self.game_time // 1000) * self.game_time_speed) // (24 * 3600)
-        return f'Day {day}'
+        time = ((self.game_time // 1000) * self.game_time_speed)
+        year = time // (365 * 24 * 3600)
+        time -= year * (365 * 24 * 3600)
+        day = time // (24 * 3600)
+        time -= day * (24 * 3600)
+        hour = time // 3600
+        return f'Year {year} Day {day} Hour {hour}'
 
     @property
     def world_data(self) -> tuple[pygame.Rect, dict, dict]:
@@ -79,8 +87,9 @@ class GameDataHandler(object):
 
         :return: None
         """
-        self._game_timer.tick()
-        self.game_time += self._game_timer.get_time()
+        if self._game_timer is not None:
+            self._game_timer.tick()
+            self.game_time += self._game_timer.get_time()
 
     def read_from_file(self, filepath: str) -> None:
         """ Read game data from file.
