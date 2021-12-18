@@ -15,7 +15,7 @@ import os
 class Music(object):
     def __init__(self) -> None:
         """ Creates a music handler """
-        self.pause = False
+        self.paused = False
         self._volume = .2
         self.loop = 0
         self.playlist = list()
@@ -30,7 +30,7 @@ class Music(object):
 
     @volume.setter
     def volume(self, value) -> None:
-        if 0.0 < value < 1.0:
+        if 0.0 <= value <= 1.0:
             pygame.mixer.music.set_volume(value)
             self._volume = value
 
@@ -86,12 +86,12 @@ class Music(object):
 
         :return: None
         """
-        if self.pause:
+        if self.paused:
             pygame.mixer.music.unpause()
-            self.pause = False
+            self.paused = False
         else:
             pygame.mixer.music.pause()
-            self.pause = True
+            self.paused = True
 
     @staticmethod
     def stop() -> None:
