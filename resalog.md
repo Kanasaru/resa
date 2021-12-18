@@ -1,7 +1,7 @@
 # Road to a playable 1.0.0-alpha
 ***
 ### Concrete Update | v0.5.0-alpha
-- [ ] add in-game music
+- [x] add in-game music
 - [ ] add in-game sound handler
 - [ ] add new form: switch
 - [ ] add full screen mode
@@ -9,7 +9,7 @@
 - [x] add in-game time
 - [ ] add new form: message box
 - [x] add screenshot function
-- [ ] add mouse handling
+- [ ] ~~add mouse handling~~ (no idea what i meant)
 - [x] add pause function
 
 ### Environment Update | v0.6.0-alpha

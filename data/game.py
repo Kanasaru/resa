@@ -17,6 +17,7 @@ from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.world.map import Map
 from data.handlers.debug import DebugHandler
 from data.handlers.gamedata import GameDataHandler
+from data.handlers.music import Music
 
 
 class Game(object):
@@ -38,6 +39,8 @@ class Game(object):
         self.debug_handler = DebugHandler()
         self.game_data_handler = GameDataHandler()
         self.game_data_handler.game_time_speed = conf.game_speed
+        self.music = Music()
+        self.music.load()
 
         # screen settings, build screens and panels
         self.surface = pygame.display.get_surface()
@@ -97,9 +100,10 @@ class Game(object):
         :return: None
         """
         self.game_data_handler.start_timer()
+        self.music.start(conf.volume)
 
         while not self.exit_game:
-            self.clock.tick()
+            self.clock.tick(conf.fps)
             self.handle_events()
             self.run_logic()
             self.render()
@@ -120,15 +124,27 @@ class Game(object):
                 elif event.key == pygame.K_p:
                     self.pause_game = not self.pause_game
                     self.game_data_handler.pause_ingame_time()
+                    self.music.pause()
+                elif event.key == pygame.K_PLUS:
+                    self.music.volume += .1
+                elif event.key == pygame.K_MINUS:
+                    self.music.volume -= .1
                 else:
                     pass
             elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
                 print('Saved by default')
                 self.save_game()
-            if event.type == pygame.MOUSEBUTTONUP:
+            elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
+                if len(self.music.playlist) > 0:
+                    self.music.load_next()
+                else:
+                    self.music.refill()
+            elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     pass
-                if event.button == 2:
+                elif event.button == 2:
+                    pass
+                else:
                     pass
             elif event.type == ecodes.RESA_TITLE_EVENT:
                 if event.code == ecodes.RESA_STOPGAME:
