@@ -35,6 +35,7 @@ class Settings(object):
         self.save_file = 'saves/game.xml'
         self.std_font = None
         self.std_font_size = 20
+        self.msg_font_size = 16
         self.volume = .2
         self.bg_music = None
         self.screenshot_path = 'saves/'
