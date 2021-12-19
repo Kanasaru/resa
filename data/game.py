@@ -18,6 +18,7 @@ from data.world.map import Map
 from data.handlers.debug import DebugHandler
 from data.handlers.gamedata import GameDataHandler
 from data.handlers.music import Music
+from data.interfaces.msg import Message
 
 
 class Game(object):
@@ -58,6 +59,9 @@ class Game(object):
         buttons.colorkey = (1, 0, 0)
         game_panel_sheet_handler.add(buttons)
         self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
+        # messages
+        self.messages = Message()
+        self.messages.position = self.game_panel.rect.height + self.border_thickness * 3
         # pause screen
         self.paused_screen = GamePausedScreen(pygame.Rect(
             (0, self.game_panel.rect.height),
@@ -132,8 +136,8 @@ class Game(object):
                 else:
                     pass
             elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
-                print('Saved by default')
                 self.save_game()
+                self.messages.info('Game saved automatically!')
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
                 if len(self.music.playlist) > 0:
                     self.music.load_next()
@@ -151,6 +155,7 @@ class Game(object):
                     self.exit_game = True
                 elif event.code == ecodes.RESA_SAVEGAME:
                     self.save_game()
+                    self.messages.info('Game saved!')
                 else:
                     pass
             else:
@@ -174,6 +179,7 @@ class Game(object):
         if not self.pause_game:
             # update map
             self.map.run_logic()
+            self.messages.run_logic()
 
         # update game panel
         self.game_panel.run_logic()
@@ -197,6 +203,9 @@ class Game(object):
         pos_x = self.border_thickness
         pos_y = self.game_panel.rect.height + self.border_thickness
         pygame.Surface.blit(self.surface, self.map.get_surface(), (pos_x, pos_y))
+
+        # render message and info boxes
+        self.messages.render(self.surface)
 
         # render the game panel
         self.game_panel.render(self.surface)
