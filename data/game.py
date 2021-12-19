@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
-
+from data.interfaces.messagebox import MessageBox, MessageBoxButton
 from data.settings import conf
 from datetime import datetime
 import pygame
@@ -18,7 +18,7 @@ from data.world.map import Map
 from data.handlers.debug import DebugHandler
 from data.handlers.gamedata import GameDataHandler
 from data.handlers.music import Music
-from data.interfaces.msg import Message
+from data.handlers.msg import Message
 
 
 class Game(object):
@@ -30,7 +30,6 @@ class Game(object):
         # event handling varibales
         self.exit_game = False
         self.map_load = load
-        self.screenshot = False
         self.pause_game = False
 
         # set timers and clocks
@@ -60,8 +59,8 @@ class Game(object):
         game_panel_sheet_handler.add(buttons)
         self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
         # messages
-        self.messages = Message()
-        self.messages.position = self.game_panel.rect.height + self.border_thickness * 3
+        self.messages = Message(game_panel_sheet_handler, conf.sp_menu_btn_key)
+        self.messages.top = self.game_panel.rect.height + self.border_thickness * 3
         # pause screen
         self.paused_screen = GamePausedScreen(pygame.Rect(
             (0, self.game_panel.rect.height),
@@ -122,7 +121,7 @@ class Game(object):
                 self.exit_game = True
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_F2:
-                    self.screenshot = True
+                    self.take_screenshot()
                 elif event.key == pygame.K_F3:
                     self.debug_handler.toggle()
                 elif event.key == pygame.K_p:
@@ -136,8 +135,7 @@ class Game(object):
                 else:
                     pass
             elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
-                self.save_game()
-                self.messages.info('Game saved automatically!')
+                self.save_game(True)
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
                 if len(self.music.playlist) > 0:
                     self.music.load_next()
@@ -152,10 +150,18 @@ class Game(object):
                     pass
             elif event.type == ecodes.RESA_TITLE_EVENT:
                 if event.code == ecodes.RESA_STOPGAME:
-                    self.exit_game = True
+                    self.messages.show('Are you sure?', 'Leavinvg the game.',
+                                       pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
+                                       'Yes',
+                                       pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
+                                       'No')
+                    self.game_data_handler.pause_ingame_time()
                 elif event.code == ecodes.RESA_SAVEGAME:
                     self.save_game()
-                    self.messages.info('Game saved!')
+                elif event.code == ecodes.RESA_QUITGAME_TRUE:
+                    self.exit_game = True
+                elif event.code == ecodes.RESA_QUITGAME_FALSE:
+                    self.game_data_handler.pause_ingame_time()
                 else:
                     pass
             else:
@@ -163,10 +169,12 @@ class Game(object):
 
             # push event into title and map event handling
             self.debug_screen.handle_event(event)
-            self.game_panel.handle_event(event)
-            # do not run game event handler on pause
-            if not self.pause_game:
-                self.map.handle_event(event)
+            self.messages.handle_event(event)
+            if not self.messages.is_msg():
+                self.game_panel.handle_event(event)
+                # do not run game event handler on pause
+                if not self.pause_game:
+                    self.map.handle_event(event)
 
     def run_logic(self) -> None:
         """ Runs the in-game logic
@@ -176,13 +184,13 @@ class Game(object):
         # update game data
         self.game_data_handler.update()
 
-        if not self.pause_game:
-            # update map
-            self.map.run_logic()
-            self.messages.run_logic()
-
-        # update game panel
-        self.game_panel.run_logic()
+        self.messages.run_logic()
+        if not self.messages.is_msg():
+            if not self.pause_game:
+                # update map
+                self.map.run_logic()
+            # update game panel
+            self.game_panel.run_logic()
 
         # update debug data if activated
         if self.debug_handler:
@@ -218,10 +226,6 @@ class Game(object):
         if self.pause_game:
             self.paused_screen.render(self.surface)
 
-        # screenshot
-        if self.screenshot:
-            self.take_screenshot()
-
         # display surface
         pygame.display.flip()
 
@@ -230,16 +234,21 @@ class Game(object):
 
         :return: None
         """
-        pygame.image.save(pygame.display.get_surface(),
-                          f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+        filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
+        pygame.image.save(pygame.display.get_surface(), filename)
+        self.messages.info(f'Took screenshot: {filename}')
         logging.info('Took screenshot')
-        self.screenshot = False
 
-    def save_game(self) -> None:
+    def save_game(self, auto_save: bool = False) -> None:
         """ Saves the game into its save-file.
 
         :return: None
         """
         self.game_data_handler.world_data = (self.map.rect, self.map.get_raw_fields(), self.map.get_raw_trees())
         self.game_data_handler.save_to_file(conf.save_file)
-        logging.info('Autosave')
+        if auto_save:
+            text = 'Game saved automatically!'
+        else:
+            text = 'Game saved!'
+        self.messages.info(text)
+        logging.info(text)
