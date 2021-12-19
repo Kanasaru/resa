@@ -12,12 +12,11 @@ from data.forms.form import Form
 
 
 class Button(Form):
-    def __init__(self, name: str, rect: pygame.Rect,
+    def __init__(self, rect: pygame.Rect,
                  sprite_sheet_handler: SpriteSheetHandler, sprite_key: str = '',
                  text: str = "", callback_event: pygame.event.Event = None) -> None:
         """ Initializes a button form object
 
-        :param name: name of the textbox
         :param rect: rectangle with dimension and position
         :param sprite_sheet_handler: sprite sheet handler
         :param sprite_key: key of sheet for handler
@@ -35,7 +34,6 @@ class Button(Form):
         self.rect = rect
         self.pos_x = self.rect.x
         self.pos_y = self.rect.y
-        self.name = name
         self.text = text
         self.font = None
         self.font_size = conf.std_font_size

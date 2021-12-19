@@ -15,16 +15,7 @@ class Interface(object):
     :raises TypeError: if a method is called without assigning a title or assigned title is not <object> Title(Form)
     """
     def __init__(self):
-        self._name = None
         self._title = None
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value: str):
-        self._name = value
 
     @property
     def title(self):
@@ -67,16 +58,7 @@ class Interface(object):
         else:
             raise TypeError('title has to be <object> Title(Form)')
 
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __str__(self):
-        return f'Interface: {self.name}'
-
-    def __repr__(self):
-        return f'Interface: {self.name}'
-
     def __bool__(self):
-        if isinstance(self.title, Title) and self.name is not None:
+        if isinstance(self.title, Title):
             return True
         return False

@@ -11,11 +11,10 @@ from data.forms.form import Form
 
 
 class Label(Form):
-    def __init__(self, name: str, position: tuple[int, int],
+    def __init__(self, position: tuple[int, int],
                  text: str = "", font_size: int = conf.std_font_size, callback=None) -> None:
         """ Initializes a text box form object
 
-        :param name: name of the label
         :param position: position of the textbox on the title
         :param text: displayed text
         :param font_size: font size of displayed text
@@ -23,7 +22,6 @@ class Label(Form):
         """
         Form.__init__(self, (0, 0))
 
-        self.name = name
         self.pos_x = position[0]
         self.pos_y = position[1]
         self.text = text

@@ -22,7 +22,6 @@ class MainMenu(Interface):
         self.sheet_handler = sheet_handler
         self.sheet_key = sheet_key
 
-        self.name = 'main'
         self.rect = pygame.Rect((0, 0), conf.resolution)
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = conf.background_image
@@ -31,24 +30,23 @@ class MainMenu(Interface):
         self.build()
 
     def build(self):
-        self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
+        self.title = Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(255)
 
         # labels
-        tf_headline = Label('tf_headline', (int(self.title.width() / 2), 20), conf.title.upper())
+        tf_headline = Label((int(self.title.width() / 2), 20), conf.title.upper())
         tf_headline.set_font(conf.std_font, 90)
         tf_headline.align(tf_headline.CENTER)
-        tf_version = Label('tf_version', (self.title.width() - 5, 5), f'v{conf.version}')
+        tf_version = Label((self.title.width() - 5, 5), f'v{conf.version}')
         tf_version.set_font(conf.std_font, 14)
         tf_version.align(tf_version.RIGHT)
-        tf_credits = Label('tf_credits', (int(self.title.width() / 2), self.title.height() - 24), self.__credits)
+        tf_credits = Label((int(self.title.width() / 2), self.title.height() - 24), self.__credits)
         tf_credits.set_font(conf.std_font, 14)
         tf_credits.align(tf_credits.CENTER)
         # buttons
         width, height = tf_headline.get_dimensions()
         position_y = height + 70
         b_newgame = Button(
-            'b_newgame',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'New Game',
@@ -58,7 +56,6 @@ class MainMenu(Interface):
         b_newgame.align(b_newgame.CENTER)
         position_y += b_newgame.height() + 20
         b_loadgame = Button(
-            'b_loadgame',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Load Game',
@@ -73,7 +70,6 @@ class MainMenu(Interface):
             b_loadgame.disable()
         position_y += b_loadgame.height() + 20
         b_options = Button(
-            'b_option',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Options',
@@ -83,7 +79,6 @@ class MainMenu(Interface):
         b_options.align(b_options.CENTER)
         position_y += b_options.height() + 20
         b_quitgame = Button(
-            'b_quitgame',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Quit Game',

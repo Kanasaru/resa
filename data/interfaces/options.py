@@ -22,7 +22,6 @@ class Options(Interface):
         self.sheet_handler = sheet_handler
         self.sheet_key = sheet_key
 
-        self.name = 'options'
         self.rect = pygame.Rect((0, 0), conf.resolution)
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = conf.background_image
@@ -31,28 +30,27 @@ class Options(Interface):
         self.build()
 
     def build(self):
-        self.title = Title(self.name, self.rect, self.bg_color, self.bg_image)
+        self.title = Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(255)
 
         # labels
-        tf_headline = Label('tf_headline', (int(self.title.width() / 2), 20), conf.title.upper())
+        tf_headline = Label((int(self.title.width() / 2), 20), conf.title.upper())
         tf_headline.set_font(conf.std_font, 90)
         tf_headline.align(tf_headline.CENTER)
-        tf_version = Label('tf_version', (self.title.width() - 5, 5), f'v{conf.version}')
+        tf_version = Label((self.title.width() - 5, 5), f'v{conf.version}')
         tf_version.set_font(conf.std_font, 14)
         tf_version.align(tf_version.RIGHT)
-        tf_credits = Label('tf_credits', (int(self.title.width() / 2), self.title.height() - 24), self.__credits)
+        tf_credits = Label((int(self.title.width() / 2), self.title.height() - 24), self.__credits)
         tf_credits.set_font(conf.std_font, 14)
         tf_credits.align(tf_credits.CENTER)
         width, height = tf_headline.get_dimensions()
         position_y = height + 20
-        tf_resolution = Label('tf_resolution', (int(self.title.width() / 2), position_y), 'Resolution')
+        tf_resolution = Label((int(self.title.width() / 2), position_y), 'Resolution')
         tf_resolution.set_font(conf.std_font, 40)
         tf_resolution.align(tf_resolution.CENTER)
         # buttons
         position_y += tf_resolution.height() + 20
         b_1920x1080 = Button(
-            'b_1920x1080',
             pygame.Rect(self.title.width() / 2, position_y, 180, 50),
             self.sheet_handler, self.sheet_key,
             '1920x1080',
@@ -64,7 +62,6 @@ class Options(Interface):
             b_1920x1080.disable()
         position_y += b_1920x1080.height() + 20
         b_1000x600 = Button(
-            'b_1000x600',
             pygame.Rect(self.title.width() / 2, position_y, 180, 50),
             self.sheet_handler, self.sheet_key,
             '1000x600',
@@ -76,7 +73,6 @@ class Options(Interface):
             b_1000x600.disable()
         position_y += b_1000x600.height() + 20
         b_800x600 = Button(
-            'b_800x600',
             pygame.Rect(self.title.width() / 2, position_y, 180, 50),
             self.sheet_handler, self.sheet_key,
             '800x600',
@@ -88,7 +84,6 @@ class Options(Interface):
             b_800x600.disable()
         position_y += b_800x600.height() + 20
         b_back = Button(
-            'b_back',
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Back',

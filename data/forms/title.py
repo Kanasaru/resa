@@ -11,12 +11,11 @@ from data.forms.form import Form
 
 
 class Title(Form):
-    def __init__(self, name: str, rect: pygame.Rect,
+    def __init__(self, rect: pygame.Rect,
                  bg_color: tuple[int, int, int], bg_image=None,
                  colorkey: tuple[int, int, int] = conf.COLOR_KEY) -> None:
         """ Initializes a title that handles and arrange other form objects
 
-        :param name: name of the title
         :param rect: position and dimension of the title
         :param bg_color: color to fill the background with
         :param bg_image: pathname to background image
@@ -27,7 +26,6 @@ class Title(Form):
         self.rect = rect
         self.pos_x = self.rect.x
         self.pos_y = self.rect.y
-        self.name = name
         self.bg_color = bg_color
         self.bg_image = bg_image
         self.colorkey = colorkey
