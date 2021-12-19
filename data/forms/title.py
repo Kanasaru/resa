@@ -63,6 +63,13 @@ class Title(Form):
         :param event: pygame or resa event object
         :return: None
         """
+        # relativize mouse position (necessary if title has not full display size)
+        if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP or event.type == pygame.MOUSEMOTION:
+            x, y = event.pos
+            x -= self.rect.x
+            y -= self.rect.y
+            event.pos = x, y
+
         for form_object in self.form_objects:
             form_object.handle_event(event)
 
