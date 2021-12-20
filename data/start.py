@@ -78,18 +78,18 @@ class Start(object):
             if event.type == pygame.QUIT:
                 self.leave_game = True
             elif event.type == ecodes.RESA_TITLE_EVENT:
-                if event.code == ecodes.RESA_STARTGAME:
+                if event.code == ecodes.RESA_BTN_STARTGAME:
                     self.start_game = True
-                elif event.code == ecodes.RESA_LOADGAME:
+                elif event.code == ecodes.RESA_BTN_LOADGAME:
                     self.start_game = True
                     self.load_game = True
-                elif event.code == ecodes.RESA_OPTIONS:
+                elif event.code == ecodes.RESA_BTN_OPTIONS:
                     self.options = True
-                elif event.code == ecodes.RESA_QUITGAME:
+                elif event.code == ecodes.RESA_BTN_QUITGAME:
                     self.leave_game = True
-                elif event.code == ecodes.RESA_MAINMENU:
+                elif event.code == ecodes.RESA_BTN_MAINMENU:
                     self.options = False
-                elif event.code == ecodes.RESA_CHG_RESOLUTION:
+                elif event.code == ecodes.RESA_BTN_CHG_RESOLUTION:
                     self.resolution_update = event.res
                 else:
                     pass

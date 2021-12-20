@@ -7,7 +7,7 @@
 - [ ] add full screen mode
 - [x] add auto-save
 - [x] add in-game time
-- [ ] add new form: message box
+- [x] add new form: message box
 - [x] add screenshot function
 - [ ] ~~add mouse handling~~ (no idea what i meant)
 - [x] add pause function

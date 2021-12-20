@@ -41,8 +41,8 @@ class GamePanel(Interface):
             pygame.Rect(self.title.width() - 5, 3, 70, 24),
             self.sheet_handler,
             self.sheet_key,
-            'Quit',
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_STOPGAME)
+            'Leave',
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_LEAVEGAME)
         )
         b_quit.align(b_quit.RIGHT)
         b_quit.set_font(conf.std_font, 13)
@@ -51,7 +51,7 @@ class GamePanel(Interface):
             self.sheet_handler,
             self.sheet_key,
             'Save',
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_SAVEGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_SAVEGAME)
         )
         b_save.align(b_save.RIGHT)
         b_save.set_font(conf.std_font, 13)

@@ -1,4 +1,4 @@
-""" This module provides game settings and sprites as constants
+""" This module provides general game settings
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
@@ -72,6 +72,12 @@ class Settings(object):
         # menu button colors
         self.COLOR_BTN_HOVER = (120, 117, 98)
         self.COLOR_BTN_PRESSED = (120, 117, 98)
+
+        # message boxes
+        self.msg_btn_width = 70
+        self.msg_btn_height = 24
+        self.msg_btn_padding = 5
+        self.msg_border_width = 5
 
     def load_config_file(self, filepath: str) -> None:
         """ Loads settings from file and replaces standard value

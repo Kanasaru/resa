@@ -50,7 +50,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'New Game',
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_STARTGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_STARTGAME)
         )
         b_newgame.set_font(conf.std_font)
         b_newgame.align(b_newgame.CENTER)
@@ -59,7 +59,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Load Game',
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_LOADGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_LOADGAME)
         )
         b_loadgame.set_font(conf.std_font)
         b_loadgame.align(b_loadgame.CENTER)
@@ -73,7 +73,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Options',
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_OPTIONS)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_OPTIONS)
         )
         b_options.set_font(conf.std_font)
         b_options.align(b_options.CENTER)
@@ -82,7 +82,7 @@ class MainMenu(Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
             'Quit Game',
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME)
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_QUITGAME)
         )
         b_quitgame.set_font(conf.std_font)
         b_quitgame.align(b_quitgame.CENTER)

@@ -1,10 +1,10 @@
-""" This module provides classes to load world
+""" This module provides the game
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
-from data.interfaces.messagebox import MessageBox, MessageBoxButton
+
 from data.settings import conf
 from datetime import datetime
 import pygame
@@ -118,7 +118,7 @@ class Game(object):
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.exit_game = True
+                self.leave_game()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_F2:
                     self.take_screenshot()
@@ -149,14 +149,9 @@ class Game(object):
                 else:
                     pass
             elif event.type == ecodes.RESA_TITLE_EVENT:
-                if event.code == ecodes.RESA_STOPGAME:
-                    self.messages.show('Are you sure?', 'Leavinvg the game.',
-                                       pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
-                                       'Yes',
-                                       pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
-                                       'No')
-                    self.game_data_handler.pause_ingame_time()
-                elif event.code == ecodes.RESA_SAVEGAME:
+                if event.code == ecodes.RESA_BTN_LEAVEGAME:
+                    self.leave_game()
+                elif event.code == ecodes.RESA_BTN_SAVEGAME:
                     self.save_game()
                 elif event.code == ecodes.RESA_QUITGAME_TRUE:
                     self.exit_game = True
@@ -252,3 +247,15 @@ class Game(object):
             text = 'Game saved!'
         self.messages.info(text)
         logging.info(text)
+
+    def leave_game(self) -> None:
+        """ Pauses in-game time and shows leaving dialog.
+
+        :return: None
+        """
+        self.messages.show('Leavinvg the game...', 'Are you sure?',
+                           pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
+                           'Yes',
+                           pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
+                           'No')
+        self.game_data_handler.pause_ingame_time()
