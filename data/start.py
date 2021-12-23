@@ -29,12 +29,17 @@ class Start(object):
         self.leave_game = False
         self.options = False
         self.resolution_update = None
+        self.fullscreen = False
         self.screenshot = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
 
         # build window
+        self.desktop_resolutions = pygame.display.get_desktop_sizes()
+        print(self.desktop_resolutions)
+        self.full_screen_resolutions = pygame.display.list_modes()
+        print(self.full_screen_resolutions)
         self.surface = pygame.display.set_mode(conf.resolution)
         pygame.display.set_icon(pygame.image.load(conf.icon).convert())
         pygame.display.set_caption(f'Welcome to {conf.title}')
@@ -44,8 +49,11 @@ class Start(object):
         buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
         buttons.colorkey = (1, 0, 0)
         hdl_sp_main_menu.add(buttons)
+        switches = SpriteSheet(conf.sp_menu_swt_key, conf.sp_menu_swt, conf.sp_menu_swt_size)
+        switches.colorkey = (1, 0, 0)
+        hdl_sp_main_menu.add(switches)
         self.title_main = MainMenu(hdl_sp_main_menu, conf.sp_menu_btn_key)
-        self.title_options = Options(hdl_sp_main_menu, conf.sp_menu_btn_key)
+        self.title_options = Options(hdl_sp_main_menu)
 
         # load sounds and music
         self.music = Music()
@@ -93,6 +101,8 @@ class Start(object):
                     self.options = False
                 elif event.code == ecodes.RESA_BTN_CHG_RESOLUTION:
                     self.resolution_update = event.res
+                elif event.code == ecodes.RESA_SWT_FULLSCREEN:
+                    self.toggle_fullscreen(event.fullscreen)
                 else:
                     pass
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
@@ -189,3 +199,8 @@ class Start(object):
                           f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
         logging.info('Took screenshot')
         self.screenshot = False
+
+    def toggle_fullscreen(self, fullscreen: bool):
+        # self.desktop_resolutions = pygame.display.get_desktop_sizes()
+        # self.full_screen_resolutions = pygame.display.list_modes()
+        print(fullscreen)

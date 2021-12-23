@@ -47,6 +47,9 @@ class Settings(object):
         self.sp_menu_btn_key = None
         self.sp_menu_btn = None
         self.sp_menu_btn_size = None
+        self.sp_menu_swt_key = None
+        self.sp_menu_swt = None
+        self.sp_menu_swt_size = None
         self.sp_world = None
 
         # tree spawn rate
@@ -106,6 +109,9 @@ class Settings(object):
         self.sp_menu_btn_key = self.parser.get('Buttons', 'MenuButtonsKey')
         self.sp_menu_btn = self.parser.get('Buttons', 'MenuButtons')
         self.sp_menu_btn_size = literal_eval(self.parser.get('Buttons', 'MenuButtonsSize'))
+        self.sp_menu_swt_key = self.parser.get('Switches', 'MenuSwitchesKey')
+        self.sp_menu_swt = self.parser.get('Switches', 'MenuSwitches')
+        self.sp_menu_swt_size = literal_eval(self.parser.get('Switches', 'MenuSwitchesSize'))
         self.sp_world = {
             self.parser.get('Objects', 'FieldTilesSolidID'): (
                 self.parser.get('Objects', 'FieldTilesSolid'),
