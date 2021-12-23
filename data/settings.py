@@ -24,7 +24,8 @@ class Settings(object):
         # display settings
         self.icon = 'resources/images/icon.png'
         self.fps = 60
-        self.resolution = (1000, 600)
+        self.resolution = (800, 600)
+        self.fullscreen = False
         self.grid = Grid((self.resolution, 40, 20))
         self.background_image = None
         self.map_border_thickness = 5

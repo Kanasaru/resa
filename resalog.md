@@ -4,13 +4,14 @@
 - [x] add in-game music
 - [x] add in-game sound handler
 - [x] add in-game event handling
-- [ ] add new form: switch
-- [ ] add full screen mode
+- [x] add new form: switch
+- [x] add full screen mode
 - [x] add auto-save
 - [x] add in-game time
 - [x] add new form: message box
 - [x] add screenshot function
 - [x] add pause function
+- [ ] clean-up
 
 ### Environment Update | v0.6.0-alpha
 - [ ] add mountains

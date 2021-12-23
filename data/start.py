@@ -28,19 +28,16 @@ class Start(object):
         self.load_game = False
         self.leave_game = False
         self.options = False
-        self.resolution_update = None
-        self.fullscreen = False
         self.screenshot = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
 
         # build window
-        self.desktop_resolutions = pygame.display.get_desktop_sizes()
-        print(self.desktop_resolutions)
-        self.full_screen_resolutions = pygame.display.list_modes()
-        print(self.full_screen_resolutions)
-        self.surface = pygame.display.set_mode(conf.resolution)
+        if conf.fullscreen:
+            self.surface = pygame.display.set_mode(conf.resolution, pygame.FULLSCREEN)
+        else:
+            self.surface = pygame.display.set_mode(conf.resolution)
         pygame.display.set_icon(pygame.image.load(conf.icon).convert())
         pygame.display.set_caption(f'Welcome to {conf.title}')
 
@@ -100,9 +97,11 @@ class Start(object):
                 elif event.code == ecodes.RESA_BTN_MAINMENU:
                     self.options = False
                 elif event.code == ecodes.RESA_BTN_CHG_RESOLUTION:
-                    self.resolution_update = event.res
+                    conf.resolution = event.res
+                    self.update_display()
                 elif event.code == ecodes.RESA_SWT_FULLSCREEN:
-                    self.toggle_fullscreen(event.fullscreen)
+                    conf.fullscreen = event.fullscreen
+                    self.update_display()
                 else:
                     pass
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
@@ -145,16 +144,6 @@ class Start(object):
             else:
                 self.music.stop()
                 self.game = Game(self.load_game)
-        if self.options:
-            # change resolution and rebuild titles
-            if self.resolution_update is not None:
-                conf.resolution = self.resolution_update
-                pygame.display.set_mode(conf.resolution)
-                self.title_main.rect = pygame.Rect((0, 0), conf.resolution)
-                self.title_main.build()
-                self.title_options.rect = pygame.Rect((0, 0), conf.resolution)
-                self.title_options.build()
-                self.resolution_update = None
 
             self.title_options.run_logic()
         else:
@@ -200,7 +189,12 @@ class Start(object):
         logging.info('Took screenshot')
         self.screenshot = False
 
-    def toggle_fullscreen(self, fullscreen: bool):
-        # self.desktop_resolutions = pygame.display.get_desktop_sizes()
-        # self.full_screen_resolutions = pygame.display.list_modes()
-        print(fullscreen)
+    def update_display(self):
+        if conf.fullscreen:
+            self.surface = pygame.display.set_mode(conf.resolution, pygame.FULLSCREEN)
+        else:
+            self.surface = pygame.display.set_mode(conf.resolution)
+        self.title_main.rect = pygame.Rect((0, 0), conf.resolution)
+        self.title_main.build()
+        self.title_options.rect = pygame.Rect((0, 0), conf.resolution)
+        self.title_options.build()
