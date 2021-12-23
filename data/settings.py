@@ -24,9 +24,9 @@ class Settings(object):
         # display settings
         self.icon = 'resources/images/icon.png'
         self.fps = 60
-        self.resolution = None
+        self.resolution = (800, 600)
         self.fullscreen = False
-        self.grid = Grid(((800, 600), 40, 20))
+        self.grid = Grid((self.resolution, 40, 20))
         self.background_image = None
         self.map_border_thickness = 5
 
@@ -92,6 +92,7 @@ class Settings(object):
         """
         self.parser.read(filepath)
 
+        self.resolution = literal_eval(self.parser.get('Screen', 'Resolution'))
         self.background_image = self.parser.get('Screen', 'BackgroundImage')
         self.save_file = self.parser.get('GameSettings', 'SaveFile')
         self.std_font = self.parser.get('Fonts', 'Standard')

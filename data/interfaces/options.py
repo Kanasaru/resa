@@ -58,45 +58,92 @@ class Options(Interface):
         # buttons
         position_y += tf_resolution.height() + 20
 
-        if conf.fullscreen:
-            for mode in self.screenmodes['full'][0:3]:
-                btn = Button(
-                    pygame.Rect(self.title.width() / 2, position_y, 180, 50),
-                    self.sheet_handler, self.sheet_key,
-                    f'{mode[0]}x{mode[1]}',
-                    pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=mode)
-                )
-                btn.set_font(conf.std_font)
-                btn.align(btn.CENTER)
-                if conf.resolution == mode:
-                    btn.disable()
-                self.title.add(btn)
-                position_y += btn.height() + 20
-        else:
-            for mode in self.screenmodes['win']:
-                btn = Button(
-                    pygame.Rect(self.title.width() / 2, position_y, 180, 50),
-                    self.sheet_handler, self.sheet_key,
-                    f'{mode[0]}x{mode[1]}',
-                    pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=mode)
-                )
-                btn.set_font(conf.std_font)
-                btn.align(btn.CENTER)
-                if conf.resolution == mode:
-                    btn.disable()
-                self.title.add(btn)
-                position_y += btn.height() + 20
+        # todo: use a dropdown form for every resolution higher than 800x600
+        #       and if not possible calculate by display size 3 possible values
+        full_screen_resolutions = pygame.display.list_modes()
+        no_fullscreen = True
 
-        if self.screenmodes['full']:
+        if (1920, 1080) in full_screen_resolutions:
+            no_fullscreen = False
+            b_1920x1080 = Button(
+                pygame.Rect(self.title.width() / 2, position_y, 180, 50),
+                self.sheet_handler, self.sheet_key,
+                '1920x1080',
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=(1920, 1080))
+            )
+            b_1920x1080.set_font(conf.std_font)
+            b_1920x1080.align(b_1920x1080.CENTER)
+            if conf.resolution == (1920, 1080):
+                b_1920x1080.disable()
+            self.title.add(b_1920x1080)
+            position_y += b_1920x1080.height() + 20
+
+        if (1280, 960) in full_screen_resolutions:
+            no_fullscreen = False
+            b_1280x960 = Button(
+                pygame.Rect(self.title.width() / 2, position_y, 180, 50),
+                self.sheet_handler, self.sheet_key,
+                '1280x920',
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=(1280, 960))
+            )
+            b_1280x960.set_font(conf.std_font)
+            b_1280x960.align(b_1280x960.CENTER)
+            if conf.resolution == (1280, 960):
+                b_1280x960.disable()
+            self.title.add(b_1280x960)
+            position_y += b_1280x960.height() + 20
+
+        if (1280, 800) in full_screen_resolutions:
+            no_fullscreen = False
+            b_1280x800 = Button(
+                pygame.Rect(self.title.width() / 2, position_y, 180, 50),
+                self.sheet_handler, self.sheet_key,
+                '1280x920',
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=(1280, 800))
+            )
+            b_1280x800.set_font(conf.std_font)
+            b_1280x800.align(b_1280x800.CENTER)
+            if conf.resolution == (1280, 800):
+                b_1280x800.disable()
+            self.title.add(b_1280x800)
+            position_y += b_1280x800.height() + 20
+
+        if (800, 600) in full_screen_resolutions:
+            no_fullscreen = False
+            b_800x600 = Button(
+                pygame.Rect(self.title.width() / 2, position_y, 180, 50),
+                self.sheet_handler, self.sheet_key,
+                '800x600',
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=(800, 600))
+            )
+            b_800x600.set_font(conf.std_font)
+            b_800x600.align(b_800x600.CENTER)
+            if conf.resolution == (800, 600):
+                b_800x600.disable()
+            self.title.add(b_800x600)
+            position_y += b_800x600.height() + 20
+
+        if no_fullscreen:
+            b_800x600 = Button(
+                pygame.Rect(self.title.width() / 2, position_y, 180, 50),
+                self.sheet_handler, self.sheet_key,
+                '800x600',
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=(800, 600))
+            )
+            b_800x600.set_font(conf.std_font)
+            b_800x600.align(b_800x600.CENTER)
+            if conf.resolution == (800, 600):
+                b_800x600.disable()
+            self.title.add(b_800x600)
+            position_y += b_800x600.height() + 20
+        else:
             l_fullscreen = Label((int(self.title.width() / 2), position_y), 'Fullscreen:')
             l_fullscreen.set_font(conf.std_font, 20)
             swt_fullscreen = Switch(
                 pygame.Rect(self.title.width() / 2, position_y, 60, 30),
                 self.sheet_handler, self.swt_sheet_key,
-                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_SWT_FULLSCREEN,
-                                   fullscreen=True, res=self.screenmodes['full'][0]),
-                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_SWT_FULLSCREEN,
-                                   fullscreen=False, res=self.screenmodes['full'][-1]),
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_SWT_FULLSCREEN, fullscreen=True),
+                pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_SWT_FULLSCREEN, fullscreen=False),
                 conf.fullscreen
             )
             swt_fullscreen.pos_x = int(self.title.width() / 2) + int(l_fullscreen.width() / 2) + 5
@@ -120,11 +167,7 @@ class Options(Interface):
         self.title.add(b_back)
 
     @staticmethod
-    def get_screenmodes() -> dict[str, list]:
-        """ Returns a dictionary of 'full' and 'win' screen sizes
-
-        :return: dictionary['full' and 'win'][list of screen sizes]
-        """
+    def get_screenmodes():
         screenmodes = {
             'full': list(),
             'win': list(),
@@ -134,7 +177,7 @@ class Options(Interface):
         desktop_h = desktop_sizes[0][1]
 
         for reso in pygame.display.list_modes():
-            if reso[0] < 800 or reso[0] > 1280 or reso[1] < 600:
+            if reso[0] < 800 or reso[0] > 1280:
                 pass
             else:
                 insert = True
@@ -147,8 +190,8 @@ class Options(Interface):
 
         if desktop_w > 1280 and desktop_h > 960:
             screenmodes['win'].append((1280, 960))
-        if desktop_w > 1000 and desktop_h > 600:
-            screenmodes['win'].append((1000, 720))
+        if desktop_w > 1000 and desktop_h > 800:
+            screenmodes['win'].append((1000, 800))
         if desktop_w > 800 and desktop_h > 600:
             screenmodes['win'].append((800, 600))
 
