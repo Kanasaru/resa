@@ -1,18 +1,5 @@
 # Road to a playable 1.0.0-alpha
 ***
-### Concrete Update | v0.5.0-alpha
-- [x] add in-game music
-- [x] add in-game sound handler
-- [x] add in-game event handling
-- [x] add new form: switch
-- [x] add full screen mode
-- [x] add auto-save
-- [x] add in-game time
-- [x] add new form: message box
-- [x] add screenshot function
-- [x] add pause function
-- [ ] clean-up
-
 ### Environment Update | v0.6.0-alpha
 - [ ] add mountains
 - [ ] add tree growth
@@ -41,6 +28,19 @@
 
 # Things done so far
 ***
+### Concrete Update | v0.5.0-alpha
+- [x] add in-game music
+- [x] add in-game sound handler
+- [x] add in-game event handling
+- [x] add new form: switch
+- [x] add full screen mode
+- [x] add auto-save
+- [x] add in-game time
+- [x] add new form: message box
+- [x] add screenshot function
+- [x] add pause function
+- [x] clean-up
+
 ### Island Update | v0.4.3-alpha
 - [x] music handling
 - [x] background image scale when changing resolution
