@@ -34,10 +34,9 @@ class Start(object):
         self.clock = pygame.time.Clock()
 
         # build window
-        if conf.fullscreen:
-            self.surface = pygame.display.set_mode(conf.resolution, pygame.FULLSCREEN)
-        else:
-            self.surface = pygame.display.set_mode(conf.resolution)
+        resos = Options.get_screenmodes()
+        conf.resolution = resos['win'][-1]
+        self.surface = pygame.display.set_mode(conf.resolution)
         pygame.display.set_icon(pygame.image.load(conf.icon).convert())
         pygame.display.set_caption(f'Welcome to {conf.title}')
 
@@ -101,6 +100,7 @@ class Start(object):
                     self.update_display()
                 elif event.code == ecodes.RESA_SWT_FULLSCREEN:
                     conf.fullscreen = event.fullscreen
+                    conf.resolution = event.res
                     self.update_display()
                 else:
                     pass
