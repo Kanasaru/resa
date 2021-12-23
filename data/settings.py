@@ -17,7 +17,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.5.0-alpha'
+        self.version = '0.5.1-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
