@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
-
+from data.handlers.sound import SoundHandler
 from data.settings import conf
 from datetime import datetime
 import pygame
@@ -41,6 +41,7 @@ class Game(object):
         self.game_data_handler.game_time_speed = conf.game_speed
         self.music = Music()
         self.music.load()
+        self.sounds = SoundHandler()
 
         # screen settings, build screens and panels
         self.surface = pygame.display.get_surface()
@@ -229,6 +230,7 @@ class Game(object):
 
         :return: None
         """
+        self.sounds.play('screenshot')
         filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
         self.messages.info(f'Took screenshot: {filename}')

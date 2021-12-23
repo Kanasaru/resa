@@ -20,6 +20,9 @@ Yeah, sure. For this repository I created a wiki. My personal goal is a document
 - "Forest Walk" by Alexander Nakarada | https://www.serpentsoundstudios.com. Music promoted by https://www.chosic.com/free-music/all/, Attribution 4.0 International (CC BY 4.0) | https://creativecommons.org/licenses/by/4.0/
 - "Illusory Realm" by Darren Curtis | https://www.darrencurtismusic.com/, Music promoted on https://www.chosic.com/free-music/all/, Creative Commons Attribution 3.0 Unported (CC BY 3.0) | https://creativecommons.org/licenses/by/3.0/
 
+### Sounds
+- "screenshot.wav", orignal "camera.wav" by alejandra0908 | https://freesound.org/people/alejandra0908/sounds/364499/ | Published under CC0
+
 ### Sprites
 - isometric 2D tiles by Screaming Brain Studios | http://www.screamingbrainstudios.com, published on https://itch.io, released under the CC0/Public Domain License
 - trees by https://opengameart.org/users/bleed

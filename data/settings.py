@@ -38,6 +38,7 @@ class Settings(object):
         self.msg_font_size = 16
         self.volume = .2
         self.bg_music = None
+        self.sounds = 'resources/sounds'
         self.screenshot_path = 'saves/'
         self.autosave = False
         self.autosave_interval = 240000

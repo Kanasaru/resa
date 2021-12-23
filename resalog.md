@@ -2,14 +2,14 @@
 ***
 ### Concrete Update | v0.5.0-alpha
 - [x] add in-game music
-- [ ] add in-game sound handler
+- [x] add in-game sound handler
+- [x] add in-game event handling
 - [ ] add new form: switch
 - [ ] add full screen mode
 - [x] add auto-save
 - [x] add in-game time
 - [x] add new form: message box
 - [x] add screenshot function
-- [ ] ~~add mouse handling~~ (no idea what i meant)
 - [x] add pause function
 
 ### Environment Update | v0.6.0-alpha

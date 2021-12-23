@@ -8,6 +8,7 @@
 import pygame
 import logging
 from datetime import datetime
+from data.handlers.sound import SoundHandler
 from data.settings import conf
 import data.eventcodes as ecodes
 from data.game import Game
@@ -46,9 +47,10 @@ class Start(object):
         self.title_main = MainMenu(hdl_sp_main_menu, conf.sp_menu_btn_key)
         self.title_options = Options(hdl_sp_main_menu, conf.sp_menu_btn_key)
 
-        # load music
+        # load sounds and music
         self.music = Music()
         self.music.load()
+        self.sounds = SoundHandler()
 
         # start the game loop
         self.game = None
@@ -182,6 +184,7 @@ class Start(object):
 
         :return: None
         """
+        self.sounds.play('screenshot')
         pygame.image.save(pygame.display.get_surface(),
                           f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
         logging.info('Took screenshot')
