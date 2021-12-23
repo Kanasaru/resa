@@ -28,17 +28,21 @@
 
 # Things done so far
 ***
-### Concrete Update | v0.5.0-alpha
-- [x] add in-game music
-- [x] add in-game sound handler
-- [x] add in-game event handling
-- [x] add new form: switch
-- [x] add full screen mode
-- [x] add auto-save
-- [x] add in-game time
-- [x] add new form: message box
-- [x] add screenshot function
-- [x] add pause function
+### Concrete Update | v0.5.x-alpha
+#### v0.5.1
+- [ ] improved options
+
+#### v0.5.0
+- [x] added in-game music
+- [x] added in-game sound handler
+- [x] added in-game event handling
+- [x] added new form: switch
+- [x] added full screen mode
+- [x] added auto-save
+- [x] added in-game time
+- [x] added new form: message box
+- [x] added screenshot function
+- [x] added pause function
 - [x] clean-up
 
 ### Island Update | v0.4.3-alpha
