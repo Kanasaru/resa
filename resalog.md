@@ -30,7 +30,7 @@
 ***
 ### Concrete Update | v0.5.x-alpha
 #### v0.5.1
-- [ ] improved options
+- [x] better resolution handling
 
 #### v0.5.0
 - [x] added in-game music
