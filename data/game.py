@@ -4,6 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
+
 from data.handlers.sound import SoundHandler
 from data.settings import conf
 from datetime import datetime

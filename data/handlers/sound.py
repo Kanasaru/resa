@@ -1,4 +1,4 @@
-""" This module provides music handling
+""" This module provides sound handling
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
