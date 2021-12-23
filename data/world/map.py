@@ -10,6 +10,7 @@ import pygame.sprite
 from data.world.entities.tree import RawTree
 from data.world.generator import Generator
 from data.world.objects.field import RawField
+import data.eventcodes as ecodes
 
 
 class Moving(object):
@@ -109,6 +110,9 @@ class Map(object):
         else:
             pass
 
+        self.fields.update(event)
+        self.trees.update(event)
+
     def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None) -> None:
         """ Builds the world from scratch or given world data
 
@@ -133,7 +137,9 @@ class Map(object):
         # get all sprites from world
         self.water, self.fields, self.trees, self.rect = world.get_world()
         # move the water sprites to avoid topleft isometric black fields
-        self.water.update((-50, -50))
+        self.water.update(pygame.event.Event(ecodes.RESA_GAME_EVENT,
+                                             code=ecodes.RESA_CTRL_MAP_MOVE,
+                                             move=(-50, -50)))
         # draw water sprites to its own surface
         self.water.draw(self.bg_surface)
 
@@ -180,13 +186,10 @@ class Map(object):
                     self.rect.y -= conf.map_pace
                     move_field = (move_field[0], -conf.map_pace)
 
-            # update sprites with movement
-            self.fields.update(move_field)
-            self.trees.update(move_field)
-        else:
-            # updating without movement
-            self.fields.update()
-            self.trees.update()
+            # raise event for movement
+            pygame.event.post(pygame.event.Event(ecodes.RESA_GAME_EVENT,
+                                                 code=ecodes.RESA_CTRL_MAP_MOVE,
+                                                 move=move_field))
 
     def render(self) -> None:
         """ Renders all fields of the world on its surface

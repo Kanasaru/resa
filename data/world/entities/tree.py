@@ -1,6 +1,7 @@
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
 from data.settings import conf
+import data.eventcodes as ecodes
 
 
 class RawTree(object):
@@ -51,16 +52,18 @@ class Tree(pygame.sprite.Sprite):
     def position(self, value):
         self._position = value
 
-    def update(self, movement=None) -> None:
+    def update(self, event: pygame.event.Event = None) -> None:
         """ Updates tree by its position
 
-        :param movement: optional movement of the tree
+        :param event: optional event
         :return: None
         """
-        if movement is not None:
-            pos_x = self.position[0] + movement[0]
-            pox_y = self.position[1] + movement[1]
-            self.position = (pos_x, pox_y)
+        if event is not None:
+            if event.type == ecodes.RESA_GAME_EVENT:
+                if event.code == ecodes.RESA_CTRL_MAP_MOVE:
+                    pos_x = self._position[0] + event.move[0]
+                    pox_y = self._position[1] + event.move[1]
+                    self.position = (pos_x, pox_y)
         self.rect.bottomleft = self.position
 
     def delete(self) -> None:
