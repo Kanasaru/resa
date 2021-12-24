@@ -3,15 +3,13 @@ Resa is swedish and means _journey_ or _to travel_.
 
 This project tries to bring classic strategic games to life in a new and different form. My idea is strongly influenced by the _Anno_ series and _Age of Empires_ and combines the different ways of playing. It should be platform-independent and completely freely available.
 
+![Resa Main menu](https://bitbyteopen.org/wp-content/uploads/2021/12/screenshot_2021-12-18_20-21-07.png)
+
 > **Disclaimer**
 > 
 > The game does not claim to run at extremely high FPS and  resolution. Personally, my goal is that it runs smoothly on a RaspberryPi. Of course, other programming languages are better suited for game development, but I like python and the possibility of C extensions. It combines two of my favorites in development, even if my C is extremely rusty.
 > 
 > I am happy about every player, tester, pull request or creative contribution and discussions about possible improvements, but not about the programming language that is used.
-
-> **License**
-> 
-> Resa is published under the `GNU General Public License V3` and can be used under its conditions. The project contains many graphics, sounds and pieces of music that have been published under CC licenses. All works used are listed under [Credits](#Credits) with the respective license and linked accordingly.
 
 # Table of Contents
 
@@ -24,6 +22,7 @@ This project tries to bring classic strategic games to life in a new and differe
    - [Sounds](#Sounds)
    - [Graphics](#Graphics)
 4. [Documentation](#Documentation)
+5. [License](#License)
 
 # How to install and run Resa
 Resa is based on `python3` with `pygame2`. I am currently using `python 3.10` for developing pre-releases. For non-pre-releases, I will store the python version in the release notes. Compatibility down to `python 3.6` will be tested for playable releases.
@@ -72,3 +71,6 @@ On [my website](https://bitbyteopen.org) I write about the development process. 
 > `doc/CodeRef`: The source code reference serves to document the individual modules with their classes, methods, functions and relationships. In addition, examples should be listed.
 
 Maybe I will move some parts to the wiki later or use it for other purposes or continue to ignore it.
+
+# License
+Resa is published under the `GNU General Public License V3` and can be used under its conditions. The project contains many graphics, sounds and pieces of music that have been published under CC licenses. All works used are listed under [Credits](#Credits) with the respective license and linked accordingly.
