@@ -62,13 +62,13 @@ Resa is intended as an open source project and therefore lives from people who c
 # Documentation
 A good open source project, but also a game in general, benefits a lot from complete documentation. The current development status does not yet allow efficient documentation, but I don't want to lose any time and have to catch up on everything later.
 
-On [my website](https://bitbyteopen.org) I write about the development process. Everything else, at least that's how I initially determined it, goes into the source directory in the `doc` folder. Simple markdown files are used for this.
+On [my website](https://bitbyteopen.org) I write about the development process. Everything else, at least that's how I initially determined it, goes into the [documentation](resa/docs/index.md). Simple markdown files are used for this.
 
-> `doc/HowTos`: The HowTo's can be used to provide instructions for the development or the game itself.
->
-> `doc/GameRef`: The game reference is used to describe the game itself. The objects and the game dynamics, controls and processes are to be described. 
->
-> `doc/CodeRef`: The source code reference serves to document the individual modules with their classes, methods, functions and relationships. In addition, examples should be listed.
+`doc/HowTos`: The HowTo's can be used to provide instructions for the development or the game itself.
+
+`doc/GameRef`: The game reference is used to describe the game itself. The objects and the game dynamics, controls and processes are to be described. 
+
+`doc/CodeRef`: The source code reference serves to document the individual modules with their classes, methods, functions and relationships. In addition, examples should be listed.
 
 Maybe I will move some parts to the wiki later or use it for other purposes or continue to ignore it.
 
