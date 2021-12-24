@@ -3,7 +3,7 @@ Resa is swedish and means _journey_ or _to travel_.
 
 This project tries to bring classic strategic games to life in a new and different form. My idea is strongly influenced by the _Anno_ series and _Age of Empires_ and combines the different ways of playing. It should be platform-independent and completely freely available.
 
-![Resa Main menu](https://bitbyteopen.org/wp-content/uploads/2021/12/screenshot_2021-12-18_20-21-07.png)
+![Resa](https://bitbyteopen.org/wp-content/uploads/2021/12/Bildschirmfoto-2021-12-24-um-16.11.56.png)
 
 > **Disclaimer**
 > 
