@@ -1,16 +1,16 @@
-[Resa docs](../index.md) > [CodeRef Index](#Index)
+**[Resa docs](../index.md) > [CodeRef Index](#Index)**
 
 # Modules
-| data.            | forms.      | handlers.         | interfaces.       | world.             | world.islands.       |
-|------------------|-------------|-------------------|-------------------|--------------------|----------------------|
-| [_start_]()      | [button]()  | [_debug_]()       | [_debugscreen_]() | [generator]()      | [_big_islands_]()    |
-| [_settings_]()   | [form]()    | [_gamedata_]()    | [_gamepanel_]()   | [grid]()           | [_medium_islands_]() |
-| [_game_]()       | [infobox]() | [_msg_]()         | [_interface_]()   | [_map_]()          | [_small_islands_]()  |
-| [_eventcodes_]() | [label]()   | [_music_]()       | [_loadscreen_]()  | [entities.tree]()  |                      |
-|                  | [rect]()    | [_sound_]()       | [_mainmenu_]()    | [objects.field]()  |                      |
-|                  | [switch]()  | [_spritesheet_]() | [_messagebox_]()  | [objects.island]() |                      |
-|                  | [title]()   |                   | [_options_]()     |                    |                      |
-|                  |             |                   | [_pausescreen_]() |                    |                      |
+| data.            | forms.                            | handlers.         | interfaces.       | world.             | world.islands.       |
+|------------------|-----------------------------------|-------------------|-------------------|--------------------|----------------------|
+| [_start_]()      | [button]()                        | [_debug_]()       | [_debugscreen_]() | [generator]()      | [_big_islands_]()    |
+| [_settings_]()   | [form](forms/label.md#formslabel) | [_gamedata_]()    | [_gamepanel_]()   | [grid]()           | [_medium_islands_]() |
+| [_game_]()       | [infobox]()                       | [_msg_]()         | [_interface_]()   | [_map_]()          | [_small_islands_]()  |
+| [_eventcodes_]() | [label]()                         | [_music_]()       | [_loadscreen_]()  | [entities.tree]()  |                      |
+|                  | [rect]()                          | [_sound_]()       | [_mainmenu_]()    | [objects.field]()  |                      |
+|                  | [switch]()                        | [_spritesheet_]() | [_messagebox_]()  | [objects.island]() |                      |
+|                  | [title]()                         |                   | [_options_]()     |                    |                      |
+|                  |                                   |                   | [_pausescreen_]() |                    |                      |
 
 # Index
 
@@ -36,12 +36,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **align()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 ## B
 **Button**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(class in forms.button)]()<br>
@@ -73,7 +67,7 @@
 **fill()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(world.generator.Generator method)]()<br>
 **font_color()**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)](forms/clabel.md#font_color)<br>
 **Form**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(class in forms.form)]()<br>
 ## G
@@ -81,12 +75,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[(class in world.generator)]()<br>
 **get_dimensions()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **get_grid_height_in_px()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(world.grid.Grid method)]()<br>
 **get_grid_size()**<br>
@@ -110,20 +98,8 @@
 ## H
 **handle_event()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **height()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 ## I
 **InfoBox**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(class in forms.infobox)]()<br>
@@ -135,7 +111,7 @@
 ## K
 ## L
 **Label**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(class in forms.label)]()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[(class in forms.label)](forms/clabel.md#formslabellabel)<br>
 **load_fields_by_dict()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(world.generator.Generator method)]()<br>
 **load_srites()**<br>
@@ -163,7 +139,7 @@
 **render()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **render_text()**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)](forms/clabel.md#render_text)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
 **run_logic()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
@@ -173,26 +149,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
 **set_alpha()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **set_bg_image()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **set_callback_event()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
 **set_colorkey()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 **set_font()**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)](forms/clabel.md#set_font)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
 ## T
 **Title**<br>
@@ -204,7 +168,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;[(class in world.entities.tree)]()<br>
 ## U
 **update()**<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)](forms/clabel.md#update)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(world.entities.tree.Tree method)]()<br>
@@ -213,12 +177,6 @@
 ## W
 **width()**<br>
 &nbsp;&nbsp;&nbsp;&nbsp;[(forms.form.Form method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.label.Label method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.button.Button method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.infobox.InfoBox method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.rect.Recty method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.switch.Switch method)]()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;[(forms.title.Title method)]()<br>
 ## X
 ## Y
 ## Z
