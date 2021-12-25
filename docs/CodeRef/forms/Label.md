@@ -1,4 +1,4 @@
-###[Resa docs](../../index.md) > [CodeRef Index](../index.md) > [forms.label](forms.label.md) > [forms.label.Label](#forms.label.Label)
+**[Resa docs](../../index.md) > [CodeRef Index](../index.md) > [forms.label](forms.label.md) > [forms.label.Label](#forms.label.Label)**
 
 ## forms.label.Label
 
@@ -8,9 +8,9 @@ form object that reperesents a text label and can be used in [forms.title.Title]
 `Label(position, text, font_size) -> Label`<br>
 `Label(position, text, font_size, callback) -> Label`<br>
 
-&nbsp;&nbsp;&nbsp;&nbsp;[forms.label.Label.pos_x](#forms.label.Label.pos_x)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[forms.label.Label.pos_x](#formslabelLabelpos_x)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;Gets or sets the horizontal position.<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;[forms.label.Label.pos_y](#forms.label.Label.pos_y)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;[forms.label.Label.pos_y](#forms-label-Label-pos_y)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;Gets or sets the vertical position.<br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;[forms.label.Label.text](#forms.label.Label.text)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;Gets or sets the displayed text.<br><br>
@@ -61,9 +61,9 @@ form object that reperesents a text label and can be used in [forms.title.Title]
 
 ### Attributes and Methods
 
-####forms.label.Label.pos_x
+#### forms.label.Label.pos_x
 
-####forms.label.Label.pos_y
+#### forms.label.Label.pos_y
 
 ####forms.label.Label.text
 
