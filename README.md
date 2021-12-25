@@ -72,5 +72,5 @@ On [my website](https://bitbyteopen.org) I write about the development process. 
 
 Maybe I will move some parts to the wiki later or use it for other purposes or continue to ignore it.
 
-# License
-Resa is published under the `GNU General Public License V3` and can be used under its conditions. The project contains many graphics, sounds and pieces of music that have been published under CC licenses. All works used are listed under [Credits](#Credits) with the respective license and linked accordingly.
+## License
+<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/Kanasaru/resa">Resa</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/Kanasaru">Kanasaru</a> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
