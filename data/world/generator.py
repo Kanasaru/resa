@@ -172,7 +172,7 @@ class Generator(object):
         # plant trees
         self.load_msg = 'Planting trees...'
         self.__update_load_screen()
-        # self.__plant_trees()
+        self.__plant_trees()
 
     def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
         """ Returns the world data. Sprite groups and rect.
@@ -292,18 +292,18 @@ class Generator(object):
             if field.solid:
                 # central islands get broadleafs by chance
                 if field.temperature == conf.temp_center and random.randrange(0, 100, 1) <= conf.tree_spawn_bl:
-                    sprite_sheet = '14'
-                    sprite_index = random.choice([0, 1, 2])
+                    sprite_sheet = 'Trees'
+                    sprite_index = random.choice([0, 6, 12])
                     plant = True
                 # north islands get evergreens by chance
                 elif field.temperature == conf.temp_north and random.randrange(0, 100, 1) <= conf.tree_spawn_eg:
-                    sprite_sheet = '15'
-                    sprite_index = random.choice([0, 1, 2, 3, 4, 5])
+                    sprite_sheet = 'Trees'
+                    sprite_index = random.choice([0, 6, 12])
                     plant = True
                 # south islands get palms by chance
                 elif field.temperature == conf.temp_south and random.randrange(0, 100, 1) <= conf.tree_spawn_p:
-                    sprite_sheet = '16'
-                    sprite_index = random.choice([0, 1, 2])
+                    sprite_sheet = 'Trees'
+                    sprite_index = random.choice([0, 6, 12])
                     plant = True
                 else:
                     plant = False

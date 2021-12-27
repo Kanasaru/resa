@@ -56,8 +56,7 @@ Resa is intended as an open source project and therefore lives from people who c
 - _screenshot.wav_ orignal _camera.wav_ by [alejandra0908](https://freesound.org/people/alejandra0908/sounds/364499/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ### Graphics
-- isometric 2D tiles by [Screaming Brain Studios](http://www.screamingbrainstudios.com), published on [https://itch.io](https://itch.io) under under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
-- trees by [Bleed](https://opengameart.org/users/bleed), published on [OpenGameArt.org](https://opengameart.org/content/tree-collection-v26-bleeds-game-art) under [Attribution 3.0 Unported (CC BY 3.0)](https://creativecommons.org/licenses/by/3.0/)
+- own "design" (o.O)
 
 # Documentation
 A good open source project, but also a game in general, benefits a lot from complete documentation. The current development status does not yet allow efficient documentation, but I don't want to lose any time and have to catch up on everything later.

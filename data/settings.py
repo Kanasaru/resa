@@ -17,7 +17,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.5.1-alpha'
+        self.version = '0.5.2-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
@@ -115,15 +115,9 @@ class Settings(object):
             self.parser.get('Objects', 'TilesID'): (
                 self.parser.get('Objects', 'TilesSheet'),
                 literal_eval(self.parser.get('Objects', 'TilesSize'))),
-            self.parser.get('Entities', 'EntityTreesBroadleafID'): (
-                self.parser.get('Entities', 'EntityTreesBroadleaf'),
-                literal_eval(self.parser.get('Entities', 'EntityTreesBroadleafSize'))),
-            self.parser.get('Entities', 'EntityTreesEvergreenID'): (
-                self.parser.get('Entities', 'EntityTreesEvergreen'),
-                literal_eval(self.parser.get('Entities', 'EntityTreesEvergreenSize'))),
-            self.parser.get('Entities', 'EntityTreesPalmsID'): (
-                self.parser.get('Entities', 'EntityTreesPalms'),
-                literal_eval(self.parser.get('Entities', 'EntityTreesPalmsSize')))
+            self.parser.get('Entities', 'TreesID'): (
+                self.parser.get('Entities', 'TreesSheet'),
+                literal_eval(self.parser.get('Entities', 'TreesSize')))
         }
 
 
