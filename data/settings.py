@@ -94,7 +94,6 @@ class Settings(object):
 
         self.background_image = self.parser.get('Screen', 'BackgroundImage')
         self.save_file = self.parser.get('GameSettings', 'SaveFile')
-        self.std_font = self.parser.get('Fonts', 'Standard')
         self.bg_music = self.parser.get('Music', 'BackgroundMusic')
         self.volume = self.parser.getfloat('Music', 'StartVolume')
 
@@ -113,48 +112,9 @@ class Settings(object):
         self.sp_menu_swt = self.parser.get('Switches', 'MenuSwitches')
         self.sp_menu_swt_size = literal_eval(self.parser.get('Switches', 'MenuSwitchesSize'))
         self.sp_world = {
-            self.parser.get('Objects', 'FieldTilesSolidID'): (
-                self.parser.get('Objects', 'FieldTilesSolid'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesSolidSize'))),
-            self.parser.get('Objects', 'FieldTilesDirtAtoWaterID'): (
-                self.parser.get('Objects', 'FieldTilesDirtAtoWater'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesDirtAtoWaterSize'))),
-            self.parser.get('Objects', 'FieldTilesDirtBtoWaterID'): (
-                self.parser.get('Objects', 'FieldTilesDirtBtoWater'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesDirtBtoWaterSize'))),
-            self.parser.get('Objects', 'FieldTilesGrassAtoWaterID'): (
-                self.parser.get('Objects', 'FieldTilesGrassAtoWater'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoWaterSize'))),
-            self.parser.get('Objects', 'FieldTilesGrassBtoWaterID'): (
-                self.parser.get('Objects', 'FieldTilesGrassBtoWater'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassBtoWaterSize'))),
-            self.parser.get('Objects', 'FieldTilesSandAtoWaterID'): (
-                self.parser.get('Objects', 'FieldTilesSandAtoWater'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesSandAtoWaterSize'))),
-            self.parser.get('Objects', 'FieldTilesDirtAtoDirtBID'): (
-                self.parser.get('Objects', 'FieldTilesDirtAtoDirtB'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesDirtAtoDirtBSize'))),
-            self.parser.get('Objects', 'FieldTilesDirtAtoSandAID'): (
-                self.parser.get('Objects', 'FieldTilesDirtAtoSandA'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesDirtAtoSandASize'))),
-            self.parser.get('Objects', 'FieldTilesDirtBtoSandAID'): (
-                self.parser.get('Objects', 'FieldTilesDirtBtoSandA'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesDirtBtoSandASize'))),
-            self.parser.get('Objects', 'FieldTilesGrassAtoDirtAID'): (
-                self.parser.get('Objects', 'FieldTilesGrassAtoDirtA'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoDirtASize'))),
-            self.parser.get('Objects', 'FieldTilesGrassAtoDirtBID'): (
-                self.parser.get('Objects', 'FieldTilesGrassAtoDirtB'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoDirtBSize'))),
-            self.parser.get('Objects', 'FieldTilesGrassAtoGrassBID'): (
-                self.parser.get('Objects', 'FieldTilesGrassAtoGrassB'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoGrassBSize'))),
-            self.parser.get('Objects', 'FieldTilesGrassAtoSandAID'): (
-                self.parser.get('Objects', 'FieldTilesGrassAtoSandA'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassAtoSandASize'))),
-            self.parser.get('Objects', 'FieldTilesGrassBtoDirtAID'): (
-                self.parser.get('Objects', 'FieldTilesGrassBtoDirtA'),
-                literal_eval(self.parser.get('Objects', 'FieldTilesGrassBtoDirtASize'))),
+            self.parser.get('Objects', 'TilesID'): (
+                self.parser.get('Objects', 'TilesSheet'),
+                literal_eval(self.parser.get('Objects', 'TilesSize'))),
             self.parser.get('Entities', 'EntityTreesBroadleafID'): (
                 self.parser.get('Entities', 'EntityTreesBroadleaf'),
                 literal_eval(self.parser.get('Entities', 'EntityTreesBroadleafSize'))),
