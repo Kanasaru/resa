@@ -144,7 +144,7 @@ class Generator(object):
         """
         for key, value in conf.sp_world.items():
             sheet = SpriteSheet(key, value[0], value[1])
-            sheet.colorkey = (0, 0, 0)
+            sheet.colorkey = None
             self.sprite_sheet_handler.add(sheet)
 
     def __update_load_screen(self) -> None:
