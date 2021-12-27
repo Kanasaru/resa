@@ -188,8 +188,8 @@ class Generator(object):
         """
         # fresh start with solid water tiles
         self.water.empty()
-        sprite_sheet = '0'
-        sprite_index = 5
+        sprite_sheet = 'Tiles'
+        sprite_index = 0
 
         # go through every field in the world
         pos_x = conf.grid.width / 2
@@ -242,27 +242,27 @@ class Generator(object):
                         neighbors.topright = island.data_set[row_nb - 1][col_nb + 1]
                         neighbors.bottomleft = island.data_set[row_nb + 1][col_nb - 1]
                         neighbors.bottomright = island.data_set[row_nb + 1][col_nb + 1]
-                        sprite_index = self.calc_field_transition_sprite_index(neighbors)
+                        sprite_index, rotate = self.calc_field_transition_sprite_index(neighbors)
 
                         # calc sprite sheets and solid attribute
                         if sprite_index is None:
                             # solid tiles
                             if island.temperature == conf.temp_north:
-                                sprite_index = 0
+                                sprite_index = 1
                             elif island.temperature == conf.temp_south:
-                                sprite_index = 4
+                                sprite_index = 2
                             else:
                                 sprite_index = 1
-                            sprite_sheet = '0'
+                            sprite_sheet = 'Tiles'
                             solid = True
                         else:
                             # water transition tiles
                             if island.temperature == conf.temp_north:
-                                sprite_sheet = '2'
+                                sprite_sheet = 'Tiles'
                             elif island.temperature == conf.temp_south:
-                                sprite_sheet = '5'
+                                sprite_sheet = 'Tiles'
                             else:
-                                sprite_sheet = '1'
+                                sprite_sheet = 'Tiles'
                             solid = False
 
                         # transform 2d position into isometric coordinates
@@ -270,6 +270,8 @@ class Generator(object):
 
                         # add field to island and global fields
                         image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
+                        if rotate:
+                            image = pygame.transform.rotate(image, 180)
                         field = Field((int(start_x + pos_x), int(start_y + pos_y)), image)
                         field.sprite_sheet_id = sprite_sheet
                         field.sprite_id = sprite_index
@@ -290,18 +292,18 @@ class Generator(object):
             if field.solid:
                 # central islands get broadleafs by chance
                 if field.temperature == conf.temp_center and random.randrange(0, 100, 1) <= conf.tree_spawn_bl:
-                    sprite_sheet = '14'
-                    sprite_index = random.choice([0, 1, 2])
+                    sprite_sheet = 'Trees'
+                    sprite_index = random.choice([0, 6, 12])
                     plant = True
                 # north islands get evergreens by chance
                 elif field.temperature == conf.temp_north and random.randrange(0, 100, 1) <= conf.tree_spawn_eg:
-                    sprite_sheet = '15'
-                    sprite_index = random.choice([0, 1, 2, 3, 4, 5])
+                    sprite_sheet = 'Trees'
+                    sprite_index = random.choice([0, 6, 12])
                     plant = True
                 # south islands get palms by chance
                 elif field.temperature == conf.temp_south and random.randrange(0, 100, 1) <= conf.tree_spawn_p:
-                    sprite_sheet = '16'
-                    sprite_index = random.choice([0, 1, 2])
+                    sprite_sheet = 'Trees'
+                    sprite_index = random.choice([0, 6, 12])
                     plant = True
                 else:
                     plant = False
@@ -364,43 +366,50 @@ class Generator(object):
         return pos_x, pos_y
 
     @staticmethod
-    def calc_field_transition_sprite_index(neighbors: Neighbors) -> int:
+    def calc_field_transition_sprite_index(neighbors: Neighbors) -> tuple[int, bool]:
         """ Calculates sprite index by the neighbor fields of a field.
 
         :param neighbors: list of neighbor fields from island data
         :return: sprite index
         """
+        rotate = False
         # sides
         if neighbors.left and neighbors.right and not neighbors.top and neighbors.bottom:
-            sprite_index = random.choice([25, 29, 33, 37, 41])
+            sprite_index = 9
+            rotate = True
         elif not neighbors.left and neighbors.right and neighbors.top and neighbors.bottom:
-            sprite_index = random.choice([24, 28, 32, 36, 40])
+            sprite_index = 8
         elif neighbors.left and not neighbors.right and neighbors.top and neighbors.bottom:
-            sprite_index = random.choice([27, 31, 35, 39, 43])
+            sprite_index = 8
+            rotate = True
         elif neighbors.left and neighbors.right and neighbors.top and not neighbors.bottom:
-            sprite_index = random.choice([26, 30, 34, 38, 42])
+            sprite_index = 9
         # inner corner
         elif neighbors.left and not neighbors.right and neighbors.top and not neighbors.bottom:
-            sprite_index = random.choice([0, 4, 8])
+            sprite_index = 13
+            rotate = True
         elif not neighbors.left and neighbors.right and not neighbors.top and neighbors.bottom:
-            sprite_index = random.choice([1, 5, 9])
+            sprite_index = 13
         elif neighbors.left and not neighbors.right and not neighbors.top and neighbors.bottom:
-            sprite_index = random.choice([3, 7, 11])
+            sprite_index = 12
+            rotate = True
         elif not neighbors.left and neighbors.right and neighbors.top and not neighbors.bottom:
-            sprite_index = random.choice([2, 6, 10])
+            sprite_index = 12
         # inner corner side
         elif not neighbors.bottomright and neighbors.left and neighbors.top:
-            sprite_index = random.choice([12, 16])
+            sprite_index = 11
+            rotate = True
         elif not neighbors.topleft and neighbors.left and neighbors.top:
-            sprite_index = random.choice([13, 17])
+            sprite_index = 11
         elif not neighbors.bottomleft and neighbors.left and neighbors.top:
-            sprite_index = random.choice([15, 19])
+            sprite_index = 10
         elif not neighbors.topright and neighbors.left and neighbors.top:
-            sprite_index = random.choice([14, 18])
+            sprite_index = 10
+            rotate = True
         else:
             sprite_index = None
 
-        return sprite_index
+        return sprite_index, rotate
 
     @staticmethod
     def calc_isometric_field_shift(data_set: list) -> tuple[int, int]:
