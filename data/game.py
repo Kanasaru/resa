@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: GNU General Public License v3
 """
-
+from data.handlers.locals import LocalsHandler
 from data.handlers.sound import SoundHandler
 from data.settings import conf
 from datetime import datetime
@@ -234,7 +234,7 @@ class Game(object):
         self.sounds.play('screenshot')
         filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
-        self.messages.info(f'Took screenshot: {filename}')
+        self.messages.info(f"{LocalsHandler.lang('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
 
     def save_game(self, auto_save: bool = False) -> None:
@@ -245,9 +245,9 @@ class Game(object):
         self.game_data_handler.world_data = (self.map.rect, self.map.get_raw_fields(), self.map.get_raw_trees())
         self.game_data_handler.save_to_file(conf.save_file)
         if auto_save:
-            text = 'Game saved automatically!'
+            text = LocalsHandler.lang('info_autosave')
         else:
-            text = 'Game saved!'
+            text = LocalsHandler.lang('info_save')
         self.messages.info(text)
         logging.info(text)
 
@@ -256,9 +256,9 @@ class Game(object):
 
         :return: None
         """
-        self.messages.show('Leavinvg the game...', 'Are you sure?',
+        self.messages.show(LocalsHandler.lang('msg_cap_leavegame'), LocalsHandler.lang('msg_text_leavegame'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
-                           'Yes',
+                           LocalsHandler.lang('btn_msg_yes'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
-                           'No')
+                           LocalsHandler.lang('btn_msg_no'))
         self.game_data_handler.pause_ingame_time()

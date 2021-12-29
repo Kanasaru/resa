@@ -30,6 +30,9 @@ class Settings(object):
         self.background_image = None
         self.map_border_thickness = 5
 
+        # locals
+        self.lang = None
+
         # standard game values
         self.game_speed = 1440
         self.map_pace = 10

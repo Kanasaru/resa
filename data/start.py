@@ -16,6 +16,7 @@ from data.interfaces.mainmenu import MainMenu
 from data.interfaces.options import Options
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.handlers.music import Music
+from data.handlers.locals import LocalsHandler
 
 
 class Start(object):
@@ -32,6 +33,8 @@ class Start(object):
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
+
+        # LocalsHandler.set_lang('en')
 
         # build window
         resos = Options.get_screenmodes()

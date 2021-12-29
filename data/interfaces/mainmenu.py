@@ -13,6 +13,7 @@ from data.forms.label import Label
 from data.forms.title import Title
 from data.forms.button import Button
 import data.eventcodes as ecodes
+from data.handlers.locals import LocalsHandler
 
 
 class MainMenu(Interface):
@@ -49,7 +50,7 @@ class MainMenu(Interface):
         b_newgame = Button(
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
-            'New Game',
+            LocalsHandler.lang('btn_newgame'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_STARTGAME)
         )
         b_newgame.set_font(conf.std_font)
@@ -58,7 +59,7 @@ class MainMenu(Interface):
         b_loadgame = Button(
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
-            'Load Game',
+            LocalsHandler.lang('btn_loadgame'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_LOADGAME)
         )
         b_loadgame.set_font(conf.std_font)
@@ -72,7 +73,7 @@ class MainMenu(Interface):
         b_options = Button(
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
-            'Options',
+            LocalsHandler.lang('btn_options'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_OPTIONS)
         )
         b_options.set_font(conf.std_font)
@@ -81,7 +82,7 @@ class MainMenu(Interface):
         b_quitgame = Button(
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
-            'Quit Game',
+            LocalsHandler.lang('btn_quitgame'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_QUITGAME)
         )
         b_quitgame.set_font(conf.std_font)
