@@ -2,7 +2,7 @@
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
-:license: GNU General Public License v3
+:license: CC-BY-SA-4.0
 """
 
 import pygame
@@ -93,9 +93,7 @@ class Field(pygame.sprite.Sprite):
         if event is not None:
             if event.type == ecodes.RESA_GAME_EVENT:
                 if event.code == ecodes.RESA_CTRL_MAP_MOVE:
-                    pos_x = self._position[0] + event.move[0]
-                    pox_y = self._position[1] + event.move[1]
-                    self.position = (pos_x, pox_y)
+                    self.position = (self._position[0] + event.move[0], self._position[1] + event.move[1])
         self.rect.topleft = self.position
 
     def delete(self) -> None:

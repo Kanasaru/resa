@@ -1,8 +1,9 @@
 """
 :project: resa
 :source: https://github.com/Kanasaru/resa
-:license: GNU General Public License v3
+:license: CC-BY-SA-4.0
 """
+
 from data.handlers.locals import LocalsHandler
 from data.start import Start
 import logging.config

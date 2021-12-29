@@ -2,7 +2,7 @@
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
-:license: GNU General Public License v3
+:license: CC-BY-SA-4.0
 """
 
 from data.settings import conf
@@ -55,6 +55,7 @@ class GamePanel(Interface):
         )
         b_save.align(b_save.RIGHT)
         b_save.set_font(conf.std_font, 13)
+        b_save.disable()
 
         self.title.add(tf_resources)
         self.title.add([b_save, b_quit])
