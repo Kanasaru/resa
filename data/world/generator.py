@@ -15,6 +15,8 @@ from data.handlers.spritesheet import SpriteSheetHandler, SpriteSheet
 from data.world.objects.island import Island
 import data.world.grid
 
+import data.world.islands.big_islands as big_islands
+
 
 class Neighbors(object):
     def __init__(self):
@@ -118,7 +120,8 @@ class Generator(object):
 
         # calculate world basic data by biggest island
         # todo: needs to be re-factored
-        fields_x, fields_y = self.world_islands['Center'].calc_size()
+        # fields_x, fields_y = self.world_islands['Center'].calc_size()
+        fields_x, fields_y = (60, 40)
 
         # new grid
         conf.grid = data.world.grid.Grid(fields_x, fields_y, conf.grid_zoom)
@@ -166,13 +169,13 @@ class Generator(object):
         self.__update_load_screen()
         self.fill()
         # create islands
-        # self.load_msg = 'Creating islands...'
-        # self.__update_load_screen()
-        # self.__create_islands()
-        # plant trees
-        self.load_msg = 'Planting trees...'
+        self.load_msg = 'Creating islands...'
         self.__update_load_screen()
-        self.__plant_trees()
+        self.__create_islands_new()
+        # plant trees
+        # self.load_msg = 'Planting trees...'
+        # self.__update_load_screen()
+        # self.__plant_trees()
 
     def get_world(self) -> tuple[pygame.sprite.Group, pygame.sprite.Group, pygame.sprite.Group, pygame.Rect]:
         """ Returns the world data. Sprite groups and rect.
@@ -195,6 +198,50 @@ class Generator(object):
             new_field.solid = False
             # add to sprite group and go on
             self.water.add(new_field)
+
+    def __create_islands_new(self):
+        island = big_islands.big_island_1
+
+        sprite_sheet = 'Tiles'
+        temperature = conf.temp_north
+
+        shift_left = 0
+        shift_top = 3
+        key = 1
+        count = 0
+
+        # shift left
+        key += shift_left
+
+        # shift top
+        for i in range(shift_top):
+            i -= 1
+            if i % 2 == 0:
+                key += (conf.grid.fields_x // 2)
+            else:
+                key += (conf.grid.fields_x // 2) - 1
+
+        for row_nb, row in enumerate(island):
+            for col_nb, tile in enumerate(row):
+                if tile != 0:
+                    pos_x = conf.grid.fields_iso[key].rect.x
+                    pos_y = conf.grid.fields_iso[key].rect.y
+
+                    # add field to island and global fields
+                    image = self.sprite_sheet_handler.image_by_index(sprite_sheet, tile)
+                    field = Field((int(pos_x), int(pos_y)), image)
+                    field.sprite_sheet_id = sprite_sheet
+                    field.sprite_id = tile
+                    field.temperature = temperature
+                    field.solid = True
+                    self.fields.add(field)
+                key += 1
+                count += 1
+            if row_nb % 2 == 0:
+                key += (conf.grid.fields_x // 2) - count
+            else:
+                key += (conf.grid.fields_x // 2) - 1 - count
+            count = 0
 
     # todo: needs to be re-factored
     def __create_islands(self) -> None:

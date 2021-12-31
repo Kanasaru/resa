@@ -48,6 +48,10 @@ class Grid(object):
         self.calc_grid()
         self.calc_iso_grid()
 
+    @staticmethod
+    def get_iso_grid_size(grid):
+        return grid * 2, grid
+
     def calc_grid(self):
         key = 1
         for row in range(self.fields_y):
