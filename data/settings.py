@@ -7,7 +7,7 @@
 
 import configparser
 from ast import literal_eval
-from data.world.grid import OldGrid
+import data.world.grid as grid
 
 
 class Settings(object):
@@ -26,7 +26,8 @@ class Settings(object):
         self.fps = 60
         self.resolution = None
         self.fullscreen = False
-        self.grid = OldGrid(((800, 600), 40, 20))
+        self.grid = None
+        self.grid_zoom = 40
         self.background_image = None
         self.map_border_thickness = 5
 

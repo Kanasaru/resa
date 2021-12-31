@@ -44,7 +44,6 @@ class Map(object):
         # surfaces
         self.screen_size = screen_size
         self.surface = pygame.Surface(self.screen_size)
-        self.bg_surface = pygame.Surface(self.screen_size)
 
         # world data
         self.rect = pygame.Rect((0, 0), (0, 0))
@@ -110,6 +109,7 @@ class Map(object):
         else:
             pass
 
+        self.water.update(event)
         self.fields.update(event)
         self.trees.update(event)
 
@@ -136,12 +136,6 @@ class Map(object):
 
         # get all sprites from world
         self.water, self.fields, self.trees, self.rect = world.get_world()
-        # move the water sprites to avoid topleft isometric black fields
-        self.water.update(pygame.event.Event(ecodes.RESA_GAME_EVENT,
-                                             code=ecodes.RESA_CTRL_MAP_MOVE,
-                                             move=(-50, -50)))
-        # draw water sprites to its own surface
-        self.water.draw(self.bg_surface)
 
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
@@ -150,7 +144,7 @@ class Map(object):
         """
         if self.moving:
             # detect amount of movable space in each direction
-            movable_px_right = self.rect.width - self.screen_size[0] - abs(0 - self.rect.x) + conf.grid.width / 2
+            movable_px_right = self.rect.width - self.screen_size[0] - abs(0 - self.rect.x)
             movable_px_left = abs(0 - self.rect.x)
             movable_px_up = abs(0 - self.rect.y)
             movable_px_down = self.rect.height - self.screen_size[1] - abs(0 - self.rect.y)
@@ -196,8 +190,10 @@ class Map(object):
 
         :return: None
         """
-        # render the background (water)
-        self.surface.blit(self.bg_surface, (0, 0))
+        self.surface.fill(conf.COLOR_BLACK)
+        
+        # render the water
+        self.water.draw(self.surface)
 
         # render all fields and trees
         self.fields.draw(self.surface)

@@ -31,16 +31,16 @@ class GridField(object):
 
 
 class Grid(object):
-    def __init__(self, fields_x: int, fields_y: int, width: int, height: int):
-        self.fields_x = fields_x
-        self.fields_y = fields_y
-        self.width = width
-        self.height = height
-        self.iso_width = width * 2
-        self.iso_height = height
+    def __init__(self, fields_x: int, fields_y: int, grid: int):
+        self.fields_x = int(fields_x)
+        self.fields_y = int(fields_y)
+        self.width = int(grid)
+        self.height = int(grid)
+        self.iso_width = self.width * 2
+        self.iso_height = self.height
 
-        self.color_grid = (255, 0, 0)
-        self.color_iso = (0, 255, 0)
+        self.grid_width = self.fields_x * self.width
+        self.grid_height = self.fields_y * self.height
 
         self.fields = dict()
         self.fields_iso = dict()
@@ -57,9 +57,9 @@ class Grid(object):
                 self.fields[key] = GridField(key, x, y, self.width, self.height)
                 key += 1
 
-    def draw_grid(self, surface):
+    def draw_grid(self, surface, position, color: tuple[int, int, int] = (255, 0, 0)):
         for key, value in self.fields.items():
-            pygame.draw.rect(surface, self.color_grid, value.rect, 1)
+            pygame.draw.rect(surface, color, (value.rect.x + position[0], value.rect.y + position[1]), 1)
 
     def pos_in_grid_field(self, position):
         pos_div_x = divmod(position[0], self.width)
@@ -82,31 +82,36 @@ class Grid(object):
 
         for row_nb in range(self.fields_y):
             for col_nb in range(self.fields_x // 2):
-                blx = int((self.iso_width / 2 + col_nb * self.iso_width)) - self.width - 2
-                bly = int(self.iso_height * (row_nb + 1)) - self.iso_height
-                buffer = 0, bly + self.height // 2
+                pos_bottom_x = int((self.iso_width / 2 + col_nb * self.iso_width))
+                pos_bottom_y = int(self.iso_height * (row_nb + 1))
 
-                self.fields_iso[key] = GridField(key, blx, bly, self.iso_width, self.iso_height)
+                line_left_bottom_end = (pos_bottom_x - 1, pos_bottom_y - 1)
+
+                blx, bly = line_left_bottom_end
+                blx -= self.width - 1
+                self.fields_iso[key] = GridField(key, blx, bly - self.iso_height + 1, self.iso_width, self.iso_height)
                 key += 1
+
+                buffer = -self.width, bly + self.height // 2
 
             if row_nb < self.fields_y - 1:
                 blpx, blpy = buffer
                 for halfline in range(self.fields_x // 2 - 1):
-                    blpx += self.width
-                    self.fields_iso[key] = GridField(key, blpx, blpy, self.iso_width, self.iso_height)
+                    blpx += self.iso_width
+                    self.fields_iso[key] = GridField(key, blpx, blpy - self.iso_height + 1, self.iso_width, self.iso_height)
                     key += 1
 
-    def draw_iso_grid(self, surface):
+    def draw_iso_grid(self, surface, position, color: tuple[int, int, int] = (0, 255, 0)):
         for row_nb in range(self.fields_y):
             for col_nb in range(self.fields_x // 2):
-                pos_left_x = int((col_nb * self.iso_width))
-                pos_left_y = int((self.iso_height // 2) * (row_nb * 2 + 1))
-                pos_top_x = int((self.iso_width / 2 + col_nb * self.iso_width))
-                pos_top_y = int(self.iso_height * row_nb)
-                pos_right_x = int((col_nb + 1) * self.iso_width)
-                pos_right_y = int((self.iso_height // 2) * (row_nb * 2 + 1))
-                pos_bottom_x = int((self.iso_width / 2 + col_nb * self.iso_width))
-                pos_bottom_y = int(self.iso_height * (row_nb + 1))
+                pos_left_x = position[0] + int((col_nb * self.iso_width))
+                pos_left_y = position[1] + int((self.iso_height // 2) * (row_nb * 2 + 1))
+                pos_top_x = position[0] + int((self.iso_width / 2 + col_nb * self.iso_width))
+                pos_top_y = position[1] + int(self.iso_height * row_nb)
+                pos_right_x = position[0] + int((col_nb + 1) * self.iso_width)
+                pos_right_y = position[1] + int((self.iso_height // 2) * (row_nb * 2 + 1))
+                pos_bottom_x = position[0] + int((self.iso_width / 2 + col_nb * self.iso_width))
+                pos_bottom_y = position[1] + int(self.iso_height * (row_nb + 1))
 
                 line_left_top_start = (pos_left_x, pos_left_y - 1)
                 line_left_top_end = (pos_top_x - 1, pos_top_y)
@@ -117,10 +122,10 @@ class Grid(object):
                 line_bottom_right_start = (pos_bottom_x, pos_bottom_y - 1)
                 line_bottom_right_end = (pos_right_x - 1, pos_right_y)
 
-                pygame.draw.line(surface, self.color_iso, line_left_top_start, line_left_top_end)
-                pygame.draw.line(surface, self.color_iso, line_top_right_start, line_top_right_end)
-                pygame.draw.line(surface, self.color_iso, line_left_bottom_start, line_left_bottom_end)
-                pygame.draw.line(surface, self.color_iso, line_bottom_right_start, line_bottom_right_end)
+                pygame.draw.line(surface, color, line_left_top_start, line_left_top_end)
+                pygame.draw.line(surface, color, line_top_right_start, line_top_right_end)
+                pygame.draw.line(surface, color, line_left_bottom_start, line_left_bottom_end)
+                pygame.draw.line(surface, color, line_bottom_right_start, line_bottom_right_end)
 
     def pos_in_iso_grid_field(self, position):
         pos_x = position[0]

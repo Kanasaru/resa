@@ -13,6 +13,7 @@ from data.world.objects.field import Field
 from data.world.entities.tree import Tree
 from data.handlers.spritesheet import SpriteSheetHandler, SpriteSheet
 from data.world.objects.island import Island
+import data.world.grid
 
 
 class Neighbors(object):
@@ -116,13 +117,12 @@ class Generator(object):
         }
 
         # calculate world basic data by biggest island
-        big_width, big_height = self.world_islands['Center'].calc_size()
-        if big_width % conf.grid.width != 0:
-            big_width += conf.grid.width / 2
-        if big_height % conf.grid.height != 0:
-            big_height += conf.grid.height / 2
-        self.world_size = (big_width * 3, big_height * 3)
-        self.rect = pygame.Rect((0, 0), self.world_size)
+        # todo: needs to be re-factored
+        fields_x, fields_y = self.world_islands['Center'].calc_size()
+
+        # new grid
+        conf.grid = data.world.grid.Grid(fields_x, fields_y, conf.grid_zoom)
+        self.rect = pygame.Rect((0, 0), (conf.grid.grid_width, conf.grid.grid_height))
 
         # sprite groups
         self.water = pygame.sprite.Group()
@@ -166,9 +166,9 @@ class Generator(object):
         self.__update_load_screen()
         self.fill()
         # create islands
-        self.load_msg = 'Creating islands...'
-        self.__update_load_screen()
-        self.__create_islands()
+        # self.load_msg = 'Creating islands...'
+        # self.__update_load_screen()
+        # self.__create_islands()
         # plant trees
         self.load_msg = 'Planting trees...'
         self.__update_load_screen()
@@ -182,35 +182,21 @@ class Generator(object):
         return self.water, self.fields, self.trees, self.rect
 
     def fill(self) -> None:
-        """ Fills every field of the world with water sprites.
-
-        :return: None
-        """
         # fresh start with solid water tiles
         self.water.empty()
         sprite_sheet = 'Tiles'
         sprite_index = 0
 
-        # go through every field in the world
-        pos_x = conf.grid.width / 2
-        pos_y = 0
-        for row in range(int(self.world_size[0] / (conf.grid.width / 2)) - 1):
-            for col in range(int(self.world_size[1] / conf.grid.height)):
-                # load image and create new field
-                image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
-                new_field = Field((pos_x, pos_y), image)
-                new_field.sprite_sheet_id = sprite_sheet
-                new_field.sprite_id = sprite_index
-                # add to sprite group and go on
-                self.water.add(new_field)
-                pos_x += conf.grid.width
-            pos_y += conf.grid.height / 2
-            # check for isometric row shift
-            if (row % 2) == 0:
-                pos_x = 0
-            else:
-                pos_x = conf.grid.width / 2
+        for key, value in conf.grid.fields_iso.items():
+            image = self.sprite_sheet_handler.image_by_index(sprite_sheet, sprite_index)
+            new_field = Field((value.rect.x, value.rect.y), image)
+            new_field.sprite_sheet_id = sprite_sheet
+            new_field.sprite_id = sprite_index
+            new_field.solid = False
+            # add to sprite group and go on
+            self.water.add(new_field)
 
+    # todo: needs to be re-factored
     def __create_islands(self) -> None:
         """ Uses world islands and calculate every field.
 
@@ -316,6 +302,7 @@ class Generator(object):
                     tree.sprite_id = sprite_index
                     self.trees.add(tree)
 
+    # todo: needs to be re-factored
     def __calc_island_position(self, island_size: tuple[int, int], key: str) -> tuple[int, int]:
         """ Calculates islands sector position and center it in its sector.
 
@@ -365,6 +352,7 @@ class Generator(object):
 
         return pos_x, pos_y
 
+    # todo: needs to be re-factored
     @staticmethod
     def calc_field_transition_sprite_index(neighbors: Neighbors) -> tuple[int, bool]:
         """ Calculates sprite index by the neighbor fields of a field.
@@ -411,6 +399,7 @@ class Generator(object):
 
         return sprite_index, rotate
 
+    # todo: needs to be re-factored
     @staticmethod
     def calc_isometric_field_shift(data_set: list) -> tuple[int, int]:
         """ Calculates the isometric field shift (left shift)
@@ -426,6 +415,7 @@ class Generator(object):
 
         return start_x, start_y
 
+    # todo: needs to be re-factored
     @staticmethod
     def isometric_transform(row_col: tuple[int, int]) -> tuple[int, int]:
         """ Transforms 2d position into isometric coordinates.

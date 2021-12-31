@@ -63,18 +63,19 @@ class Island(object):
     def data_fields(self, value):
         self._data_fields = value
 
+    # todo: needs to be re-factored
     def calc_size(self) -> tuple[int, int]:
         """ Calculates width and height of the island in pixel.
 
         :return: width and height of the island
         """
-        width_in_px = height_in_px = 0
+        width = height = 0
 
         if self.data_set is not None:
-            width_in_px = (len(self.data_set) + len(self.data_set[0])) * (conf.grid.width / 2)
-            height_in_px = (len(self.data_set) + len(self.data_set[0])) * (conf.grid.height / 2)
+            width = len(self.data_set) + len(self.data_set[0])
+            height = len(self.data_set) + len(self.data_set[0])
 
-        return width_in_px, height_in_px
+        return width, height
 
     def __calc_data_set(self) -> None:
         """ Chooses randomly a data set for the island by its size.

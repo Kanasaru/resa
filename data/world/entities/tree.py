@@ -26,7 +26,7 @@ class Tree(pygame.sprite.Sprite):
 
         # image and sprite settings
         self.image = image
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, conf.grid.width)
+        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, conf.grid.iso_width)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
         self.sprite_sheet_id = None
         self.sprite_id = None

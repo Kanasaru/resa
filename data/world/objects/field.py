@@ -29,7 +29,7 @@ class Field(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # basic settings
-        self._size = conf.grid.size
+        self._size = (conf.grid.iso_width, conf.grid.iso_height)
         self._visible = True
         self._temperature = conf.temp_center
         self._solid = False
