@@ -24,10 +24,12 @@ class OldGrid(object):
 class GridField(object):
     def __init__(self, key: int, left: int, top: int, width: int, height: int):
         self.key = key
+        self.col = -1
+        self.row = -1
         self.rect = pygame.Rect((left, top), (width, height))
 
     def __str__(self):
-        return f'Field {self.key}: {self.rect.topleft}, {self.rect.size}'
+        return f'Field {self.key}: {self.rect.topleft}, {self.rect.size}, Col: {self.col} Row: {self.row}'
 
 
 class Grid(object):
@@ -63,7 +65,7 @@ class Grid(object):
 
     def draw_grid(self, surface, position, color: tuple[int, int, int] = (255, 0, 0)):
         for key, value in self.fields.items():
-            pygame.draw.rect(surface, color, (value.rect.x + position[0], value.rect.y + position[1]), 1)
+            pygame.draw.rect(surface, color, pygame.Rect(value.rect.x + position[0], value.rect.y + position[1], self.width, self.height), 1)
 
     def pos_in_grid_field(self, position):
         pos_div_x = divmod(position[0], self.width)
@@ -83,6 +85,8 @@ class Grid(object):
     def calc_iso_grid(self):
         key = 1
         buffer = (0, 0)
+        buffer_col = -1
+        row_count = 0
 
         for row_nb in range(self.fields_y):
             for col_nb in range(self.fields_x // 2):
@@ -94,16 +98,23 @@ class Grid(object):
                 blx, bly = line_left_bottom_end
                 blx -= self.width - 1
                 self.fields_iso[key] = GridField(key, blx, bly - self.iso_height + 1, self.iso_width, self.iso_height)
+                self.fields_iso[key].col = col_nb
+                self.fields_iso[key].row = row_count
                 key += 1
 
                 buffer = -self.width, bly + self.height // 2
+                buffer_col = col_nb
 
             if row_nb < self.fields_y - 1:
+                row_count += 1
                 blpx, blpy = buffer
                 for halfline in range(self.fields_x // 2 - 1):
                     blpx += self.iso_width
                     self.fields_iso[key] = GridField(key, blpx, blpy - self.iso_height + 1, self.iso_width, self.iso_height)
+                    self.fields_iso[key].col = buffer_col
+                    self.fields_iso[key].row = row_count
                     key += 1
+            row_count += 1
 
     def draw_iso_grid(self, surface, position, color: tuple[int, int, int] = (0, 255, 0)):
         for row_nb in range(self.fields_y):
@@ -162,11 +173,11 @@ class Grid(object):
 
         # field key
         iso_col = divmod(col, 2)
-        iso_field_key = iso_col[0] + row * self.fields_y + (row * (self.fields_y - 1)) + 1
-        iso_field_key_top_left = iso_col[0] + (row - 1) * self.fields_y + (row * (self.fields_y - 1)) + 1
-        iso_field_key_top_right = iso_col[0] + (row - 1) * self.fields_y + (row * (self.fields_y - 1)) + 2
-        iso_field_key_bottom_left = iso_col[0] + (row + 1) * self.fields_y + (row * (self.fields_y - 1))
-        iso_field_key_bottom_right = iso_col[0] + (row + 1) * self.fields_y + (row * (self.fields_y - 1)) + 1
+        iso_field_key = iso_col[0] + row * self.fields_x // 2 + (row * (self.fields_x // 2 - 1)) + 1
+        iso_field_key_top_left = iso_col[0] + (row - 1) * self.fields_x // 2 + (row * (self.fields_x // 2 - 1)) + 1
+        iso_field_key_top_right = iso_col[0] + (row - 1) * self.fields_x // 2 + (row * (self.fields_x // 2 - 1)) + 2
+        iso_field_key_bottom_left = iso_col[0] + (row + 1) * self.fields_x // 2 + (row * (self.fields_x // 2 - 1))
+        iso_field_key_bottom_right = iso_col[0] + (row + 1) * self.fields_x // 2 + (row * (self.fields_x // 2 - 1)) + 1
 
         if col % 2 == 0:
             if Grid.is_point_in_triangle(x1, y1, x2, y2, x3_1, y3, pos_x, pos_y):

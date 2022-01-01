@@ -27,7 +27,7 @@ class Settings(object):
         self.resolution = None
         self.fullscreen = False
         self.grid = None
-        self.grid_zoom = 40
+        self.grid_zoom = 20
         self.background_image = None
         self.map_border_thickness = 5
 

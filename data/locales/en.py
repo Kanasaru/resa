@@ -12,6 +12,7 @@ lang_en = {
     'btn_options': "Options",
     'btn_quitgame': "Quit Game",
     'btn_leavegame': "Leave",
+    'btn_editor': "Editor",
     'msg_cap_leavegame': "Leaving the game...",
     'msg_text_leavegame': "Are you sure?",
     'btn_msg_yes': "Yes",

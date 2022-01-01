@@ -39,6 +39,8 @@ class Field(pygame.sprite.Sprite):
         self.sprite_sheet_id = None
         self.sprite_id = None
 
+        self.iso_key = -1
+
         # positions
         self._position = position
         self.rect = self.image.get_rect()

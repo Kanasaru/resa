@@ -8,6 +8,8 @@
 import pygame
 import logging
 from datetime import datetime
+
+from data.editor import Editor
 from data.handlers.sound import SoundHandler
 from data.settings import conf
 import data.eventcodes as ecodes
@@ -30,6 +32,10 @@ class Start(object):
         self.leave_game = False
         self.options = False
         self.screenshot = False
+        self.start_editor = False
+        self.editor = None
+
+        self.bu_res = (None, None)
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
@@ -101,6 +107,8 @@ class Start(object):
                 elif event.code == ecodes.RESA_BTN_CHG_RESOLUTION:
                     conf.resolution = event.res
                     self.update_display()
+                elif event.code == ecodes.RESA_BTN_EDITOR:
+                    self.start_editor = True
                 elif event.code == ecodes.RESA_SWT_FULLSCREEN:
                     conf.fullscreen = event.fullscreen
                     conf.resolution = event.res
@@ -135,6 +143,22 @@ class Start(object):
 
         :return: None
         """
+        # editor
+        if self.start_editor:
+            if self.editor is not None:
+                conf.resolution = self.bu_res[0]
+                conf.fullscreen = self.bu_res[1]
+                pygame.display.set_caption(f'Welcome to {conf.title}')
+                self.update_display()
+                self.start_editor = False
+                self.editor = None
+            else:
+                self.bu_res = (conf.resolution, conf.fullscreen)
+                conf.resolution = (1280, 960)
+                conf.fullscreen = False
+                self.update_display()
+                self.editor = Editor()
+
         if self.start_game:
             # current game play ended and back to main menu
             if self.game is not None and self.game.exit_game:

@@ -1,4 +1,4 @@
-""" This module provides the MainMenu class
+""" This module provides the editor interface
 
 :project: resa
 :source: https://github.com/Kanasaru/resa
@@ -16,7 +16,7 @@ import data.eventcodes as ecodes
 from data.handlers.locals import LocalsHandler
 
 
-class MainMenu(Interface):
+class EditorScreen(Interface):
     def __init__(self, sheet_handler: SpriteSheetHandler, sheet_key):
         super().__init__()
 
