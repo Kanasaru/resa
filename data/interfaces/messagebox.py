@@ -4,7 +4,6 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
 from data.forms.rect import Recty
 from data.settings import conf
 import pygame

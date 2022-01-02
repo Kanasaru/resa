@@ -53,7 +53,8 @@ Resa is intended as an open source project and therefore lives from people who c
 - _Illusory Realm_ by [Darren Curtis](https://www.darrencurtismusic.com/), promoted by [chosic.com](https://www.chosic.com/free-music/all/) under [Attribution 3.0 Unported (CC BY 3.0)](https://creativecommons.org/licenses/by/3.0/)
 
 ### Sounds
-- _screenshot.wav_ orignal _camera.wav_ by [alejandra0908](https://freesound.org/people/alejandra0908/sounds/364499/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+- _screenshot.wav_ by [alejandra0908](https://freesound.org/people/alejandra0908/sounds/364499/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+- _btn-click.wav_ by [Christopherderp](https://freesound.org/people/Christopherderp/sounds/342200/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ### Graphics
 - own "design" (o.O)

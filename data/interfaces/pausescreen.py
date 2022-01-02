@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+from data.handlers.locals import LocalsHandler
 from data.settings import conf
 from data.interfaces.interface import Interface
 from data.forms.label import Label
@@ -18,7 +18,7 @@ class GamePausedScreen(Interface):
         self.rect = rect
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = None
-        self._text = f'Game paused!'
+        self._text = f"{LocalsHandler.lang('info_game_paused')}"
 
         self.title = Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(192)

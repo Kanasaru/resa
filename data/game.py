@@ -4,7 +4,6 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
 from data.handlers.locals import LocalsHandler
 from data.handlers.sound import SoundHandler
 from data.settings import conf
@@ -51,10 +50,10 @@ class Game(object):
         self.border_color = conf.COLOR_WHITE
         # debug screen
         self.debug_screen = DebugScreen()
-        self.debug_screen.add('FPS', self.clock.get_fps)
-        self.debug_screen.add('Version', lambda: conf.version)
-        self.debug_screen.add('Date', lambda: datetime.now().strftime('%A, %d. %B %Y'))
-        self.debug_screen.add('In-Game time', self.game_data_handler.get_game_time)
+        self.debug_screen.add(LocalsHandler.lang('info_fps'), self.clock.get_fps)
+        self.debug_screen.add(LocalsHandler.lang('info_version'), lambda: conf.version)
+        self.debug_screen.add(LocalsHandler.lang('info_date'), lambda: datetime.now().strftime("%A, %d. %B %Y"))
+        self.debug_screen.add(LocalsHandler.lang('info_ingame_time'), self.game_data_handler.get_game_time)
         # game panel
         game_panel_sheet_handler = SpriteSheetHandler()
         buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
@@ -135,8 +134,6 @@ class Game(object):
                     self.music.volume += .1
                 elif event.key == pygame.K_MINUS:
                     self.music.volume -= .1
-                else:
-                    pass
             elif event.type == ecodes.RESA_AUTOSAVE_EVENT and conf.autosave:
                 self.save_game(True)
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
@@ -149,8 +146,6 @@ class Game(object):
                     pass
                 elif event.button == 2:
                     pass
-                else:
-                    pass
             elif event.type == ecodes.RESA_TITLE_EVENT:
                 if event.code == ecodes.RESA_BTN_LEAVEGAME:
                     self.leave_game()
@@ -160,10 +155,6 @@ class Game(object):
                     self.exit_game = True
                 elif event.code == ecodes.RESA_QUITGAME_FALSE:
                     self.game_data_handler.pause_ingame_time()
-                else:
-                    pass
-            else:
-                pass
 
             # push event into title and map event handling
             self.debug_screen.handle_event(event)

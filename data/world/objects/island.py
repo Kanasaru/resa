@@ -10,14 +10,13 @@ import pygame.sprite
 import data.world.islands.big_islands as big_islands
 import data.world.islands.medium_islands as medium_islands
 import data.world.islands.small_islands as small_islands
-from data.settings import conf
+
+BIG = 0
+MEDIUM = 1
+SMALL = 2
 
 
 class Island(object):
-    BIG = 0
-    MEDIUM = 1
-    SMALL = 2
-
     def __init__(self, size, temperature):
         """ Creates an island.
 
@@ -69,25 +68,20 @@ class Island(object):
 
         :return: width and height of the island
         """
-        width = height = 0
+        pass
 
-        if self.data_set is not None:
-            width = len(self.data_set) + len(self.data_set[0])
-            height = len(self.data_set) + len(self.data_set[0])
-
-        return width, height
-
+    # todo: change to new island file format
     def __calc_data_set(self) -> None:
         """ Chooses randomly a data set for the island by its size.
 
         :return: None
         """
-        if self.size == Island.BIG:
+        if self.size == BIG:
             self._data_set = random.choice([
                 big_islands.big_island_1,
                 big_islands.big_island_2
             ])
-        elif self.size == Island.MEDIUM:
+        elif self.size == MEDIUM:
             self._data_set = random.choice([
                 medium_islands.med_island_1,
                 medium_islands.med_island_2,

@@ -9,6 +9,7 @@ from data.settings import conf
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
 from data.forms.form import Form
+from data.handlers.sound import SoundHandler
 
 
 class Button(Form):
@@ -30,6 +31,8 @@ class Button(Form):
 
         self.sprite_sheet_handler = sprite_sheet_handler
         self.sprite_sheet_key = sprite_key
+        
+        self.sounds = SoundHandler()
 
         self.rect = rect
         self.pos_x = self.rect.x
@@ -169,6 +172,7 @@ class Button(Form):
                     self.button_down = True
             elif event.type == pygame.MOUSEBUTTONUP:
                 if self.rect.collidepoint(event.pos) and self.button_down:
+                    self.sounds.play('btn-click')
                     if self.callback_event is not None:
                         pygame.event.post(self.callback_event)
                     self.image = self.surf_images["hover"]

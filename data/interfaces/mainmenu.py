@@ -4,7 +4,6 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
 from data.settings import conf
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
@@ -26,7 +25,7 @@ class MainMenu(Interface):
         self.rect = pygame.Rect((0, 0), conf.resolution)
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = conf.background_image
-        self.__credits = f'Created and Designed by {conf.author} | {conf.www}'
+        self.__credits = f"{LocalsHandler.lang('info_credits')} {conf.author} | {conf.www}"
 
         self.build()
 

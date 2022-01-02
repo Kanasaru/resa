@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+from data.handlers.locals import LocalsHandler
 from data.settings import conf
 import pygame
 from data.interfaces.interface import Interface
@@ -29,13 +29,13 @@ class DebugScreen(Interface):
 
         self._timer = '00:00:00'
 
-        tf_title = Label((15, 40), f'Debug Screen', 18)
+        tf_title = Label((15, 40), LocalsHandler.lang('info_debug_title'), 18)
         tf_title.font_color(conf.COLOR_WHITE)
         tf_title.align(tf_title.LEFT)
-
         self._y = tf_title.pos_y + tf_title.height() + 10
 
-        tf_playtime = Label((15, self._y), f'Current play game: {self.timer}', 14, self.__update_timer)
+        tf_playtime = Label((15, self._y), f"{LocalsHandler.lang('info_play_time')}: {self.timer}",
+                            14, self.__update_timer)
         tf_playtime.font_color(conf.COLOR_WHITE)
         tf_playtime.align(tf_playtime.LEFT)
 
@@ -64,7 +64,7 @@ class DebugScreen(Interface):
         return f'{text}: {func()}'
 
     def __update_timer(self):
-        return f'Current play game: {self.timer}'
+        return f"{LocalsHandler.lang('info_play_time')}: {self.timer}"
 
     @staticmethod
     def seconds_to_clock(seconds: int):

@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+from data.handlers.locals import LocalsHandler
 from data.settings import conf
 import random
 import pygame
@@ -165,15 +165,15 @@ class Generator(object):
         :return: None
         """
         # fill world with water
-        self.load_msg = 'Fill the world with water...'
+        self.load_msg = f"{LocalsHandler.lang('load_world_water')}"
         self.__update_load_screen()
         self.fill()
         # create islands
-        self.load_msg = 'Creating islands...'
+        self.load_msg = f"{LocalsHandler.lang('load_world_islands')}"
         self.__update_load_screen()
         self.__create_islands_new()
         # plant trees
-        # self.load_msg = 'Planting trees...'
+        self.load_msg = f"{LocalsHandler.lang('load_world_trees')}"
         # self.__update_load_screen()
         # self.__plant_trees()
 

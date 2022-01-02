@@ -4,11 +4,9 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
 import pygame
 import logging
 from datetime import datetime
-
 from data.editor import Editor
 from data.handlers.sound import SoundHandler
 from data.settings import conf
@@ -19,6 +17,7 @@ from data.interfaces.options import Options
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.handlers.music import Music
 from data.handlers.locals import LocalsHandler
+from data.handlers.msg import Message
 
 
 class Start(object):
@@ -31,23 +30,19 @@ class Start(object):
         self.load_game = False
         self.leave_game = False
         self.options = False
-        self.screenshot = False
         self.start_editor = False
         self.editor = None
 
-        self.bu_res = (None, None)
-
         # set timers and clocks
         self.clock = pygame.time.Clock()
-
-        # LocalsHandler.set_lang('en')
 
         # build window
         resos = Options.get_screenmodes()
         conf.resolution = resos['win'][-1]
         self.surface = pygame.display.set_mode(conf.resolution)
         pygame.display.set_icon(pygame.image.load(conf.icon).convert())
-        pygame.display.set_caption(f'Welcome to {conf.title}')
+        pygame.display.set_caption(f"{LocalsHandler.lang('info_welcome')} {conf.title}")
+        self.resolution_buffer = conf.resolution
 
         # create titles
         hdl_sp_main_menu = SpriteSheetHandler()
@@ -59,6 +54,9 @@ class Start(object):
         hdl_sp_main_menu.add(switches)
         self.title_main = MainMenu(hdl_sp_main_menu, conf.sp_menu_btn_key)
         self.title_options = Options(hdl_sp_main_menu)
+
+        # messages
+        self.messages = Message(hdl_sp_main_menu, conf.sp_menu_btn_key)
 
         # load sounds and music
         self.music = Music()
@@ -113,8 +111,6 @@ class Start(object):
                     conf.fullscreen = event.fullscreen
                     conf.resolution = event.res
                     self.update_display()
-                else:
-                    pass
             elif event.type == ecodes.RESA_MUSIC_ENDED_EVENT:
                 if len(self.music.playlist) > 0:
                     self.music.load_next()
@@ -122,17 +118,15 @@ class Start(object):
                     self.music.refill()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_F2:
-                    self.screenshot = True
-                if event.key == pygame.K_p:
+                    self.take_screenshot()
+                elif event.key == pygame.K_p:
                     self.music.pause()
-                if event.key == pygame.K_PLUS:
+                elif event.key == pygame.K_PLUS:
                     self.music.volume += .1
-                if event.key == pygame.K_MINUS:
+                elif event.key == pygame.K_MINUS:
                     self.music.volume -= .1
-            else:
-                pass
 
-            # push event into current title event handling
+            self.messages.handle_event(event)
             if self.options:
                 self.title_options.handle_event(event)
             else:
@@ -143,23 +137,25 @@ class Start(object):
 
         :return: None
         """
-        # editor
         if self.start_editor:
+            # editor was closed and back to main menu
             if self.editor is not None:
-                conf.resolution = self.bu_res[0]
-                conf.fullscreen = self.bu_res[1]
-                pygame.display.set_caption(f'Welcome to {conf.title}')
+                # restore display settings
+                conf.resolution = self.resolution_buffer[0]
+                conf.fullscreen = self.resolution_buffer[1]
+                pygame.display.set_caption(f"{LocalsHandler.lang('info_welcome')} {conf.title}")
                 self.update_display()
                 self.start_editor = False
                 self.editor = None
             else:
-                self.bu_res = (conf.resolution, conf.fullscreen)
+                # store current display settings, create new display and start editor
+                self.resolution_buffer = (conf.resolution, conf.fullscreen)
                 conf.resolution = (1280, 960)
                 conf.fullscreen = False
+                pygame.display.set_caption(f"{LocalsHandler.lang('info_editor_title')} {conf.title}")
                 self.update_display()
                 self.editor = Editor()
-
-        if self.start_game:
+        elif self.start_game:
             # current game play ended and back to main menu
             if self.game is not None and self.game.exit_game:
                 self.music.load()
@@ -176,9 +172,7 @@ class Start(object):
         else:
             self.title_main.run_logic()
 
-        # screenshot
-        if self.screenshot:
-            self.take_screenshot()
+        self.messages.run_logic()
 
     def render(self) -> None:
         """ Renders everything to the display
@@ -192,6 +186,9 @@ class Start(object):
             self.title_options.render(self.surface)
         else:
             self.title_main.render(self.surface)
+
+        # render message and info boxes
+        self.messages.render(self.surface)
 
         # display surface
         pygame.display.flip()
@@ -211,16 +208,22 @@ class Start(object):
         :return: None
         """
         self.sounds.play('screenshot')
-        pygame.image.save(pygame.display.get_surface(),
-                          f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png')
+        filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
+        pygame.image.save(pygame.display.get_surface(), filename)
+        self.messages.info(f"{LocalsHandler.lang('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
-        self.screenshot = False
 
     def update_display(self):
+        """ Reloads the display and re-builds the interfaces.
+
+        :return: None
+        """
         if conf.fullscreen:
             self.surface = pygame.display.set_mode(conf.resolution, pygame.FULLSCREEN)
         else:
             self.surface = pygame.display.set_mode(conf.resolution)
+
+        # re-build interfaces
         self.title_main.rect = pygame.Rect((0, 0), conf.resolution)
         self.title_main.build()
         self.title_options.rect = pygame.Rect((0, 0), conf.resolution)

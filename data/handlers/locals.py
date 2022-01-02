@@ -4,7 +4,6 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
 import logging
 from data.settings import conf
 from data.locales.en import lang_en

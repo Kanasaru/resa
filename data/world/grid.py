@@ -85,7 +85,7 @@ class Grid(object):
             pygame.draw.rect(surface, color, rect, 1)
 
     def pos_in_grid_field(self, point: tuple[int, int]) -> GridField | bool:
-        """ Checks if given position is in grid and return the grid field as GridField.
+        """ Checks if given position is in grid and returns the grid field as GridField.
             Given point is checked against a grid with a position on (0, 0). Point has to be normalized.
 
         :param point: point that has to be checked
@@ -171,7 +171,7 @@ class Grid(object):
                 pygame.draw.line(surface, color, line_bottom_right_start, line_bottom_right_end)
 
     def pos_in_iso_grid_field(self, point: tuple[int, int]) -> GridField | bool:
-        """ Checks if given position is in isometric grid and return the grid field as GridField.
+        """ Checks if given position is in isometric grid and returns the grid field as GridField.
             Given point is checked against a grid with a position on (0, 0). Point has to be normalized.
 
         :param point: point that has to be checked

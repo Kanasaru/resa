@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+from data.handlers.locals import LocalsHandler
 from data.settings import conf
 import logging
 import pygame
@@ -19,14 +19,17 @@ import data.eventcodes as ecodes
 class GamePanel(Interface):
     def __init__(self, sheet_handler: SpriteSheetHandler, sheet_key):
         super().__init__()
-
         self.sheet_handler = sheet_handler
         self.sheet_key = sheet_key
 
         self.rect = pygame.Rect((0, 0), (conf.resolution[0], 30))
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = None
-        self._resources = f'Wood: 0 | Stone: 0 | Marble: 0 | Tools: 0 | Gold: 0'
+        self._resources = f"{LocalsHandler.lang('res_wood')}: 0 | " \
+                          f"{LocalsHandler.lang('res_stone')}: 0 | " \
+                          f"{LocalsHandler.lang('res_marble')}: 0 | " \
+                          f"{LocalsHandler.lang('res_tools')}: 0 | " \
+                          f"{LocalsHandler.lang('res_gold')}: 0"
 
         self.title = Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(255)
@@ -41,7 +44,7 @@ class GamePanel(Interface):
             pygame.Rect(self.title.width() - 5, 3, 70, 24),
             self.sheet_handler,
             self.sheet_key,
-            'Leave',
+            LocalsHandler.lang('btn_leavegame'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_LEAVEGAME)
         )
         b_quit.align(b_quit.RIGHT)
@@ -50,7 +53,7 @@ class GamePanel(Interface):
             pygame.Rect(self.title.width() - 80, 3, 70, 24),
             self.sheet_handler,
             self.sheet_key,
-            'Save',
+            LocalsHandler.lang('btn_savegame'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_SAVEGAME)
         )
         b_save.align(b_save.RIGHT)
@@ -67,8 +70,11 @@ class GamePanel(Interface):
     @resources.setter
     def resources(self, res: dict) -> None:
         try:
-            self._resources = f"Wood: {res['Wood']} | Stone: {res['Stone']} | Marble: {res['Marble']}" \
-                              f" | Tools: {res['Tools']} | Gold: {res['Gold']}"
+            self._resources = f"{LocalsHandler.lang('res_wood')}: {res['Wood']} | " \
+                              f"{LocalsHandler.lang('res_stone')}: {res['Stone']} | " \
+                              f"{LocalsHandler.lang('res_marble')}: {res['Marble']} | " \
+                              f"{LocalsHandler.lang('res_tools')}: {res['Tools']} | " \
+                              f"{LocalsHandler.lang('res_gold')}: {res['Gold']}"
         except KeyError:
             logging.warning('Failed to set resources in GamePanel')
         finally:

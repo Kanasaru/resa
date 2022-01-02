@@ -2,10 +2,10 @@
 ***
 ### Jigsaw Update | v0.6.0-alpha
 - [ ] new world generation
-- [ ] new grid handling
+- [x] new grid handling
 - [ ] new sprite handling
-- [ ] new sprites
-- [ ] add island creator
+- [x] new sprites
+- [x] add island creator
 - [ ] add build logic
 - [x] new license
 

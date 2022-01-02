@@ -4,7 +4,6 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
 import pygame
 from data.forms.title import Title
 

@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+from data.handlers.locals import LocalsHandler
 from data.settings import conf
 import pygame
 from data.handlers.spritesheet import SpriteSheetHandler
@@ -27,7 +27,7 @@ class Options(Interface):
         self.rect = pygame.Rect((0, 0), conf.resolution)
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = conf.background_image
-        self.__credits = f'Created and Designed by {conf.author} | {conf.www}'
+        self.__credits = f"{LocalsHandler.lang('info_credits')} {conf.author} | {conf.www}"
 
         self.screenmodes = self.get_screenmodes()
 
@@ -52,7 +52,7 @@ class Options(Interface):
         tf_credits.align(tf_credits.CENTER)
         width, height = tf_headline.get_dimensions()
         position_y = height + 20
-        tf_resolution = Label((int(self.title.width() / 2), position_y), 'Resolution')
+        tf_resolution = Label((int(self.title.width() / 2), position_y), f"{LocalsHandler.lang('info_resolution')}")
         tf_resolution.set_font(conf.std_font, 40)
         tf_resolution.align(tf_resolution.CENTER)
         # buttons
@@ -88,7 +88,7 @@ class Options(Interface):
                 position_y += btn.height() + 20
 
         if self.screenmodes['full']:
-            l_fullscreen = Label((int(self.title.width() / 2), position_y), 'Fullscreen:')
+            l_fullscreen = Label((int(self.title.width() / 2), position_y), f"{LocalsHandler.lang('l_fullscreen')}:")
             l_fullscreen.set_font(conf.std_font, 20)
             swt_fullscreen = Switch(
                 pygame.Rect(self.title.width() / 2, position_y, 60, 30),
@@ -109,7 +109,7 @@ class Options(Interface):
         b_back = Button(
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
-            'Back',
+            LocalsHandler.lang('btn_back'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_MAINMENU)
         )
         b_back.set_font(conf.std_font)

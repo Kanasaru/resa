@@ -17,6 +17,7 @@ class RawField(object):
         self.sprite_index = None
         self.sprite_sheet = None
         self.solid = None
+        self.iso_key = None
 
 
 class Field(pygame.sprite.Sprite):

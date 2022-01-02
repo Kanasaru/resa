@@ -4,7 +4,7 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+from data.handlers.locals import LocalsHandler
 from data.settings import conf
 import pygame
 from data.interfaces.interface import Interface
@@ -19,7 +19,7 @@ class GameLoadScreen(Interface):
         self.rect = pygame.Rect((0, 0), conf.resolution)
         self.bg_color = conf.COLOR_BLACK
         self.bg_image = None
-        self._text = f'Loading world...'
+        self._text = f"{LocalsHandler.lang('info_loading_screen')}"
 
         self.title = Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(255)

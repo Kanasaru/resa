@@ -1,6 +1,11 @@
+""" This module provides an editor for islands
+
+:project: resa
+:source: https://github.com/Kanasaru/resa
+:license: CC-BY-SA-4.0
+"""
 import logging
 import pickle
-
 import pygame
 from datetime import datetime
 from data.handlers.locals import LocalsHandler
@@ -11,13 +16,19 @@ from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 import data.world.grid
 from data.forms.title import Title
 import data.eventcodes as ecodes
-from data.world.objects.field import Field
+from data.world.objects.field import Field, RawField
 from data.forms.button import Button
-import xml.etree.ElementTree as ETree
 
 
 class PaletteField(pygame.sprite.Sprite):
     def __init__(self, tile, size, position: tuple[int, int], image: pygame.image) -> None:
+        """ Holds the data of a single palette field.
+
+        :param tile: identifier of the sprite in its sprite sheet
+        :param size: size
+        :param position: position of the field
+        :param image: sprite image
+        """
         pygame.sprite.Sprite.__init__(self)
 
         # basic settings
@@ -33,31 +44,30 @@ class PaletteField(pygame.sprite.Sprite):
         self.rect.topleft = self.position
 
     def update(self, event: pygame.event.Event = None) -> None:
+        """ Handles click events and raises new event with the fields tile.
+
+        :param event: event
+        :return:
+        """
         if event.type == pygame.MOUSEBUTTONUP:
             if self.rect.collidepoint(event.pos):
                 pygame.event.post(pygame.event.Event(
-                    ecodes.RESA_TITLE_EVENT, code = ecodes.RESA_EDITOR_SELECT, field=self.tile
+                    ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_SELECT, field=self.tile
                 ))
         self.rect.topleft = self.position
 
 
 class Editor(object):
     def __init__(self):
-        pygame.display.set_caption(f'{conf.title} Island Creator')
-        self.clock = pygame.time.Clock()
-        self.surface = pygame.display.get_surface()
+        """ Initializes the editor """
+        # event handling varibales
         self.exit = False
-        self.sounds = SoundHandler()
-        self.sprite_sheet_handler = SpriteSheetHandler()
-        buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
-        buttons.colorkey = (1, 0, 0)
-        self.sprite_sheet_handler.add(buttons)
-        for key, value in conf.sp_world.items():
-            sheet = SpriteSheet(key, value[0], value[1])
-            sheet.colorkey = None
-            self.sprite_sheet_handler.add(sheet)
-        self.messages = Message(self.sprite_sheet_handler, conf.sp_menu_btn_key)
+        self.selected_tile = False
+        self.place_tile = False
 
+        # data
+        self.palette_sprites = pygame.sprite.Group()
+        self.fields = pygame.sprite.Group()
         self.palette = {
             0: (17, 18), 1: (74, 18), 2: (131, 18), 3: (188, 18), 4: (245, 18), 5: (302, 18),
             6: (17, 75), 7: (74, 75), 8: (131, 75), 9: (188, 75), 10: (245, 75), 11: (302, 75),
@@ -72,86 +82,65 @@ class Editor(object):
             60: (17, 588), 61: (74, 588), 62: (131, 588), 63: (188, 588), 64: (245, 588), 65: (302, 588),
             66: (17, 645), 67: (74, 645), 68: (131, 645), 69: (188, 645), 70: (245, 645), 71: (302, 645),
         }
-        self.palette_sprites = pygame.sprite.Group()
-        self.fields = pygame.sprite.Group()
 
+        # set timers and clocks
+        self.clock = pygame.time.Clock()
+
+        # set handler
+        self.sounds = SoundHandler()
+        self.sprite_sheet_handler = SpriteSheetHandler()
+        buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
+        buttons.colorkey = (1, 0, 0)
+        self.sprite_sheet_handler.add(buttons)
+        for key, value in conf.sp_world.items():
+            sheet = SpriteSheet(key, value[0], value[1])
+            sheet.colorkey = None
+            self.sprite_sheet_handler.add(sheet)
+        self.messages = Message(self.sprite_sheet_handler, conf.sp_menu_btn_key)
+
+        # screen settings and build screen
+        self.surface = pygame.display.get_surface()
+        self.title = self.build_title()
+
+        # load palette
         for key, value in self.palette.items():
             image = self.sprite_sheet_handler.image_by_index('Tiles', key)
             field = PaletteField(key, 44, (int(value[0]), int(value[1])), image)
             self.palette_sprites.add(field)
 
-        self.selected_tile = False
-        self.place_tile = False
-
-        self.title = Title(pygame.Rect((0, 0), conf.resolution), conf.COLOR_WHITE, 'resources/images/bg_editor.png')
-        self.title.set_alpha(255)
-
-        position_x = 182
-        position_y = 715
-        b_save_island = Button(
-            pygame.Rect(position_x, position_y, 220, 60),
-            self.sprite_sheet_handler, conf.sp_menu_btn_key,
-            "Save",
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_SAVE)
-        )
-        b_save_island.set_font(conf.std_font)
-        b_save_island.align(b_save_island.CENTER)
-
-        position_y += 70
-
-        b_load_island = Button(
-            pygame.Rect(position_x, position_y, 220, 60),
-            self.sprite_sheet_handler, conf.sp_menu_btn_key,
-            "Load",
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_LOAD)
-        )
-        b_load_island.set_font(conf.std_font)
-        b_load_island.align(b_load_island.CENTER)
-        try:
-            f = open('saves/island.data')
-            f.close()
-        except FileNotFoundError:
-            b_load_island.disable()
-
-        position_y += 70
-
-        b_quiteditor = Button(
-            pygame.Rect(position_x, position_y, 220, 60),
-            self.sprite_sheet_handler, conf.sp_menu_btn_key,
-            "Leave",
-            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_LEAVE)
-        )
-        b_quiteditor.set_font(conf.std_font)
-        b_quiteditor.align(b_quiteditor.CENTER)
-
-        self.title.add([b_save_island, b_load_island, b_quiteditor])
-
+        # build grid
         self.shift_x = self.title.width() - 905
         self.shift_y = 25
-        self.grid_size = 20
-        self.grid_fields = 44
-        conf.grid = data.world.grid.Grid(self.grid_fields, self.grid_fields, self.grid_size)
-        self.grid_pos = (self.shift_x, self.shift_y)
+        conf.grid = data.world.grid.Grid(44, 44, 20)
 
+        # fill grid with water tiles
         for key, value in conf.grid.fields_iso.items():
             image = self.sprite_sheet_handler.image_by_index('Tiles', 2)
             new_field = Field((self.shift_x + value.rect.x, self.shift_y + value.rect.y), image)
             new_field.sprite_sheet_id = 'Tiles'
             new_field.sprite_id = 2
             new_field.iso_key = key
-            # add to sprite group and go on
             self.fields.add(new_field)
 
+        # start the game loop
         self.loop()
 
-    def loop(self):
+    def loop(self) -> None:
+        """ editor loopp
+
+        :return: None
+        """
         while not self.exit:
             self.clock.tick(conf.fps)
             self.handle_events()
             self.run_logic()
             self.render()
 
-    def handle_events(self):
+    def handle_events(self) -> None:
+        """ Handles all editor events
+
+        :return: None
+        """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.leave_editor()
@@ -160,22 +149,23 @@ class Editor(object):
                     self.take_screenshot()
                 elif event.key == pygame.K_ESCAPE:
                     self.selected_tile = False
-                    print('No selected')
+                    self.messages.info(f"{LocalsHandler.lang('editor_no_tile')}")
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    if self.grid_pos[0] <= event.pos[0] <= self.grid_pos[0] + conf.grid.grid_width:
-                        if self.grid_pos[1] <= event.pos[1] <= self.grid_pos[1] + conf.grid.grid_height:
-                            tile_field = conf.grid.pos_in_iso_grid_field(
-                                (abs(event.pos[0] - self.shift_x), abs(event.pos[1] - self.shift_y))
-                            )
-                            if tile_field:
-                                pygame.event.post(pygame.event.Event(
-                                    ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_PLACE, field=tile_field
-                                ))
+                    if self.shift_x <= event.pos[0] <= self.shift_x + conf.grid.grid_width and \
+                            self.shift_y <= event.pos[1] <= self.shift_y + conf.grid.grid_height:
+                        tile_field = conf.grid.pos_in_iso_grid_field(
+                            (abs(event.pos[0] - self.shift_x), abs(event.pos[1] - self.shift_y))
+                        )
+                        if tile_field and not self.messages.is_msg():
+                            pygame.event.post(pygame.event.Event(
+                                ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_PLACE, field=tile_field
+                            ))
             elif event.type == ecodes.RESA_TITLE_EVENT:
                 if event.code == ecodes.RESA_EDITOR_SELECT:
+                    self.sounds.play('btn-click')
                     self.selected_tile = event.field
-                    print(f'selected: {self.selected_tile}')
+                    self.messages.info(f"{LocalsHandler.lang('editor_tile_select')} {self.selected_tile}.")
                 elif event.code == ecodes.RESA_EDITOR_PLACE:
                     self.place_tile = event.field
                 elif event.code == ecodes.RESA_EDITOR_LEAVE:
@@ -191,11 +181,13 @@ class Editor(object):
             self.title.handle_event(event)
             self.palette_sprites.update(event)
 
-    def run_logic(self):
+    def run_logic(self) -> None:
+        """ Runs the editor logic
+
+        :return: None
+        """
         if self.place_tile:
             if self.selected_tile:
-                print(f'Plaziere {self.selected_tile} auf {self.place_tile.key}')
-
                 for field in self.fields:
                     if field.iso_key == self.place_tile.key:
                         field.image = pygame.transform.scale(
@@ -208,7 +200,11 @@ class Editor(object):
         self.messages.run_logic()
         self.title.run_logic()
 
-    def render(self):
+    def render(self) -> None:
+        """ Renders everything to the surface
+
+        :return: None
+        """
         self.surface.fill(conf.COLOR_WHITE)
 
         self.title.render(self.surface)
@@ -217,7 +213,7 @@ class Editor(object):
 
         self.fields.draw(self.surface)
 
-        conf.grid.draw_iso_grid(self.surface, self.grid_pos)
+        conf.grid.draw_iso_grid(self.surface, (self.shift_x, self.shift_y))
 
         # render message and info boxes
         self.messages.render(self.surface)
@@ -225,6 +221,10 @@ class Editor(object):
         pygame.display.flip()
 
     def take_screenshot(self) -> None:
+        """ Saves the current screen as an image.
+
+        :return: None
+        """
         self.sounds.play('screenshot')
         filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
@@ -232,32 +232,90 @@ class Editor(object):
         logging.info('Took screenshot')
 
     def leave_editor(self) -> None:
+        """ Shows leaving message dialog box.
+
+        :return: None
+        """
         self.messages.show(LocalsHandler.lang('msg_cap_leaveeditor'), LocalsHandler.lang('msg_text_leaveeditor'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
                            LocalsHandler.lang('btn_msg_yes'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
                            LocalsHandler.lang('btn_msg_no'))
 
-    def save_island(self):
-        raw_data = {}
-        island = list()
+    def save_island(self) -> None:
+        """ Saves created island in a data file.
 
+        :return: None
+        """
+        raw_fields = []
         for field in self.fields:
-            raw_data[field.iso_key] = (field.sprite_id,
-                                       conf.grid.fields_iso[field.iso_key].row,
-                                       conf.grid.fields_iso[field.iso_key].col)
-        row = 0
-        row_list = list()
-        for k, v in raw_data.items():
-            if v[1] == row:
-                row_list.append(v[0])
-            else:
-                island.append(row_list)
-                row_list = list()
-                row += 1
-                row_list.append(v[0])
+            raw_field = RawField()
+            raw_field.pos = field.position
+            raw_field.sprite_index = field.sprite_id
+            raw_field.sprite_sheet = field.sprite_sheet_id
+            raw_field.solid = field.solid
+            raw_field.iso_key = field.iso_key
+            raw_fields.append(raw_field)
 
-        pickle.dump(island, open('saves/island.data', 'wb'))
+        pickle.dump(raw_fields, open('saves/island.data', 'wb'))
 
-    def load_island(self):
-        print(pickle.load(open('saves/island.data', 'rb')))
+    def load_island(self) -> None:
+        """ Loads island from its data file.
+
+        :return: None
+        """
+        self.fields.empty()
+        for field_data in pickle.load(open('saves/island.data', 'rb')):
+            image = self.sprite_sheet_handler.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
+            field = Field(field_data.pos, image)
+            field.sprite_sheet_id = field_data.sprite_sheet
+            field.sprite_id = field_data.sprite_index
+            field.solid = field_data.solid
+            field.iso_key = field_data.iso_key
+            self.fields.add(field)
+
+    def build_title(self):
+        title = Title(pygame.Rect((0, 0), conf.resolution), conf.COLOR_WHITE, 'resources/images/bg_editor.png')
+        title.set_alpha(255)
+
+        position_x = 182
+        position_y = 715
+        b_save_island = Button(
+            pygame.Rect(position_x, position_y, 220, 60),
+            self.sprite_sheet_handler, conf.sp_menu_btn_key,
+            LocalsHandler.lang('editor_btn_save'),
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_SAVE)
+        )
+        b_save_island.set_font(conf.std_font)
+        b_save_island.align(b_save_island.CENTER)
+
+        position_y += 70
+
+        b_load_island = Button(
+            pygame.Rect(position_x, position_y, 220, 60),
+            self.sprite_sheet_handler, conf.sp_menu_btn_key,
+            LocalsHandler.lang('editor_btn_load'),
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_LOAD)
+        )
+        b_load_island.set_font(conf.std_font)
+        b_load_island.align(b_load_island.CENTER)
+        try:
+            f = open('saves/island.data')
+            f.close()
+        except FileNotFoundError:
+            b_load_island.disable()
+
+        position_y += 70
+
+        b_quiteditor = Button(
+            pygame.Rect(position_x, position_y, 220, 60),
+            self.sprite_sheet_handler, conf.sp_menu_btn_key,
+            LocalsHandler.lang('editor_btn_leave'),
+            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_LEAVE)
+        )
+        b_quiteditor.set_font(conf.std_font)
+        b_quiteditor.align(b_quiteditor.CENTER)
+
+        title.add([b_save_island, b_load_island, b_quiteditor])
+
+        return title
