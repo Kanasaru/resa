@@ -143,7 +143,16 @@ class Game(object):
                     self.music.refill()
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    pass
+                    # cursor in map?
+                    cursor_x = event.pos[0] - self.map.rect.x - self.border_thickness
+                    cursor_y = event.pos[1] - self.map.rect.y - self.game_panel.rect.height - self.border_thickness
+                    if cursor_x >= 0 and cursor_y >= 0:
+                        cursor_on_map = True
+                    else:
+                        cursor_on_map = False
+
+                    if cursor_on_map and not self.messages.is_msg():
+                        print(conf.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
                 elif event.button == 2:
                     pass
             elif event.type == ecodes.RESA_TITLE_EVENT:

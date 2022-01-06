@@ -51,6 +51,10 @@ class Map(object):
         self.fields = pygame.sprite.Group()
         self.trees = pygame.sprite.Group()
 
+        self.world = None
+        self.grid_image = None
+        self.show_grid = False
+
     def get_raw_fields(self) -> list:
         """ Returns basic information of all fields
 
@@ -106,11 +110,11 @@ class Map(object):
                 self.moving.up = False
             if event.key == pygame.K_DOWN:
                 self.moving.down = False
+            if event.key == pygame.K_F5:
+                self.show_grid = not self.show_grid
         else:
             pass
 
-        self.water.update(event)
-        self.fields.update(event)
         self.trees.update(event)
 
     def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None) -> None:
@@ -135,7 +139,9 @@ class Map(object):
             world.create()
 
         # get all sprites from world
-        self.water, self.fields, self.trees, self.rect = world.get_world()
+        self.world = world.get_world()
+        self.rect = self.world.rect
+        self.trees = self.world.entities
 
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
@@ -191,12 +197,12 @@ class Map(object):
         :return: None
         """
         self.surface.fill(conf.COLOR_BLACK)
-        
-        # render the water
-        self.water.draw(self.surface)
 
-        # render all fields and trees
-        self.fields.draw(self.surface)
+        if self.show_grid:
+            self.surface.blit(self.world.grid_image, self.rect.topleft)
+        else:
+            self.surface.blit(self.world.image, self.rect.topleft)
+
         self.trees.draw(self.surface)
 
     def get_surface(self) -> pygame.Surface:

@@ -18,6 +18,8 @@ class RawField(object):
         self.sprite_sheet = None
         self.solid = None
         self.iso_key = None
+        self.rect = None
+        self.temperature = None
 
 
 class Field(pygame.sprite.Sprite):
@@ -30,7 +32,7 @@ class Field(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # basic settings
-        self._size = (conf.grid.iso_width, conf.grid.iso_height)
+        self._size = (conf.grid_zoom * 2, conf.grid_zoom)
         self._visible = True
         self._temperature = conf.temp_center
         self._solid = False

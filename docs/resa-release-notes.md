@@ -1,13 +1,14 @@
 # Road to a playable 1.0.0-alpha
 ***
 ### Jigsaw Update | v0.6.0-alpha
-- [ ] new world generation
+- [x] new world generation
 - [x] new grid handling
-- [ ] new sprite handling
+- [x] new sprite handling
 - [x] new sprites
 - [x] add island creator
 - [ ] add build logic
 - [x] new license
+- [ ] new save and load mechanism
 
 ### Environment Update | v0.7.0-alpha
 - [ ] add mountains

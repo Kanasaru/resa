@@ -4,12 +4,10 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
+import pickle
 import random
+
 import pygame.sprite
-import data.world.islands.big_islands as big_islands
-import data.world.islands.medium_islands as medium_islands
-import data.world.islands.small_islands as small_islands
 
 BIG = 0
 MEDIUM = 1
@@ -27,9 +25,9 @@ class Island(object):
         self._size = size
         self._temperature = temperature
         self._data_set = None
-        self._data_fields = pygame.sprite.Group()
+        self.data_fields = []
 
-        self.__calc_data_set()
+        self.load_island_from_file()
 
     @property
     def size(self):
@@ -62,39 +60,16 @@ class Island(object):
     def data_fields(self, value):
         self._data_fields = value
 
-    # todo: needs to be re-factored
-    def calc_size(self) -> tuple[int, int]:
-        """ Calculates width and height of the island in pixel.
-
-        :return: width and height of the island
-        """
-        pass
-
-    # todo: change to new island file format
-    def __calc_data_set(self) -> None:
-        """ Chooses randomly a data set for the island by its size.
-
-        :return: None
-        """
+    def load_island_from_file(self) -> None:
+        number = random.choice([1, 2, 3])
+        size = ''
         if self.size == BIG:
-            self._data_set = random.choice([
-                big_islands.big_island_1,
-                big_islands.big_island_2
-            ])
+            size = 'b'
         elif self.size == MEDIUM:
-            self._data_set = random.choice([
-                medium_islands.med_island_1,
-                medium_islands.med_island_2,
-                medium_islands.med_island_3
-            ])
+            size = 'm'
         else:
-            self._data_set = random.choice([
-                small_islands.small_island_1,
-                small_islands.small_island_2,
-                small_islands.small_island_3,
-                small_islands.small_island_4,
-                small_islands.small_island_5
-            ])
+            size = 's'
+        self.data_fields = pickle.load(open(f'data/world/islands/{size}_{number}.island', 'rb'))
 
     def __bool__(self):
         if len(self.data_fields) > 0:
@@ -107,14 +82,12 @@ class Island(object):
 
     def __str__(self):
         return f'Island - ' \
-               f'Size px: {self.calc_size()} | ' \
                f'Size: {self.size} | ' \
                f'Temp: {self.temperature} | ' \
                f'Fields: {len(self.data_fields)}'
 
     def __repr__(self):
         return f'Island - ' \
-               f'Size px: {self.calc_size()} | ' \
                f'Size: {self.size} | ' \
                f'Temp: {self.temperature} | ' \
                f'Fields: {len(self.data_fields)}'
