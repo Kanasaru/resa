@@ -255,7 +255,7 @@ class Editor(object):
             raw_field.iso_key = field.iso_key
             raw_fields.append(raw_field)
 
-        pickle.dump(raw_fields, open('saves/island.data', 'wb'))
+        pickle.dump(raw_fields, open('saves/data.island', 'wb'))
 
     def load_island(self) -> None:
         """ Loads island from its data file.
@@ -263,7 +263,7 @@ class Editor(object):
         :return: None
         """
         self.fields.empty()
-        for field_data in pickle.load(open('saves/island.data', 'rb')):
+        for field_data in pickle.load(open('saves/data.island', 'rb')):
             image = self.sprite_sheet_handler.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
             field = Field(field_data.pos, image)
             field.sprite_sheet_id = field_data.sprite_sheet
@@ -296,7 +296,7 @@ class Editor(object):
         )
         b_load_island.align(forms.CENTER)
         try:
-            f = open('saves/island.data')
+            f = open('saves/data.island')
             f.close()
         except FileNotFoundError:
             b_load_island.disable()

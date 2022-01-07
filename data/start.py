@@ -7,7 +7,7 @@
 import pygame
 import logging
 from datetime import datetime
-from data.editor import Editor
+from data.ui.editor import Editor
 from data.handlers.sound import SoundHandler
 from data.settings import conf
 import data.eventcodes as ecodes
