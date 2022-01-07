@@ -132,4 +132,4 @@ dmypy.json
 *.xml
 *.iml
 .idea
-.island
+/saves/data.island
