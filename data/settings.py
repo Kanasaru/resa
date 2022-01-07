@@ -7,7 +7,6 @@
 
 import configparser
 from ast import literal_eval
-import data.world.grid as grid
 
 
 class Settings(object):
@@ -26,13 +25,9 @@ class Settings(object):
         self.fps = 60
         self.resolution = None
         self.fullscreen = False
-        self.grid = None
         self.grid_zoom = 20
         self.background_image = None
         self.map_border_thickness = 5
-
-        # locals
-        self.lang = None
 
         # standard game values
         self.game_speed = 1440
@@ -77,16 +72,6 @@ class Settings(object):
         self.COLOR_CYAN = (0, 255, 255)
         self.COLOR_GRAY = (128, 128, 128)
         self.COLOR_GREEN = (0, 128, 0)
-
-        # menu button colors
-        self.COLOR_BTN_HOVER = (120, 117, 98)
-        self.COLOR_BTN_PRESSED = (120, 117, 98)
-
-        # message boxes
-        self.msg_btn_width = 70
-        self.msg_btn_height = 24
-        self.msg_btn_padding = 5
-        self.msg_border_width = 5
 
     def load_config_file(self, filepath: str) -> None:
         """ Loads settings from file and replaces standard value

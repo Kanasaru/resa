@@ -12,12 +12,12 @@ from data.handlers.sound import SoundHandler
 from data.settings import conf
 import data.eventcodes as ecodes
 from data.game import Game
-from data.interfaces.mainmenu import MainMenu
-from data.interfaces.options import Options
+from data.ui.mainmenu import MainMenu
+from data.ui.options import Options
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.handlers.music import Music
-from data.handlers.locals import LocalsHandler
-from data.handlers.msg import Message
+import data.locales as locales
+from data.ui.form import MessageHandler
 
 
 class Start(object):
@@ -41,7 +41,7 @@ class Start(object):
         conf.resolution = resos['win'][-1]
         self.surface = pygame.display.set_mode(conf.resolution)
         pygame.display.set_icon(pygame.image.load(conf.icon).convert())
-        pygame.display.set_caption(f"{LocalsHandler.lang('info_welcome')} {conf.title}")
+        pygame.display.set_caption(f"{locales.get('info_welcome')} {conf.title}")
         self.resolution_buffer = conf.resolution
 
         # create titles
@@ -56,12 +56,12 @@ class Start(object):
         self.title_options = Options(hdl_sp_main_menu)
 
         # messages
-        self.messages = Message(hdl_sp_main_menu, conf.sp_menu_btn_key)
+        self.messages = MessageHandler(hdl_sp_main_menu, conf.sp_menu_btn_key)
 
         # load sounds and music
         self.music = Music()
         self.music.load()
-        self.sounds = SoundHandler()
+        self.sounds = SoundHandler(conf.sounds)
 
         # start the game loop
         self.game = None
@@ -143,7 +143,7 @@ class Start(object):
                 # restore display settings
                 conf.resolution = self.resolution_buffer[0]
                 conf.fullscreen = self.resolution_buffer[1]
-                pygame.display.set_caption(f"{LocalsHandler.lang('info_welcome')} {conf.title}")
+                pygame.display.set_caption(f"{locales.get('info_welcome')} {conf.title}")
                 self.update_display()
                 self.start_editor = False
                 self.editor = None
@@ -152,7 +152,7 @@ class Start(object):
                 self.resolution_buffer = (conf.resolution, conf.fullscreen)
                 conf.resolution = (1280, 960)
                 conf.fullscreen = False
-                pygame.display.set_caption(f"{LocalsHandler.lang('info_editor_title')} {conf.title}")
+                pygame.display.set_caption(f"{locales.get('info_editor_title')} {conf.title}")
                 self.update_display()
                 self.editor = Editor()
         elif self.start_game:
@@ -210,7 +210,7 @@ class Start(object):
         self.sounds.play('screenshot')
         filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
-        self.messages.info(f"{LocalsHandler.lang('info_screenshot')}: {filename}")
+        self.messages.info(f"{locales.get('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
 
     def update_display(self):

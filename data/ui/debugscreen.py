@@ -4,40 +4,38 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-from data.handlers.locals import LocalsHandler
-from data.settings import conf
 import pygame
-from data.interfaces.interface import Interface
-from data.forms.label import Label
-from data.forms.title import Title
+import data.ui.form as forms
+import data.locales as locales
 
 
-class DebugScreen(Interface):
+class DebugScreen(forms.Interface):
     def __init__(self):
         super().__init__()
 
         self.clock = pygame.time.Clock()
 
         self.name = 'debug'
-        self.rect = pygame.Rect((0, 0), (int(conf.resolution[0] / 3), conf.resolution[1]))
-        self.bg_color = conf.COLOR_BLACK
+        self.rect = pygame.Rect((0, 0), (pygame.display.get_surface().get_width() // 3,
+                                pygame.display.get_surface().get_height()))
+        self.bg_color = forms.COLOR_BLACK
         self.bg_image = None
         self.alpha = 192
 
-        self.title = Title(self.rect, self.bg_color, self.bg_image)
+        self.title = forms.Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(self.alpha)
 
         self._timer = '00:00:00'
 
-        tf_title = Label((15, 40), LocalsHandler.lang('info_debug_title'), 18)
-        tf_title.font_color(conf.COLOR_WHITE)
-        tf_title.align(tf_title.LEFT)
+        tf_title = forms.Label((15, 40), locales.get('info_debug_title'), 18)
+        tf_title.font_color(forms.COLOR_WHITE)
+        tf_title.align(forms.LEFT)
         self._y = tf_title.pos_y + tf_title.height() + 10
 
-        tf_playtime = Label((15, self._y), f"{LocalsHandler.lang('info_play_time')}: {self.timer}",
-                            14, self.__update_timer)
-        tf_playtime.font_color(conf.COLOR_WHITE)
-        tf_playtime.align(tf_playtime.LEFT)
+        tf_playtime = forms.Label((15, self._y), f"{locales.get('info_play_time')}: {self.timer}",
+                                  14, self.__update_timer)
+        tf_playtime.font_color(forms.COLOR_WHITE)
+        tf_playtime.align(forms.LEFT)
 
         self._y = tf_playtime.pos_y + tf_playtime.height() + 10
 
@@ -53,9 +51,9 @@ class DebugScreen(Interface):
         self._timer = self.seconds_to_clock(value)
 
     def add(self, desc: str, callback):
-        new_label = Label((15, self._y), f'{desc}:', 14, lambda: self.__callback(desc, callback))
-        new_label.font_color(conf.COLOR_WHITE)
-        new_label.align(new_label.LEFT)
+        new_label = forms.Label((15, self._y), f'{desc}:', 14, lambda: self.__callback(desc, callback))
+        new_label.font_color(forms.COLOR_WHITE)
+        new_label.align(forms.LEFT)
         self.title.add(new_label)
 
         self._y = new_label.pos_y + new_label.height() + 10
@@ -64,7 +62,7 @@ class DebugScreen(Interface):
         return f'{text}: {func()}'
 
     def __update_timer(self):
-        return f"{LocalsHandler.lang('info_play_time')}: {self.timer}"
+        return f"{locales.get('info_play_time')}: {self.timer}"
 
     @staticmethod
     def seconds_to_clock(seconds: int):

@@ -4,19 +4,15 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-from data.handlers.locals import LocalsHandler
-from data.settings import conf
 import pygame
-from data.handlers.spritesheet import SpriteSheetHandler
-from data.interfaces.interface import Interface
-from data.forms.label import Label
-from data.forms.title import Title
-from data.forms.button import Button
-from data.forms.switch import Switch
 import data.eventcodes as ecodes
+import data.ui.form as forms
+from data.handlers.spritesheet import SpriteSheetHandler
+import data.locales as locales
+from data.settings import conf
 
 
-class Options(Interface):
+class Options(forms.Interface):
     def __init__(self, sheet_handler: SpriteSheetHandler):
         super().__init__()
 
@@ -25,9 +21,9 @@ class Options(Interface):
         self.swt_sheet_key = conf.sp_menu_swt_key
 
         self.rect = pygame.Rect((0, 0), conf.resolution)
-        self.bg_color = conf.COLOR_BLACK
+        self.bg_color = forms.COLOR_BLACK
         self.bg_image = conf.background_image
-        self.__credits = f"{LocalsHandler.lang('info_credits')} {conf.author} | {conf.www}"
+        self.__credits = f"{locales.get('info_credits')} {conf.author} | {conf.www}"
 
         self.screenmodes = self.get_screenmodes()
 
@@ -37,60 +33,54 @@ class Options(Interface):
         self.build()
 
     def build(self):
-        self.title = Title(self.rect, self.bg_color, self.bg_image)
+        self.title = forms.Title(self.rect, self.bg_color, self.bg_image)
         self.title.set_alpha(255)
 
         # labels
-        tf_headline = Label((int(self.title.width() / 2), 20), conf.title.upper())
-        tf_headline.set_font(conf.std_font, 90)
-        tf_headline.align(tf_headline.CENTER)
-        tf_version = Label((self.title.width() - 5, 5), f'v{conf.version}')
-        tf_version.set_font(conf.std_font, 14)
-        tf_version.align(tf_version.RIGHT)
-        tf_credits = Label((int(self.title.width() / 2), self.title.height() - 24), self.__credits)
-        tf_credits.set_font(conf.std_font, 14)
-        tf_credits.align(tf_credits.CENTER)
+        tf_headline = forms.Label((self.title.width() // 2, 20), conf.title.upper(), 90)
+        tf_headline.align(forms.CENTER)
+        tf_version = forms.Label((self.title.width() - 5, 5), f'v{conf.version}', 14)
+        tf_version.align(forms.RIGHT)
+        tf_credits = forms.Label((self.title.width() // 2, self.title.height() - 24), self.__credits, 14)
+        tf_credits.align(forms.CENTER)
         width, height = tf_headline.get_dimensions()
         position_y = height + 20
-        tf_resolution = Label((int(self.title.width() / 2), position_y), f"{LocalsHandler.lang('info_resolution')}")
-        tf_resolution.set_font(conf.std_font, 40)
-        tf_resolution.align(tf_resolution.CENTER)
+        l_reso = forms.Label((self.title.width() // 2, position_y), f"{locales.get('info_resolution')}", 40)
+        l_reso.align(forms.CENTER)
         # buttons
-        position_y += tf_resolution.height() + 20
+        position_y += l_reso.height() + 20
 
         if conf.fullscreen:
             for mode in self.screenmodes['full'][0:3]:
-                btn = Button(
+                btn = forms.Button(
                     pygame.Rect(self.title.width() / 2, position_y, 180, 50),
                     self.sheet_handler, self.sheet_key,
                     f'{mode[0]}x{mode[1]}',
                     pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=mode)
                 )
-                btn.set_font(conf.std_font)
-                btn.align(btn.CENTER)
-                if conf.resolution == mode:
+                btn.align(forms.CENTER)
+                if pygame.display.get_surface().get_size() == mode:
                     btn.disable()
                 self.title.add(btn)
                 position_y += btn.height() + 20
         else:
             for mode in self.screenmodes['win']:
-                btn = Button(
+                btn = forms.Button(
                     pygame.Rect(self.title.width() / 2, position_y, 180, 50),
                     self.sheet_handler, self.sheet_key,
                     f'{mode[0]}x{mode[1]}',
                     pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_CHG_RESOLUTION, res=mode)
                 )
-                btn.set_font(conf.std_font)
-                btn.align(btn.CENTER)
-                if conf.resolution == mode:
+                btn.align(forms.CENTER)
+                if pygame.display.get_surface().get_size() == mode:
                     btn.disable()
                 self.title.add(btn)
                 position_y += btn.height() + 20
 
         if self.screenmodes['full']:
-            l_fullscreen = Label((int(self.title.width() / 2), position_y), f"{LocalsHandler.lang('l_fullscreen')}:")
-            l_fullscreen.set_font(conf.std_font, 20)
-            swt_fullscreen = Switch(
+            l_fullscreen = forms.Label((int(self.title.width() / 2), position_y),
+                                       f"{locales.get('l_fullscreen')}:", 20)
+            swt_fullscreen = forms.Switch(
                 pygame.Rect(self.title.width() / 2, position_y, 60, 30),
                 self.sheet_handler, self.swt_sheet_key,
                 pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_SWT_FULLSCREEN,
@@ -99,24 +89,23 @@ class Options(Interface):
                                    fullscreen=False, res=self.screenmodes['full'][-1]),
                 conf.fullscreen
             )
-            swt_fullscreen.pos_x = int(self.title.width() / 2) + int(l_fullscreen.width() / 2) + 5
-            l_fullscreen.pos_x = int(self.title.width() / 2) - int(swt_fullscreen.width() / 2) - 5
-            swt_fullscreen.align(swt_fullscreen.CENTER)
-            l_fullscreen.align(l_fullscreen.CENTER)
+            swt_fullscreen.pos_x = self.title.width() // 2 + l_fullscreen.width() // 2 + 5
+            l_fullscreen.pos_x = self.title.width() // 2 - swt_fullscreen.width() // 2 - 5
+            swt_fullscreen.align(forms.CENTER)
+            l_fullscreen.align(forms.CENTER)
             self.title.add([swt_fullscreen, l_fullscreen])
             position_y += swt_fullscreen.height() + 20
 
-        b_back = Button(
+        b_back = forms.Button(
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             self.sheet_handler, self.sheet_key,
-            LocalsHandler.lang('btn_back'),
+            locales.get('btn_back'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_BTN_MAINMENU)
         )
-        b_back.set_font(conf.std_font)
-        b_back.align(b_back.CENTER)
+        b_back.align(forms.CENTER)
 
         # add form objects to title
-        self.title.add([tf_headline, tf_version, tf_credits, tf_resolution])
+        self.title.add([tf_headline, tf_version, tf_credits, l_reso])
         self.title.add(b_back)
 
     @staticmethod

@@ -11,10 +11,11 @@ import os
 
 
 class SoundHandler(object):
-    def __init__(self, auto_load: bool = True) -> None:
+    def __init__(self, path: str, auto_load: bool = True) -> None:
         """ Creates a sound handler """
         self.sounds = dict()
         self._volume = .6
+        self.path = path
 
         if auto_load:
             self.load()
@@ -40,7 +41,7 @@ class SoundHandler(object):
             if filename.endswith(".wav") or filename.endswith(".mp3"):
                 file = filename
                 key = file[:len(file) - 4]
-                self.sounds[key] = pygame.mixer.Sound(f'{conf.sounds}/{file}')
+                self.sounds[key] = pygame.mixer.Sound(f'{self.path}/{file}')
                 self.sounds[key].set_volume(self.volume)
 
     def play(self, key: str) -> None:

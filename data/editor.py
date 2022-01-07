@@ -8,16 +8,14 @@ import logging
 import pickle
 import pygame
 from datetime import datetime
-from data.handlers.locals import LocalsHandler
-from data.handlers.sound import SoundHandler
-from data.settings import conf
-from data.handlers.msg import Message
-from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
-import data.world.grid
-from data.forms.title import Title
 import data.eventcodes as ecodes
+import data.ui.form as forms
+from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
+import data.locales as locales
+from data.handlers.sound import SoundHandler
+import data.world.grid
 from data.world.objects.field import Field, RawField
-from data.forms.button import Button
+from data.settings import conf
 
 
 class PaletteField(pygame.sprite.Sprite):
@@ -87,7 +85,7 @@ class Editor(object):
         self.clock = pygame.time.Clock()
 
         # set handler
-        self.sounds = SoundHandler()
+        self.sounds = SoundHandler(conf.sounds)
         self.sprite_sheet_handler = SpriteSheetHandler()
         buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
         buttons.colorkey = (1, 0, 0)
@@ -96,7 +94,7 @@ class Editor(object):
             sheet = SpriteSheet(key, value[0], value[1])
             sheet.colorkey = None
             self.sprite_sheet_handler.add(sheet)
-        self.messages = Message(self.sprite_sheet_handler, conf.sp_menu_btn_key)
+        self.messages = forms.MessageHandler(self.sprite_sheet_handler, conf.sp_menu_btn_key)
 
         # screen settings and build screen
         self.surface = pygame.display.get_surface()
@@ -149,7 +147,7 @@ class Editor(object):
                     self.take_screenshot()
                 elif event.key == pygame.K_ESCAPE:
                     self.selected_tile = False
-                    self.messages.info(f"{LocalsHandler.lang('editor_no_tile')}")
+                    self.messages.info(f"{locales.get('editor_no_tile')}")
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     if self.shift_x <= event.pos[0] <= self.shift_x + conf.grid.grid_width and \
@@ -165,7 +163,7 @@ class Editor(object):
                 if event.code == ecodes.RESA_EDITOR_SELECT:
                     self.sounds.play('btn-click')
                     self.selected_tile = event.field
-                    self.messages.info(f"{LocalsHandler.lang('editor_tile_select')} {self.selected_tile}.")
+                    self.messages.info(f"{locales.get('editor_tile_select')} {self.selected_tile}.")
                 elif event.code == ecodes.RESA_EDITOR_PLACE:
                     self.place_tile = event.field
                 elif event.code == ecodes.RESA_EDITOR_LEAVE:
@@ -228,7 +226,7 @@ class Editor(object):
         self.sounds.play('screenshot')
         filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
-        self.messages.info(f"{LocalsHandler.lang('info_screenshot')}: {filename}")
+        self.messages.info(f"{locales.get('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
 
     def leave_editor(self) -> None:
@@ -236,11 +234,11 @@ class Editor(object):
 
         :return: None
         """
-        self.messages.show(LocalsHandler.lang('msg_cap_leaveeditor'), LocalsHandler.lang('msg_text_leaveeditor'),
+        self.messages.show(locales.get('msg_cap_leaveeditor'), locales.get('msg_text_leaveeditor'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
-                           LocalsHandler.lang('btn_msg_yes'),
+                           locales.get('btn_msg_yes'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
-                           LocalsHandler.lang('btn_msg_no'))
+                           locales.get('btn_msg_no'))
 
     def save_island(self) -> None:
         """ Saves created island in a data file.
@@ -275,30 +273,28 @@ class Editor(object):
             self.fields.add(field)
 
     def build_title(self):
-        title = Title(pygame.Rect((0, 0), conf.resolution), conf.COLOR_WHITE, 'resources/images/bg_editor.png')
+        title = forms.Title(pygame.Rect((0, 0), conf.resolution), conf.COLOR_WHITE, 'resources/images/bg_editor.png')
         title.set_alpha(255)
 
         position_x = 182
         position_y = 715
-        b_save_island = Button(
+        b_save_island = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
             self.sprite_sheet_handler, conf.sp_menu_btn_key,
-            LocalsHandler.lang('editor_btn_save'),
+            locales.get('editor_btn_save'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_SAVE)
         )
-        b_save_island.set_font(conf.std_font)
-        b_save_island.align(b_save_island.CENTER)
+        b_save_island.align(forms.CENTER)
 
         position_y += 70
 
-        b_load_island = Button(
+        b_load_island = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
             self.sprite_sheet_handler, conf.sp_menu_btn_key,
-            LocalsHandler.lang('editor_btn_load'),
+            locales.get('editor_btn_load'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_LOAD)
         )
-        b_load_island.set_font(conf.std_font)
-        b_load_island.align(b_load_island.CENTER)
+        b_load_island.align(forms.CENTER)
         try:
             f = open('saves/island.data')
             f.close()
@@ -307,14 +303,13 @@ class Editor(object):
 
         position_y += 70
 
-        b_quiteditor = Button(
+        b_quiteditor = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
             self.sprite_sheet_handler, conf.sp_menu_btn_key,
-            LocalsHandler.lang('editor_btn_leave'),
+            locales.get('editor_btn_leave'),
             pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_EDITOR_LEAVE)
         )
-        b_quiteditor.set_font(conf.std_font)
-        b_quiteditor.align(b_quiteditor.CENTER)
+        b_quiteditor.align(forms.CENTER)
 
         title.add([b_save_island, b_load_island, b_quiteditor])
 

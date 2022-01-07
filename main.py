@@ -3,15 +3,12 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-
-from data.handlers.locals import LocalsHandler
-from data.start import Start
 import logging.config
+from data.start import Start
 
 
 def main():
     logging.config.fileConfig('data/conf/logging.conf')
-    LocalsHandler.init()
     start = Start()
 
 

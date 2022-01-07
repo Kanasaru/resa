@@ -4,22 +4,22 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-from data.handlers.locals import LocalsHandler
+import data.locales as locales
 from data.handlers.sound import SoundHandler
 from data.settings import conf
 from datetime import datetime
 import pygame
 import logging
 import data.eventcodes as ecodes
-from data.interfaces.debugscreen import DebugScreen
-from data.interfaces.gamepanel import GamePanel
-from data.interfaces.pausescreen import GamePausedScreen
+from data.ui.debugscreen import DebugScreen
+from data.ui.gamepanel import GamePanel
+from data.ui.pausescreen import GamePausedScreen
 from data.handlers.spritesheet import SpriteSheet, SpriteSheetHandler
 from data.world.map import Map
 from data.handlers.debug import DebugHandler
 from data.handlers.gamedata import GameDataHandler
 from data.handlers.music import Music
-from data.handlers.msg import Message
+from data.ui.form import MessageHandler
 
 
 class Game(object):
@@ -42,7 +42,7 @@ class Game(object):
         self.game_data_handler.game_time_speed = conf.game_speed
         self.music = Music()
         self.music.load()
-        self.sounds = SoundHandler()
+        self.sounds = SoundHandler(conf.sounds)
 
         # screen settings, build screens and panels
         self.surface = pygame.display.get_surface()
@@ -50,10 +50,10 @@ class Game(object):
         self.border_color = conf.COLOR_WHITE
         # debug screen
         self.debug_screen = DebugScreen()
-        self.debug_screen.add(LocalsHandler.lang('info_fps'), self.clock.get_fps)
-        self.debug_screen.add(LocalsHandler.lang('info_version'), lambda: conf.version)
-        self.debug_screen.add(LocalsHandler.lang('info_date'), lambda: datetime.now().strftime("%A, %d. %B %Y"))
-        self.debug_screen.add(LocalsHandler.lang('info_ingame_time'), self.game_data_handler.get_game_time)
+        self.debug_screen.add(locales.get('info_fps'), self.clock.get_fps)
+        self.debug_screen.add(locales.get('info_version'), lambda: conf.version)
+        self.debug_screen.add(locales.get('info_date'), lambda: datetime.now().strftime("%A, %d. %B %Y"))
+        self.debug_screen.add(locales.get('info_ingame_time'), self.game_data_handler.get_game_time)
         # game panel
         game_panel_sheet_handler = SpriteSheetHandler()
         buttons = SpriteSheet(conf.sp_menu_btn_key, conf.sp_menu_btn, conf.sp_menu_btn_size)
@@ -61,7 +61,7 @@ class Game(object):
         game_panel_sheet_handler.add(buttons)
         self.game_panel = GamePanel(game_panel_sheet_handler, conf.sp_menu_btn_key)
         # messages
-        self.messages = Message(game_panel_sheet_handler, conf.sp_menu_btn_key)
+        self.messages = MessageHandler(game_panel_sheet_handler, conf.sp_menu_btn_key)
         self.messages.top = self.game_panel.rect.height + self.border_thickness * 3
         # pause screen
         self.paused_screen = GamePausedScreen(pygame.Rect(
@@ -152,7 +152,7 @@ class Game(object):
                         cursor_on_map = False
 
                     if cursor_on_map and not self.messages.is_msg():
-                        print(conf.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
+                        print(self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
                 elif event.button == 2:
                     pass
             elif event.type == ecodes.RESA_TITLE_EVENT:
@@ -235,7 +235,7 @@ class Game(object):
         self.sounds.play('screenshot')
         filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
-        self.messages.info(f"{LocalsHandler.lang('info_screenshot')}: {filename}")
+        self.messages.info(f"{locales.get('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
 
     def save_game(self, auto_save: bool = False) -> None:
@@ -246,9 +246,9 @@ class Game(object):
         self.game_data_handler.world_data = (self.map.rect, self.map.get_raw_fields(), self.map.get_raw_trees())
         self.game_data_handler.save_to_file(conf.save_file)
         if auto_save:
-            text = LocalsHandler.lang('info_autosave')
+            text = locales.get('info_autosave')
         else:
-            text = LocalsHandler.lang('info_save')
+            text = locales.get('info_save')
         self.messages.info(text)
         logging.info(text)
 
@@ -257,9 +257,9 @@ class Game(object):
 
         :return: None
         """
-        self.messages.show(LocalsHandler.lang('msg_cap_leavegame'), LocalsHandler.lang('msg_text_leavegame'),
+        self.messages.show(locales.get('msg_cap_leavegame'), locales.get('msg_text_leavegame'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_TRUE),
-                           LocalsHandler.lang('btn_msg_yes'),
+                           locales.get('btn_msg_yes'),
                            pygame.event.Event(ecodes.RESA_TITLE_EVENT, code=ecodes.RESA_QUITGAME_FALSE),
-                           LocalsHandler.lang('btn_msg_no'))
+                           locales.get('btn_msg_no'))
         self.game_data_handler.pause_ingame_time()

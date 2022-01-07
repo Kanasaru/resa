@@ -6,11 +6,11 @@
 """
 import pickle
 
-from data.handlers.locals import LocalsHandler
+import data.locales as locales
 from data.settings import conf
 import random
 import pygame
-from data.interfaces.loadscreen import GameLoadScreen
+from data.ui.loadscreen import GameLoadScreen
 from data.world.objects.field import RawField, Field
 from data.world.entities.tree import Tree
 from data.handlers.spritesheet import SpriteSheetHandler, SpriteSheet
@@ -82,17 +82,17 @@ class Generator(object):
         :return: None
         """
         # fill world with water
-        self.load_msg = f"{LocalsHandler.lang('load_world_water')}"
+        self.load_msg = f"{locales.get('load_world_water')}"
         self.__update_load_screen()
         self.fill()
         # create islands
-        self.load_msg = f"{LocalsHandler.lang('load_world_islands')}"
+        self.load_msg = f"{locales.get('load_world_islands')}"
         self.__update_load_screen()
         self.__create_islands()
         # background
         self.__world_image()
         # plant trees
-        self.load_msg = f"{LocalsHandler.lang('load_world_trees')}"
+        self.load_msg = f"{locales.get('load_world_trees')}"
         self.__update_load_screen()
         self.__plant_trees()
 
