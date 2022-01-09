@@ -3,11 +3,14 @@ Resa is swedish and means _journey_ or _to travel_.
 
 This project tries to bring classic strategic games to life in a new and different form. My idea is strongly influenced by the _Anno_ series and _Age of Empires_ and combines the different ways of playing. It should be platform-independent and completely freely available.
 
-![Resa](https://bitbyteopen.org/wp-content/uploads/2021/12/Bildschirmfoto-2021-12-24-um-16.11.56.png)
+![Resa](https://bitbyteopen.org/wp-content/uploads/2022/01/resa_screenshots.png)
+
+Island Editor:
+![Resa Editor](https://bitbyteopen.org/wp-content/uploads/2022/01/resa_editor_screenshots.png)
 
 > **Disclaimer**
 > 
-> The game does not claim to run at extremely high FPS and  resolution. Personally, my goal is that it runs smoothly on a RaspberryPi. Of course, other programming languages are better suited for game development, but I like python and the possibility of C extensions. It combines two of my favorites in development, even if my C is extremely rusty.
+> The game does not claim to run at extremely high FPS and resolution. Personally, my goal is that it runs smoothly on a RaspberryPi. Of course, other programming languages are better suited for game development, but I like python and the possibility of C extensions. It combines two of my favorites in development, even if my C is extremely rusty.
 > 
 > I am happy about every player, tester, pull request or creative contribution and discussions about possible improvements, but not about the programming language that is used.
 
@@ -53,7 +56,8 @@ Resa is intended as an open source project and therefore lives from people who c
 - _Illusory Realm_ by [Darren Curtis](https://www.darrencurtismusic.com/), promoted by [chosic.com](https://www.chosic.com/free-music/all/) under [Attribution 3.0 Unported (CC BY 3.0)](https://creativecommons.org/licenses/by/3.0/)
 
 ### Sounds
-- _screenshot.wav_ orignal _camera.wav_ by [alejandra0908](https://freesound.org/people/alejandra0908/sounds/364499/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+- _screenshot.wav_ by [alejandra0908](https://freesound.org/people/alejandra0908/sounds/364499/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+- _btn-click.wav_ by [Christopherderp](https://freesound.org/people/Christopherderp/sounds/342200/) published under [CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
 
 ### Graphics
 - own "design" (o.O)

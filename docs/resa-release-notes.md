@@ -1,18 +1,28 @@
 # Road to a playable 1.0.0-alpha
 ***
-### Environment Update | v0.6.0-alpha
+### Jigsaw Update | v0.6.0-alpha
+- [x] new world generation
+- [x] new grid handling
+- [x] new sprite handling
+- [x] new sprites
+- [x] add island creator
+- [ ] add build logic
+- [x] new license
+- [ ] new save and load mechanism
+
+### Environment Update | v0.7.0-alpha
 - [ ] add mountains
 - [ ] add tree growth
 - [ ] add fishes
 - [ ] add ship wracks
 - [ ] add rocks
 
-### Infrastructure Update | v0.7.0-alpha
+### Infrastructure Update | v0.8.0-alpha
 - [ ] add countinghouse
 - [ ] add marketplace
 - [ ] add houses
 
-### Harvest Update | v0.8.0-alpha
+### Harvest Update | v0.9.0-alpha
 - [ ] add lumberjack
 - [ ] add stonemason
 - [ ] add fisherman
@@ -23,12 +33,15 @@
 - [ ] add mill
 - [ ] add bakery
 
-### Population Update | v0.9.0-alpha
+### Population Update | v0.10.0-alpha
 - [ ] ...to be continued
 
 # Things done so far
 ***
 ### Concrete Update | v0.5.x-alpha
+#### v0.5.2
+- [x] change sprites and license
+
 #### v0.5.1
 - [x] better resolution handling
 

@@ -132,3 +132,5 @@ dmypy.json
 *.xml
 *.iml
 .idea
+/data/saves/data.island
+/data/saves/*.jpeg

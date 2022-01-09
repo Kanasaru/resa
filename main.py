@@ -1,16 +1,16 @@
 """
 :project: resa
 :source: https://github.com/Kanasaru/resa
-:license: GNU General Public License v3
+:license: CC-BY-SA-4.0
 """
-
-from data.start import Start
 import logging.config
+import src
+import src.start
 
 
 def main():
     logging.config.fileConfig('data/conf/logging.conf')
-    start = Start()
+    start = src.start.Start()
 
 
 if __name__ == "__main__":
