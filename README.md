@@ -3,11 +3,14 @@ Resa is swedish and means _journey_ or _to travel_.
 
 This project tries to bring classic strategic games to life in a new and different form. My idea is strongly influenced by the _Anno_ series and _Age of Empires_ and combines the different ways of playing. It should be platform-independent and completely freely available.
 
-![Resa](https://bitbyteopen.org/wp-content/uploads/2021/12/Bildschirmfoto-2021-12-24-um-16.11.56.png)
+![Resa](https://bitbyteopen.org/wp-content/uploads/2022/01/resa_screenshots.png)
+
+Island Editor:
+![Resa Editor](https://bitbyteopen.org/wp-content/uploads/2022/01/resa_editor_screenshots.png)
 
 > **Disclaimer**
 > 
-> The game does not claim to run at extremely high FPS and  resolution. Personally, my goal is that it runs smoothly on a RaspberryPi. Of course, other programming languages are better suited for game development, but I like python and the possibility of C extensions. It combines two of my favorites in development, even if my C is extremely rusty.
+> The game does not claim to run at extremely high FPS and resolution. Personally, my goal is that it runs smoothly on a RaspberryPi. Of course, other programming languages are better suited for game development, but I like python and the possibility of C extensions. It combines two of my favorites in development, even if my C is extremely rusty.
 > 
 > I am happy about every player, tester, pull request or creative contribution and discussions about possible improvements, but not about the programming language that is used.
 

@@ -4,12 +4,13 @@
 :license: CC-BY-SA-4.0
 """
 import logging.config
-from data.start import Start
+import src
+import src.start
 
 
 def main():
     logging.config.fileConfig('data/conf/logging.conf')
-    start = Start()
+    start = src.start.Start()
 
 
 if __name__ == "__main__":

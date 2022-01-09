@@ -1,16 +1,9 @@
 **[Resa docs](../index.md) > [CodeRef Index](#Index)**
 
-# Modules
-| data.        | forms.                      | handlers.     | interfaces.   | world.                | world.islands.   |
-|--------------|-----------------------------|---------------|---------------|-----------------------|------------------|
-| _start_      | [button](forms/button.md)   | _debug_       | _debugscreen_ | generator             | _big_islands_    |
-| _settings_   | [form](forms/form.md)       | _gamedata_    | _gamepanel_   | [grid](world/grid.md) | _medium_islands_ |
-| _game_       | [infobox](forms/infobox.md) | _msg_         | _interface_   | _map_                 | _small_islands_  |
-| _eventcodes_ | [label](forms/label.md)     | _music_       | _loadscreen_  | entities.tree         |                  |
-|              | [rect](forms/rect.md)       | _sound_       | _mainmenu_    | [objects.field        |                  |
-|              | [switch](forms/switch.md)   | _spritesheet_ | _messagebox_  | objects.island        |                  |
-|              | [title](forms/title.md)     |               | _options_     |                       |                  |
-|              |                             |               | _pausescreen_ |                       |                  |
+# Packages & Modules
+| src | src.handler | src.locales | src.ui | src.world | src.world.entities | src.world.objects |
+|-----|-------------|-------------|--------|-----------|--------------------|-------------------|
+| ... | ...         | ...         | ...    | ...       | ...                | ...               |
 
 # Index
 
