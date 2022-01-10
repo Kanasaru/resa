@@ -26,6 +26,7 @@ class Game(object):
         self.exit_game = False
         self.map_load = load
         self.pause_game = False
+        self.building = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
@@ -52,6 +53,7 @@ class Game(object):
 
         # loading map
         self.map = None
+        self.map_shift = (self.border_thickness, self.game_panel.rect.height + self.border_thickness)
         self.load_map()
 
         # timer
@@ -68,7 +70,7 @@ class Game(object):
         # map instance with shrinked surface size to provide border and room for game panel
         surface_width = pygame.display.get_surface().get_width() - self.border_thickness * 2
         surface_height = pygame.display.get_surface().get_height() - self.game_panel.rect.height - self.border_thickness * 2
-        self.map = Map((surface_width, surface_height))
+        self.map = Map((surface_width, surface_height), self.map_shift)
 
         if self.map_load:
             # load world from file
@@ -126,8 +128,8 @@ class Game(object):
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     # cursor in map?
-                    cursor_x = event.pos[0] - self.map.rect.x - self.border_thickness
-                    cursor_y = event.pos[1] - self.map.rect.y - self.game_panel.rect.height - self.border_thickness
+                    cursor_x = event.pos[0] - self.map.rect.x - self.map_shift[0]
+                    cursor_y = event.pos[1] - self.map.rect.y - self.map_shift[1]
                     if cursor_x >= 0 and cursor_y >= 0:
                         cursor_on_map = True
                     else:
@@ -146,6 +148,9 @@ class Game(object):
                     self.exit_game = True
                 elif event.code == src.handler.RESA_QUITGAME_FALSE:
                     src.handler.hdl_gamedata.pause_ingame_time()
+            elif event.type == src.handler.RESA_GAME_EVENT:
+                if event.code == src.handler.RESA_BUILDMODE:
+                    self.building = not self.building
 
             # push event into title and map event handling
             self.debug_screen.handle_event(event)
@@ -188,9 +193,7 @@ class Game(object):
 
         # render the map and blit its surface to main surface with border thickness
         self.map.render()
-        pos_x = self.border_thickness
-        pos_y = self.game_panel.rect.height + self.border_thickness
-        pygame.Surface.blit(self.surface, self.map.get_surface(), (pos_x, pos_y))
+        pygame.Surface.blit(self.surface, self.map.get_surface(), self.map_shift)
 
         # render message and info boxes
         self.messages.render(self.surface)

@@ -40,6 +40,12 @@ class GridFieldNeighbors(object):
         self._bottomleft = False
         self._bottomright = False
 
+        self._all = None
+
+    @property
+    def all(self):
+        return [self.left, self.right, self.top, self.bottom, self.topleft, self.topright, self.bottomleft, self._bottomright]
+
     @property
     def left(self):
         return self._left

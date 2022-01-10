@@ -33,6 +33,14 @@ class World(object):
         self.fields.draw(self.grid_image)
         self.grid.draw_iso_grid(self.grid_image, (0, 0))
 
+    def update(self, event):
+        if event is not None:
+            if event.type == src.handler.RESA_GAME_EVENT:
+                if event.code == src.handler.RESA_CTRL_MAP_MOVE:
+                    for key, value in self.grid_fields.items():
+                        value.rect.x += event.move[0]
+                        value.rect.y += event.move[1]
+
 
 class Generator(object):
     def __init__(self) -> None:
@@ -181,7 +189,7 @@ class Generator(object):
                                 field.solid = False
 
                             self.world.fields.add(field)
-                            self.world.grid_fields[key] = raw_field
+                            self.world.grid_fields[nc_key] = raw_field
 
                         col_count += 1
                     else:
@@ -219,7 +227,7 @@ class Generator(object):
                                 field.solid = False
 
                             self.world.fields.add(field)
-                            self.world.grid_fields[key] = raw_field
+                            self.world.grid_fields[nc_key] = raw_field
 
                         col_count += 1
                     else:
@@ -255,7 +263,7 @@ class Generator(object):
                                 field.solid = False
 
                             self.world.fields.add(field)
-                            self.world.grid_fields[key] = raw_field
+                            self.world.grid_fields[nc_key] = raw_field
                 nc_key += 1
 
     def __plant_trees(self) -> None:

@@ -8,7 +8,7 @@ from src.handler import conf
 import pygame.sprite
 from src.world.entities.tree import RawTree
 from src.world.generator import Generator
-from src.world.objects.field import RawField
+from src.world.objects.field import RawField, Field
 import src.handler
 
 
@@ -32,13 +32,18 @@ class Moving(object):
 
 
 class Map(object):
-    def __init__(self, screen_size: tuple[int, int]) -> None:
+    def __init__(self, screen_size: tuple[int, int], map_shift: tuple[int, int]) -> None:
         """ Initializes a world loading instance
 
         :param screen_size: tuple of screen size
         """
         # event handling varibales
         self.moving = Moving()
+        self.map_shift = map_shift
+        
+        self.building = False
+        self.buildsprites = pygame.sprite.Group()
+        self.building_size = (1, 1)
 
         # surfaces
         self.screen_size = screen_size
@@ -111,10 +116,33 @@ class Map(object):
                 self.moving.down = False
             if event.key == pygame.K_F5:
                 self.show_grid = not self.show_grid
+            # >>> BUILDMODE: just for testing
+            if event.key == pygame.K_F6:
+                pygame.event.post(pygame.event.Event(src.handler.RESA_GAME_EVENT, code=src.handler.RESA_BUILDMODE))
+            if event.key == pygame.K_1:
+                if self.building:
+                    self.building_size = (1, 1)
+            if event.key == pygame.K_2:
+                if self.building:
+                    self.building_size = (2, 2)
+            if event.key == pygame.K_3:
+                if self.building:
+                    self.building_size = (3, 3)
+            # <<<
+        elif event.type == src.handler.RESA_GAME_EVENT:
+            if event.code == src.handler.RESA_BUILDMODE:
+                self.building = not self.building
+        elif event.type == pygame.MOUSEMOTION and self.building:
+            if self.map_shift[0] < event.pos[0] < self.surface.get_width() + self.map_shift[0] and \
+                    self.map_shift[1] < event.pos[1] < self.surface.get_height() + self.map_shift[1]:
+                self.draw_build_grid(event.pos, self.building_size)
+            else:
+                self.buildsprites.empty()
         else:
             pass
 
         self.trees.update(event)
+        self.world.update(event)
         # self.fields.update(event)
 
     def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None) -> None:
@@ -204,6 +232,9 @@ class Map(object):
         else:
             self.surface.blit(self.world.image, self.rect.topleft)
 
+        if self.building:
+            self.buildsprites.draw(self.surface)
+
         self.trees.draw(self.surface)
 
     def get_surface(self) -> pygame.Surface:
@@ -212,3 +243,74 @@ class Map(object):
         :return: current map surface
         """
         return self.surface
+    
+    def draw_build_grid(self, position, size):
+        x, y = size
+        sprite_sheet = 'Tiles'
+        # relativate to grid
+        mouse_x = position[0] - self.rect.x - self.map_shift[0]
+        mouse_y = position[1] - self.rect.y - self.map_shift[1]
+
+        field = self.world.grid.pos_in_iso_grid_field((mouse_x, mouse_y))
+        if field:
+            neighbors = self.world.grid.iso_grid_neighbors(field.key)
+            self.buildsprites.empty()
+            # 1x1
+            if x == y == 1:
+                raw_field = self.world.grid_fields[field.key]
+                if raw_field.solid:
+                    sprite_index = 1
+                else:
+                    sprite_index = 0
+                image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
+                self.buildsprites.add(new_field)
+            # 2x2
+            elif x == y == 2:
+                raw_field = self.world.grid_fields[field.key]
+                if raw_field.solid:
+                    sprite_index = 1
+                else:
+                    sprite_index = 0
+                image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
+                self.buildsprites.add(new_field)
+                # set all neighbors false that are not used
+                neighbors.left = -1
+                neighbors.right = -1
+                neighbors.bottom = -1
+                neighbors.bottomleft = -1
+                neighbors.bottomright = -1
+                for rawval in neighbors.all:
+                    if rawval:
+                        raw_field = self.world.grid_fields[rawval]
+                        if raw_field.solid:
+                            sprite_index = 1
+                        else:
+                            sprite_index = 0
+                        image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                        new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
+                        self.buildsprites.add(new_field)
+            # 3x3
+            elif x == y == 3:
+                # get field and neighbors
+                if field:
+                    # add sprites
+                    raw_field = self.world.grid_fields[field.key]
+                    if raw_field.solid:
+                        sprite_index = 1
+                    else:
+                        sprite_index = 0
+                    image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                    new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
+                    self.buildsprites.add(new_field)
+                    for rawval in neighbors.all:
+                        if rawval:
+                            raw_field = self.world.grid_fields[rawval]
+                            if raw_field.solid:
+                                sprite_index = 1
+                            else:
+                                sprite_index = 0
+                            image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                            new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
+                            self.buildsprites.add(new_field)
