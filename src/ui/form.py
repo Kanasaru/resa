@@ -5,7 +5,8 @@
 :license: CC-BY-SA-4.0
 """
 import pygame
-import src.handler
+import src
+from src.handler import RESA_SH, RESA_EH
 from src.handler.spritesheet import SpriteSheetHandler
 
 LEFT = 0
@@ -484,7 +485,7 @@ class Button(Form):
                     self.button_down = True
             elif event.type == pygame.MOUSEBUTTONUP:
                 if self.rect.collidepoint(event.pos) and self.button_down:
-                    src.handler.hdl_sound.play(src.ui.SOUND_BTN_CLICK)
+                    RESA_SH.play(src.ui.SOUND_BTN_CLICK)
                     if self.callback_event is not None:
                         pygame.event.post(self.callback_event)
                     self.image = self.surf_images["hover"]

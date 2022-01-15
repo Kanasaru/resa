@@ -5,15 +5,15 @@
 :license: CC-BY-SA-4.0
 """
 import src.locales as locales
-from src.handler import conf
 from datetime import datetime
 import pygame
 import logging
-import src.handler
+from src.handler import RESA_CH, RESA_SSH, RESA_GDH, RESA_GSH, RESA_SH, RESA_MH, RESA_DH, RESA_EH
 from src.ui.screens import DebugScreen, GamePausedScreen
 from src.ui.panels import GamePanel
 from src.world.map import Map
 from src.ui.form import MessageHandler
+from src.world.entities.building import Building
 
 
 class Game(object):
@@ -23,39 +23,42 @@ class Game(object):
         :param load: load game from file if true
         """
         # event handling varibales
-        self.exit_game = False
-        self.map_load = load
-        self.pause_game = False
+        RESA_GSH.exit_game = False
+        RESA_GSH.map_load = load
+        RESA_GSH.pause_game = False
+        RESA_GSH.building = False
 
         # set timers and clocks
         self.clock = pygame.time.Clock()
 
         # screen settings, build screens and panels
         self.surface = pygame.display.get_surface()
-        self.border_thickness = conf.map_border_thickness
-        self.border_color = conf.COLOR_WHITE
+        self.border_thickness = RESA_CH.map_border_thickness
+        self.border_color = RESA_CH.COLOR_WHITE
         # debug screen
         self.debug_screen = DebugScreen()
         self.debug_screen.add(locales.get('info_fps'), self.clock.get_fps)
-        self.debug_screen.add(locales.get('info_version'), lambda: conf.version)
+        self.debug_screen.add(locales.get('info_version'), lambda: RESA_CH.version)
         self.debug_screen.add(locales.get('info_date'), lambda: datetime.now().strftime("%A, %d. %B %Y"))
-        self.debug_screen.add(locales.get('info_ingame_time'), src.handler.hdl_gamedata.get_game_time)
+        self.debug_screen.add(locales.get('info_ingame_time'), RESA_GDH.get_game_time)
         # game panel
-        self.game_panel = GamePanel(src.handler.hdl_sh_titles, conf.sp_menu_btn_key)
+        self.game_panel = GamePanel(RESA_SSH, RESA_CH.sp_menu_btn_key)
         # messages
-        self.messages = MessageHandler(src.handler.hdl_sh_titles, conf.sp_menu_btn_key)
+        self.messages = MessageHandler(RESA_SSH, RESA_CH.sp_menu_btn_key)
         self.messages.top = self.game_panel.rect.height + self.border_thickness * 3
         # pause screen
         self.paused_screen = GamePausedScreen(pygame.Rect(
             (0, self.game_panel.rect.height),
-            (pygame.display.get_surface().get_width(), pygame.display.get_surface().get_height() - self.game_panel.rect.height)))
+            (pygame.display.get_surface().get_width(),
+             pygame.display.get_surface().get_height() - self.game_panel.rect.height)))
 
         # loading map
         self.map = None
+        self.map_shift = (self.border_thickness, self.game_panel.rect.height + self.border_thickness)
         self.load_map()
 
         # timer
-        pygame.time.set_timer(src.handler.RESA_AUTOSAVE_EVENT, conf.autosave_interval)
+        pygame.time.set_timer(RESA_EH.RESA_AUTOSAVE_EVENT, RESA_CH.autosave_interval)
 
         # start the game loop
         self.loop()
@@ -67,30 +70,31 @@ class Game(object):
         """
         # map instance with shrinked surface size to provide border and room for game panel
         surface_width = pygame.display.get_surface().get_width() - self.border_thickness * 2
-        surface_height = pygame.display.get_surface().get_height() - self.game_panel.rect.height - self.border_thickness * 2
-        self.map = Map((surface_width, surface_height))
+        surface_height = pygame.display.get_surface().get_height()
+        surface_height -= self.game_panel.rect.height - self.border_thickness * 2
+        self.map = Map((surface_width, surface_height), self.map_shift)
 
-        if self.map_load:
+        if RESA_GSH.map_load:
             # load world from file
-            src.handler.hdl_gamedata.read_from_file(conf.save_file)
-            self.map.build_world(src.handler.hdl_gamedata.world_data)
+            RESA_GDH.read_from_file(RESA_CH.save_file)
+            self.map.build_world(RESA_GDH.world_data)
         else:
             # build a new world
             self.map.build_world()
 
         # update resources in game panel
-        self.game_panel.resources = src.handler.hdl_gamedata.resources
+        self.game_panel.resources = RESA_GDH.resources
 
     def loop(self) -> None:
         """ in-game loopp
 
         :return: None
         """
-        src.handler.hdl_gamedata.start_timer()
-        src.handler.hdl_music.start(conf.volume)
+        RESA_GDH.start_timer()
+        RESA_MH.start(RESA_CH.volume)
 
-        while not self.exit_game:
-            self.clock.tick(conf.fps)
+        while not RESA_GSH.exit_game:
+            self.clock.tick(RESA_CH.fps)
             self.handle_events()
             self.run_logic()
             self.render()
@@ -107,27 +111,27 @@ class Game(object):
                 if event.key == pygame.K_F2:
                     self.take_screenshot()
                 elif event.key == pygame.K_F3:
-                    src.handler.hdl_debug.toggle()
+                    RESA_DH.toggle()
                 elif event.key == pygame.K_p:
-                    self.pause_game = not self.pause_game
-                    src.handler.hdl_gamedata.pause_ingame_time()
-                    src.handler.hdl_music.pause()
+                    RESA_GSH.pause_game = not RESA_GSH.pause_game
+                    RESA_GDH.pause_ingame_time()
+                    RESA_MH.pause()
                 elif event.key == pygame.K_PLUS:
-                    src.handler.hdl_music.volume += .1
+                    RESA_MH.volume += .1
                 elif event.key == pygame.K_MINUS:
-                    src.handler.hdl_music.volume -= .1
-            elif event.type == src.handler.RESA_AUTOSAVE_EVENT and conf.autosave:
+                    RESA_MH.volume -= .1
+            elif event.type == RESA_EH.RESA_AUTOSAVE_EVENT and RESA_CH.autosave:
                 self.save_game(True)
-            elif event.type == src.handler.RESA_MUSIC_ENDED_EVENT:
-                if len(src.handler.hdl_music.playlist) > 0:
-                    src.handler.hdl_music.load_next()
+            elif event.type == RESA_EH.RESA_MUSIC_ENDED_EVENT:
+                if len(RESA_MH.playlist) > 0:
+                    RESA_MH.load_next()
                 else:
-                    src.handler.hdl_music.refill()
+                    RESA_MH.refill()
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     # cursor in map?
-                    cursor_x = event.pos[0] - self.map.rect.x - self.border_thickness
-                    cursor_y = event.pos[1] - self.map.rect.y - self.game_panel.rect.height - self.border_thickness
+                    cursor_x = event.pos[0] - self.map.rect.x - self.map_shift[0]
+                    cursor_y = event.pos[1] - self.map.rect.y - self.map_shift[1]
                     if cursor_x >= 0 and cursor_y >= 0:
                         cursor_on_map = True
                     else:
@@ -135,17 +139,24 @@ class Game(object):
 
                     if cursor_on_map and not self.messages.is_msg():
                         print(self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
+                        # build mode
+                        if RESA_GSH.building:
+                            RESA_GSH.place = True
+                            RESA_GSH.place_on = self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y))
                 elif event.button == 2:
                     pass
-            elif event.type == src.handler.RESA_TITLE_EVENT:
-                if event.code == src.handler.RESA_BTN_LEAVEGAME:
+            elif event.type == RESA_EH.RESA_TITLE_EVENT:
+                if event.code == RESA_EH.RESA_BTN_LEAVEGAME:
                     self.leave_game()
-                elif event.code == src.handler.RESA_BTN_SAVEGAME:
+                elif event.code == RESA_EH.RESA_BTN_SAVEGAME:
                     self.save_game()
-                elif event.code == src.handler.RESA_QUITGAME_TRUE:
-                    self.exit_game = True
-                elif event.code == src.handler.RESA_QUITGAME_FALSE:
-                    src.handler.hdl_gamedata.pause_ingame_time()
+                elif event.code == RESA_EH.RESA_QUITGAME_TRUE:
+                    RESA_GSH.exit_game = True
+                elif event.code == RESA_EH.RESA_QUITGAME_FALSE:
+                    RESA_GDH.pause_ingame_time()
+            elif event.type == RESA_EH.RESA_GAME_EVENT:
+                if event.code == RESA_EH.RESA_BUILDMODE:
+                    RESA_GSH.building = not RESA_GSH.building
 
             # push event into title and map event handling
             self.debug_screen.handle_event(event)
@@ -153,7 +164,7 @@ class Game(object):
             if not self.messages.is_msg():
                 self.game_panel.handle_event(event)
                 # do not run game event handler on pause
-                if not self.pause_game:
+                if not RESA_GSH.pause_game:
                     self.map.handle_event(event)
 
     def run_logic(self) -> None:
@@ -162,20 +173,27 @@ class Game(object):
         :return: None
         """
         # update game src
-        src.handler.hdl_gamedata.update()
+        RESA_GDH.update()
 
         self.messages.run_logic()
         if not self.messages.is_msg():
-            if not self.pause_game:
+            if not RESA_GSH.pause_game:
+                # check for build mode
+                if RESA_GSH.building and RESA_GSH.place:
+                    if self.place_building():
+                        print('build')
+                    else:
+                        print('build not possible')
+
                 # update map
                 self.map.run_logic()
             # update game panel
             self.game_panel.run_logic()
 
         # update debug src if activated
-        if src.handler.hdl_debug:
-            src.handler.hdl_debug.update()
-            self.debug_screen.timer = src.handler.hdl_debug.play_time
+        if RESA_DH:
+            RESA_DH.update()
+            self.debug_screen.timer = RESA_DH.play_time
             self.debug_screen.run_logic()
 
     def render(self) -> None:
@@ -188,9 +206,7 @@ class Game(object):
 
         # render the map and blit its surface to main surface with border thickness
         self.map.render()
-        pos_x = self.border_thickness
-        pos_y = self.game_panel.rect.height + self.border_thickness
-        pygame.Surface.blit(self.surface, self.map.get_surface(), (pos_x, pos_y))
+        pygame.Surface.blit(self.surface, self.map.get_surface(), self.map_shift)
 
         # render message and info boxes
         self.messages.render(self.surface)
@@ -199,11 +215,11 @@ class Game(object):
         self.game_panel.render(self.surface)
 
         # render debug screen if activated
-        if src.handler.hdl_debug:
+        if RESA_DH:
             self.debug_screen.render(self.surface)
 
         # render pause screen
-        if self.pause_game:
+        if RESA_GSH.pause_game:
             self.paused_screen.render(self.surface)
 
         # display surface
@@ -214,8 +230,8 @@ class Game(object):
 
         :return: None
         """
-        src.handler.hdl_sound.play('screenshot')
-        filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.jpeg'
+        RESA_SH.play('screenshot')
+        filename = f'{RESA_CH.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.jpeg'
         pygame.image.save(pygame.display.get_surface(), filename)
         self.messages.info(f"{locales.get('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
@@ -225,8 +241,8 @@ class Game(object):
 
         :return: None
         """
-        src.handler.hdl_gamedata.world_data = (self.map.rect, self.map.get_raw_fields(), self.map.get_raw_trees())
-        src.handler.hdl_gamedata.save_to_file(conf.save_file)
+        RESA_GDH.world_data = (self.map.rect, self.map.get_raw_fields(), self.map.get_raw_trees())
+        RESA_GDH.save_to_file(RESA_CH.save_file)
         if auto_save:
             text = locales.get('info_autosave')
         else:
@@ -240,8 +256,79 @@ class Game(object):
         :return: None
         """
         self.messages.show(locales.get('msg_cap_leavegame'), locales.get('msg_text_leavegame'),
-                           pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_QUITGAME_TRUE),
+                           pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_QUITGAME_TRUE),
                            locales.get('btn_msg_yes'),
-                           pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_QUITGAME_FALSE),
+                           pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_QUITGAME_FALSE),
                            locales.get('btn_msg_no'))
-        src.handler.hdl_gamedata.pause_ingame_time()
+        RESA_GDH.pause_ingame_time()
+
+    def place_building(self):
+        # check if placable
+        neighbors = self.map.world.grid.iso_grid_neighbors(RESA_GSH.place_on.key)
+        build = False
+        x, y = RESA_GSH.building_size
+        # 1x1
+        if x == y == 1:
+            raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
+            if raw_field.solid and raw_field.buildable and not raw_field.building:
+                build = True
+        # 2x2
+        elif x == y == 2:
+            if neighbors.top and neighbors.topleft and neighbors.topright:
+                raw_field = self.map.world.grid_fields[neighbors.top]
+                if raw_field.solid:
+                    raw_field = self.map.world.grid_fields[neighbors.topleft]
+                    if raw_field.solid:
+                        raw_field = self.map.world.grid_fields[neighbors.topright]
+                        if raw_field.solid and raw_field.buildable and not raw_field.building:
+                            build = True
+        # 3x3
+        elif x == y == 3:
+            build = True
+            for rawval in neighbors.all:
+                raw_field = self.map.world.grid_fields[rawval]
+                if not raw_field.solid or not raw_field.buildable or raw_field.building:
+                    build = False
+
+        if build:
+            # delete entities and place building
+            # 1x1
+            if x == y == 1:
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
+                self.map.world.grid_fields[RESA_GSH.place_on.key].building = True
+                raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
+                new_building = Building(raw_field.rect.midbottom,
+                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 1)
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
+            # 2x2
+            elif x == y == 2:
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
+                self.map.world.grid_fields[RESA_GSH.place_on.key].building = True
+                self.map.world.grid_fields[neighbors.top].sprite = None
+                self.map.world.grid_fields[neighbors.top].building = True
+                self.map.world.grid_fields[neighbors.topleft].sprite = None
+                self.map.world.grid_fields[neighbors.topleft].building = True
+                self.map.world.grid_fields[neighbors.topright].sprite = None
+                self.map.world.grid_fields[neighbors.topright].building = True
+
+                raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
+                new_building = Building(raw_field.rect.midbottom,
+                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 2)
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
+            # 3x3
+            elif x == y == 3:
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
+                for rawval in neighbors.all:
+                    self.map.world.grid_fields[rawval].sprite = None
+                    self.map.world.grid_fields[rawval].building = True
+
+                raw_field = self.map.world.grid_fields[neighbors.bottom]
+                new_building = Building(raw_field.rect.midbottom,
+                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 3)
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
+
+        # reset state
+        RESA_GSH.place = False
+        RESA_GSH.place_on = None
+
+        return build

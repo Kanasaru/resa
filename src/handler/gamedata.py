@@ -7,9 +7,6 @@
 from ast import literal_eval
 import configparser
 import pygame
-import xml.etree.ElementTree as ETree
-from src.world.entities.tree import RawTree
-from src.world.objects.field import RawField
 
 
 class GameDataHandler(object):
@@ -96,92 +93,6 @@ class GameDataHandler(object):
             if not self._pause_timer:
                 self.game_time += self._game_timer.get_time()
 
-    def read_from_file(self, filepath: str) -> None:
-        """ Read game src from file.
-
-        :param filepath: Resa save file
-        :return: None
-        """
-        tree = ETree.parse(filepath)
-        root = tree.getroot()
-
-        res = {}
-        rect = None
-        fields = []
-        trees = []
-        for child in root:
-            # read in-game time
-            if child.tag == 'general':
-                for gen_data in child.iter('gametime'):
-                    self.game_time = literal_eval(gen_data.attrib['milliseconds'])
-            # read resources
-            if child.tag == 'resources':
-                for res_data in child.iter('res'):
-                    res[res_data.attrib['name']] = int(res_data.text)
-            # read world
-            if child.tag == 'world':
-                # basic src
-                for rect_data in child.iter('rect'):
-                    rect = pygame.Rect(literal_eval(rect_data.text))
-                for sub_child in child:
-                    # read field src
-                    if sub_child.tag == 'fields':
-                        for field in sub_child.iter('field'):
-                            raw_field = RawField()
-                            raw_field.pos = literal_eval(field.attrib['pos'])
-                            sprite_data = literal_eval(field.attrib['sprite_data'])
-                            raw_field.sprite_sheet = sprite_data[0]
-                            raw_field.sprite_index = sprite_data[1]
-                            raw_field.solid = literal_eval(field.attrib['solid'])
-                            fields.append(raw_field)
-                    if sub_child.tag == 'trees':
-                        for field in sub_child.iter('tree'):
-                            raw_tree = RawTree()
-                            raw_tree.pos = literal_eval(field.attrib['pos'])
-                            sprite_data = literal_eval(field.attrib['sprite_data'])
-                            raw_tree.sprite_sheet = sprite_data[0]
-                            raw_tree.sprite_index = sprite_data[1]
-                            trees.append(raw_tree)
-
-        self.resources = res
-        self.world_data = (rect, fields, trees)
-
-    def save_to_file(self, filepath: str) -> None:
-        """ Saves game src into a file.
-
-        :param filepath: filepath to save src in
-        :return: None
-        """
-        root = ETree.Element("src")
-
-        # general
-        general = ETree.SubElement(root, "general")
-        ETree.SubElement(general, "gametime", milliseconds=str(self.game_time))
-        # save resources
-        resources = ETree.SubElement(root, "resources")
-        for key, value in self.resources.items():
-            ETree.SubElement(resources, "res", name=key).text = str(value)
-
-        # save world
-        world = ETree.SubElement(root, "world")
-        ETree.SubElement(world, "rect").text = str((self.world_data[0].topleft, self.world_data[0].size))
-        fields = ETree.SubElement(world, "fields")
-        for raw_field in self.world_data[1]:
-            ETree.SubElement(fields, "field",
-                             pos=str(raw_field.pos),
-                             sprite_data=str((raw_field.sprite_sheet, raw_field.sprite_index)),
-                             solid=str(raw_field.solid))
-        trees = ETree.SubElement(world, "trees")
-        for raw_tree in self.world_data[2]:
-            ETree.SubElement(trees, "tree",
-                             pos=str(raw_tree.pos),
-                             sprite_data=str((raw_tree.sprite_sheet, raw_tree.sprite_index)))
-
-        # write file
-        tree = ETree.ElementTree(root)
-        ETree.indent(tree, space="\t", level=0)
-        tree.write(filepath, encoding="utf-8", xml_declaration=True)
-
 
 class Settings(object):
     def __init__(self) -> None:
@@ -190,7 +101,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.5.2-alpha'
+        self.version = '0.6.0-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 

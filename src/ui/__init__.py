@@ -1,6 +1,6 @@
-import src.handler
+from src.handler import RESA_EH
 
-EVT_TITLE_EVENT = src.handler.RESA_TITLE_EVENT
+EVT_TITLE_EVENT = RESA_EH.RESA_TITLE_EVENT
 EVT_MSG_BOX_OK = 100
 EVT_MSG_BOX_NO = 101
 

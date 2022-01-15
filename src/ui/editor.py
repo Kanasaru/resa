@@ -7,13 +7,12 @@
 import logging
 import pickle
 import pygame
-import src.handler
+from src.handler import RESA_CH, RESA_SSH, RESA_SH, RESA_EH
 from datetime import datetime
 import src.ui.form as forms
 import src.locales as locales
 import src.world.grid
 from src.world.objects.field import Field, RawField
-from src.handler import conf
 
 
 class PaletteField(pygame.sprite.Sprite):
@@ -48,7 +47,7 @@ class PaletteField(pygame.sprite.Sprite):
         if event.type == pygame.MOUSEBUTTONUP:
             if self.rect.collidepoint(event.pos):
                 pygame.event.post(pygame.event.Event(
-                    src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_EDITOR_SELECT, field=self.tile
+                    RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_SELECT, field=self.tile
                 ))
         self.rect.topleft = self.position
 
@@ -83,7 +82,7 @@ class Editor(object):
         self.clock = pygame.time.Clock()
 
         # set handler
-        self.messages = forms.MessageHandler(src.handler.hdl_sh_titles, conf.sp_menu_btn_key)
+        self.messages = forms.MessageHandler(RESA_SSH, RESA_CH.sp_menu_btn_key)
 
         # screen settings and build screen
         self.surface = pygame.display.get_surface()
@@ -91,18 +90,18 @@ class Editor(object):
 
         # load palette
         for key, value in self.palette.items():
-            image = src.handler.hdl_sh_world.image_by_index('Tiles', key)
+            image = RESA_SSH.image_by_index('Tiles', key)
             field = PaletteField(key, 44, (int(value[0]), int(value[1])), image)
             self.palette_sprites.add(field)
 
         # build grid
         self.shift_x = self.title.width() - 905
         self.shift_y = 25
-        conf.grid = src.world.grid.Grid(44, 44, 20)
+        RESA_CH.grid = src.world.grid.Grid(44, 44, 20)
 
         # fill grid with water tiles
-        for key, value in conf.grid.fields_iso.items():
-            image = src.handler.hdl_sh_world.image_by_index('Tiles', 2)
+        for key, value in RESA_CH.grid.fields_iso.items():
+            image = RESA_SSH.image_by_index('Tiles', 2)
             new_field = Field((self.shift_x + value.rect.x, self.shift_y + value.rect.y), image)
             new_field.sprite_sheet_id = 'Tiles'
             new_field.sprite_id = 2
@@ -118,7 +117,7 @@ class Editor(object):
         :return: None
         """
         while not self.exit:
-            self.clock.tick(conf.fps)
+            self.clock.tick(RESA_CH.fps)
             self.handle_events()
             self.run_logic()
             self.render()
@@ -139,29 +138,31 @@ class Editor(object):
                     self.messages.info(f"{locales.get('editor_no_tile')}")
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    if self.shift_x <= event.pos[0] <= self.shift_x + conf.grid.grid_width and \
-                            self.shift_y <= event.pos[1] <= self.shift_y + conf.grid.grid_height:
-                        tile_field = conf.grid.pos_in_iso_grid_field(
+                    if self.shift_x <= event.pos[0] <= self.shift_x + RESA_CH.grid.grid_width and \
+                            self.shift_y <= event.pos[1] <= self.shift_y + RESA_CH.grid.grid_height:
+                        tile_field = RESA_CH.grid.pos_in_iso_grid_field(
                             (abs(event.pos[0] - self.shift_x), abs(event.pos[1] - self.shift_y))
                         )
                         if tile_field and not self.messages.is_msg():
                             pygame.event.post(pygame.event.Event(
-                                src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_EDITOR_PLACE, field=tile_field
+                                RESA_EH.RESA_TITLE_EVENT,
+                                code=RESA_EH.RESA_EDITOR_PLACE,
+                                field=tile_field
                             ))
-            elif event.type == src.handler.RESA_TITLE_EVENT:
-                if event.code == src.handler.RESA_EDITOR_SELECT:
-                    src.handler.hdl_sound.play('btn-click')
+            elif event.type == RESA_EH.RESA_TITLE_EVENT:
+                if event.code == RESA_EH.RESA_EDITOR_SELECT:
+                    RESA_SH.play('btn-click')
                     self.selected_tile = event.field
                     self.messages.info(f"{locales.get('editor_tile_select')} {self.selected_tile}.")
-                elif event.code == src.handler.RESA_EDITOR_PLACE:
+                elif event.code == RESA_EH.RESA_EDITOR_PLACE:
                     self.place_tile = event.field
-                elif event.code == src.handler.RESA_EDITOR_LEAVE:
+                elif event.code == RESA_EH.RESA_EDITOR_LEAVE:
                     self.leave_editor()
-                elif event.code == src.handler.RESA_EDITOR_LOAD:
+                elif event.code == RESA_EH.RESA_EDITOR_LOAD:
                     self.load_island()
-                elif event.code == src.handler.RESA_EDITOR_SAVE:
+                elif event.code == RESA_EH.RESA_EDITOR_SAVE:
                     self.save_island()
-                elif event.code == src.handler.RESA_QUITGAME_TRUE:
+                elif event.code == RESA_EH.RESA_QUITGAME_TRUE:
                     self.exit = True
 
             self.messages.handle_event(event)
@@ -178,7 +179,7 @@ class Editor(object):
                 for field in self.fields:
                     if field.iso_key == self.place_tile.key:
                         field.image = pygame.transform.scale(
-                            src.handler.hdl_sh_world.image_by_index('Tiles', self.selected_tile),
+                            RESA_SSH.image_by_index('Tiles', self.selected_tile),
                             field.size).convert_alpha()
                         field.sprite_id = self.selected_tile
 
@@ -192,7 +193,7 @@ class Editor(object):
 
         :return: None
         """
-        self.surface.fill(conf.COLOR_WHITE)
+        self.surface.fill(RESA_CH.COLOR_WHITE)
 
         self.title.render(self.surface)
 
@@ -200,7 +201,7 @@ class Editor(object):
 
         self.fields.draw(self.surface)
 
-        conf.grid.draw_iso_grid(self.surface, (self.shift_x, self.shift_y))
+        RESA_CH.grid.draw_iso_grid(self.surface, (self.shift_x, self.shift_y))
 
         # render message and info boxes
         self.messages.render(self.surface)
@@ -212,8 +213,8 @@ class Editor(object):
 
         :return: None
         """
-        src.handler.hdl_sound.play('screenshot')
-        filename = f'{conf.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
+        RESA_SH.play('screenshot')
+        filename = f'{RESA_CH.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.png'
         pygame.image.save(pygame.display.get_surface(), filename)
         self.messages.info(f"{locales.get('info_screenshot')}: {filename}")
         logging.info('Took screenshot')
@@ -224,9 +225,11 @@ class Editor(object):
         :return: None
         """
         self.messages.show(locales.get('msg_cap_leaveeditor'), locales.get('msg_text_leaveeditor'),
-                           pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_QUITGAME_TRUE),
+                           pygame.event.Event(RESA_EH.RESA_TITLE_EVENT,
+                                              code=RESA_EH.RESA_QUITGAME_TRUE),
                            locales.get('btn_msg_yes'),
-                           pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_QUITGAME_FALSE),
+                           pygame.event.Event(RESA_EH.RESA_TITLE_EVENT,
+                                              code=RESA_EH.RESA_QUITGAME_FALSE),
                            locales.get('btn_msg_no'))
 
     def save_island(self) -> None:
@@ -253,7 +256,7 @@ class Editor(object):
         """
         self.fields.empty()
         for field_data in pickle.load(open('data/saves/data.island', 'rb')):
-            image = src.handler.hdl_sh_world.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
+            image = RESA_SSH.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
             field = Field(field_data.pos, image)
             field.sprite_sheet_id = field_data.sprite_sheet
             field.sprite_id = field_data.sprite_index
@@ -262,16 +265,16 @@ class Editor(object):
             self.fields.add(field)
 
     def build_title(self):
-        title = forms.Title(pygame.Rect((0, 0), (1280, 960)), conf.COLOR_WHITE, 'res/images/bg_editor.png')
+        title = forms.Title(pygame.Rect((0, 0), (1280, 960)), RESA_CH.COLOR_WHITE, 'res/images/bg_editor.png')
         title.set_alpha(255)
 
         position_x = 182
         position_y = 715
         b_save_island = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
-            src.handler.hdl_sh_titles, conf.sp_menu_btn_key,
+            RESA_SSH, RESA_CH.sp_menu_btn_key,
             locales.get('editor_btn_save'),
-            pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_EDITOR_SAVE)
+            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_SAVE)
         )
         b_save_island.align(forms.CENTER)
 
@@ -279,9 +282,9 @@ class Editor(object):
 
         b_load_island = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
-            src.handler.hdl_sh_titles, conf.sp_menu_btn_key,
+            RESA_SSH, RESA_CH.sp_menu_btn_key,
             locales.get('editor_btn_load'),
-            pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_EDITOR_LOAD)
+            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_LOAD)
         )
         b_load_island.align(forms.CENTER)
         try:
@@ -294,9 +297,9 @@ class Editor(object):
 
         b_quiteditor = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
-            src.handler.hdl_sh_titles, conf.sp_menu_btn_key,
+            RESA_SSH, RESA_CH.sp_menu_btn_key,
             locales.get('editor_btn_leave'),
-            pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_EDITOR_LEAVE)
+            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_LEAVE)
         )
         b_quiteditor.align(forms.CENTER)
 
