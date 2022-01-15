@@ -19,6 +19,10 @@ class RawField(object):
         self.rect = None
         self.temperature = None
 
+        self.sprite = None
+        self.buildable = False
+        self.building = False
+
 
 class Field(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
@@ -30,10 +34,10 @@ class Field(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # basic settings
-        self._size = (RESA_CH.grid_zoom * 2, RESA_CH.grid_zoom)
-        self._visible = True
-        self._temperature = RESA_CH.temp_center
-        self._solid = False
+        self.size = (RESA_CH.grid_zoom * 2, RESA_CH.grid_zoom)
+        self.visible = True
+        self.temperature = RESA_CH.temp_center
+        self.solid = False
 
         # image and sprite settings
         self.image = pygame.transform.scale(image, self.size).convert_alpha()
@@ -43,49 +47,9 @@ class Field(pygame.sprite.Sprite):
         self.iso_key = -1
 
         # positions
-        self._position = position
+        self.position = position
         self.rect = self.image.get_rect()
-        self.rect.topleft = self._position
-
-    @property
-    def position(self):
-        return self._position
-
-    @position.setter
-    def position(self, value):
-        self._position = value
-
-    @property
-    def size(self):
-        return self._size
-
-    @size.setter
-    def size(self, value):
-        self._size = value
-
-    @property
-    def solid(self):
-        return self._solid
-
-    @solid.setter
-    def solid(self, value):
-        self._solid = value
-
-    @property
-    def visible(self):
-        return self._visible
-
-    @visible.setter
-    def visible(self, value):
-        self._visible = value
-
-    @property
-    def temperature(self):
-        return self._temperature
-
-    @temperature.setter
-    def temperature(self, value):
-        self._temperature = value
+        self.rect.topleft = self.position
 
     def update(self, event: pygame.event.Event = None) -> None:
         """ Updates field by its position
@@ -96,7 +60,7 @@ class Field(pygame.sprite.Sprite):
         if event is not None:
             if event.type == RESA_EH.RESA_GAME_EVENT:
                 if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
-                    self.position = (self._position[0] + event.move[0], self._position[1] + event.move[1])
+                    self.position = (self.position[0] + event.move[0], self.position[1] + event.move[1])
         self.rect.topleft = self.position
 
     def delete(self) -> None:

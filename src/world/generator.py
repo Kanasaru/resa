@@ -23,7 +23,6 @@ class World(object):
         self.image = pygame.Surface(self.rect.size)
         self.grid_image = pygame.Surface(self.rect.size)
         self.grid_fields = {}
-        self.entities = pygame.sprite.Group()
         self.fields = pygame.sprite.Group()
         self.islands = None
 
@@ -35,10 +34,18 @@ class World(object):
     def update(self, event):
         if event is not None:
             if event.type == RESA_EH.RESA_GAME_EVENT:
-                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
-                    for key, value in self.grid_fields.items():
+                for key, value in self.grid_fields.items():
+                    if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
                         value.rect.x += event.move[0]
                         value.rect.y += event.move[1]
+
+                    if value.sprite is not None:
+                        value.sprite.update(event)
+
+    def draw(self, surface):
+        for key, value in self.grid_fields.items():
+            if value.sprite is not None:
+                surface.blit(value.sprite.image, value.sprite.rect)
 
 
 class Generator(object):
@@ -58,8 +65,6 @@ class Generator(object):
             'South': islands.Island(islands.SMALL, RESA_CH.temp_south),
             'South_East': islands.Island(islands.MEDIUM, RESA_CH.temp_south),
         }
-
-        self.fields = pygame.sprite.Group()
 
         # initialisize loading message
         self.load_msg = ""
@@ -182,6 +187,7 @@ class Generator(object):
                             raw_field.temperature = temperature
                             if 2 < field_data.sprite_index < 5:
                                 raw_field.solid = True
+                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
@@ -220,6 +226,7 @@ class Generator(object):
                             raw_field.temperature = temperature
                             if 2 < field_data.sprite_index < 5:
                                 raw_field.solid = True
+                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
@@ -256,6 +263,7 @@ class Generator(object):
                             raw_field.temperature = temperature
                             if 2 < field_data.sprite_index < 5:
                                 raw_field.solid = True
+                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
@@ -299,12 +307,5 @@ class Generator(object):
                     tree = Tree(pos, image)
                     tree.sprite_sheet_id = sprite_sheet
                     tree.sprite_id = sprite_index
-                    self.world.entities.add(tree)
-
-    # todo: refactor save and load functions
-    def load_fields_by_dict(self, fields_data: dict) -> None:
-        pass
-
-    # todo: refactor save and load functions
-    def load_trees_by_dict(self, trees_data: dict) -> None:
-        pass
+                    
+                    self.world.grid_fields[field.iso_key].sprite = tree

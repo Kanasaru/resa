@@ -3,8 +3,8 @@ from src.handler import RESA_CH, RESA_EH
 from src.handler.spritesheet import SpriteSheetHandler
 
 
-class Tree(pygame.sprite.Sprite):
-    def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
+class Building(pygame.sprite.Sprite):
+    def __init__(self, position: tuple[int, int], image: pygame.image, size: int) -> None:
         """ Initializes a field
 
         :param position: position on world surface
@@ -12,12 +12,9 @@ class Tree(pygame.sprite.Sprite):
         """
         pygame.sprite.Sprite.__init__(self)
 
-        # basic settings
-        self.growth = 3
-
         # image and sprite settings
         self.image = image
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2)
+        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2 * size)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
         self.sprite_sheet_id = None
         self.sprite_id = None
@@ -25,7 +22,7 @@ class Tree(pygame.sprite.Sprite):
         # positions
         self.position = position
         self.rect = self.image.get_rect()
-        self.rect.bottomleft = self.position
+        self.rect.midbottom = self.position
 
     def update(self, event: pygame.event.Event = None) -> None:
         """ Updates tree by its position
@@ -39,21 +36,4 @@ class Tree(pygame.sprite.Sprite):
                     pos_x = self.position[0] + event.move[0]
                     pox_y = self.position[1] + event.move[1]
                     self.position = (pos_x, pox_y)
-        self.rect.bottomleft = self.position
-
-    def delete(self) -> None:
-        """ Deletes the tree
-
-        :return: None
-        """
-        self.kill()
-
-    def __str__(self):
-        return f'Tree - ' \
-               f'Pos: {self.position} | ' \
-               f'Solid: {self.growth} | '
-
-    def __repr__(self):
-        return f'Tree - ' \
-               f'Pos: {self.position} | ' \
-               f'Solid: {self.growth} | '
+        self.rect.midbottom = self.position

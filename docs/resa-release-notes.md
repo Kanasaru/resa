@@ -6,9 +6,9 @@
 - [x] new sprite handling
 - [x] new sprites
 - [x] add island creator
-- [ ] add build logic
+- [x] add build logic
 - [x] new license
-- [ ] new save and load mechanism
+- [ ] ~~new save and load mechanism~~
 
 ### Environment Update | v0.7.0-alpha
 - [ ] add mountains

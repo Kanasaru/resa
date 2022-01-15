@@ -11,3 +11,5 @@ class GameStateHandler(object):
         self.pause_game = False
         self.building = False
         self.building_size = (3, 3)
+        self.place = False
+        self.place_on = None

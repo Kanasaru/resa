@@ -5,9 +5,8 @@
 :license: CC-BY-SA-4.0
 """
 import pygame.sprite
-from src.world.entities.tree import RawTree
 from src.world.generator import Generator
-from src.world.objects.field import RawField, Field
+from src.world.objects.field import Field
 from src.handler import RESA_CH, RESA_SSH, RESA_GSH, RESA_EH
 
 
@@ -48,44 +47,33 @@ class Map(object):
 
         # world src
         self.rect = pygame.Rect((0, 0), (0, 0))
-        self.water = pygame.sprite.Group()
-        self.fields = pygame.sprite.Group()
-        self.trees = pygame.sprite.Group()
 
         self.world = None
         self.grid_image = None
         self.show_grid = False
 
-    def get_raw_fields(self) -> list:
-        """ Returns basic information of all fields
+    def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None) -> None:
+        """ Builds the world from scratch or given world src
 
-        :return: list of raw fields
+        :param world_data: world src from game src handler
+        :return: None
         """
-        raw_fields = []
-        for field in self.fields:
-            raw_field = RawField()
-            raw_field.pos = field.position
-            raw_field.sprite_index = field.sprite_id
-            raw_field.sprite_sheet = field.sprite_sheet_id
-            raw_field.solid = field.solid
-            raw_fields.append(raw_field)
+        world = Generator()
 
-        return raw_fields
+        if world_data is not None:
+            rect, field_data, tree_data = world_data
+            # set basic world generation value from given src
+            world.rect = rect
+            world.size = rect.size
+            # fill world with water and set fields and trees from given src
+            world.fill()
+        else:
+            # create a new world from scratch
+            world.create()
 
-    def get_raw_trees(self) -> list:
-        """ Returns basic information of all trees
-
-        :return: list of raw trees
-        """
-        raw_trees = []
-        for tree in self.trees:
-            raw_tree = RawTree()
-            raw_tree.pos = tree.position
-            raw_tree.sprite_index = tree.sprite_id
-            raw_tree.sprite_sheet = tree.sprite_sheet_id
-            raw_trees.append(raw_tree)
-
-        return raw_trees
+        # get all sprites from world
+        self.world = world.get_world()
+        self.rect = self.world.rect
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """ Handles given event
@@ -135,36 +123,7 @@ class Map(object):
         else:
             pass
 
-        self.trees.update(event)
         self.world.update(event)
-        # self.fields.update(event)
-
-    def build_world(self, world_data: tuple[pygame.Rect, dict, dict] = None) -> None:
-        """ Builds the world from scratch or given world src
-
-        :param world_data: world src from game src handler
-        :return: None
-        """
-        world = Generator()
-
-        if world_data is not None:
-            rect, field_data, tree_data = world_data
-            # set basic world generation value from given src
-            world.rect = rect
-            world.size = rect.size
-            # fill world with water and set fields and trees from given src
-            world.fill()
-            world.load_fields_by_dict(field_data)
-            world.load_trees_by_dict(tree_data)
-        else:
-            # create a new world from scratch
-            world.create()
-
-        # get all sprites from world
-        self.world = world.get_world()
-        self.rect = self.world.rect
-        self.trees = self.world.entities
-        self.fields = self.world.fields
 
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
@@ -210,9 +169,9 @@ class Map(object):
                     move_field = (move_field[0], -RESA_CH.map_pace)
 
             # raise event for movement
-            pygame.event.post(pygame.event.Event(RESA_EH.RESA_GAME_EVENT,
-                                                 code=RESA_EH.RESA_CTRL_MAP_MOVE,
-                                                 move=move_field))
+            pygame.event.post(
+                pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_CTRL_MAP_MOVE, move=move_field)
+            )
 
     def render(self) -> None:
         """ Renders all fields of the world on its surface
@@ -229,7 +188,7 @@ class Map(object):
         if RESA_GSH.building:
             self.buildsprites.draw(self.surface)
 
-        self.trees.draw(self.surface)
+        self.world.draw(self.surface)
 
     def get_surface(self) -> pygame.Surface:
         """ Returns the current state of the map surface

@@ -13,6 +13,7 @@ from src.ui.screens import DebugScreen, GamePausedScreen
 from src.ui.panels import GamePanel
 from src.world.map import Map
 from src.ui.form import MessageHandler
+from src.world.entities.building import Building
 
 
 class Game(object):
@@ -138,6 +139,10 @@ class Game(object):
 
                     if cursor_on_map and not self.messages.is_msg():
                         print(self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
+                        # build mode
+                        if RESA_GSH.building:
+                            RESA_GSH.place = True
+                            RESA_GSH.place_on = self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y))
                 elif event.button == 2:
                     pass
             elif event.type == RESA_EH.RESA_TITLE_EVENT:
@@ -173,6 +178,13 @@ class Game(object):
         self.messages.run_logic()
         if not self.messages.is_msg():
             if not RESA_GSH.pause_game:
+                # check for build mode
+                if RESA_GSH.building and RESA_GSH.place:
+                    if self.place_building():
+                        print('build')
+                    else:
+                        print('build not possible')
+
                 # update map
                 self.map.run_logic()
             # update game panel
@@ -249,3 +261,74 @@ class Game(object):
                            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_QUITGAME_FALSE),
                            locales.get('btn_msg_no'))
         RESA_GDH.pause_ingame_time()
+
+    def place_building(self):
+        # check if placable
+        neighbors = self.map.world.grid.iso_grid_neighbors(RESA_GSH.place_on.key)
+        build = False
+        x, y = RESA_GSH.building_size
+        # 1x1
+        if x == y == 1:
+            raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
+            if raw_field.solid and raw_field.buildable and not raw_field.building:
+                build = True
+        # 2x2
+        elif x == y == 2:
+            if neighbors.top and neighbors.topleft and neighbors.topright:
+                raw_field = self.map.world.grid_fields[neighbors.top]
+                if raw_field.solid:
+                    raw_field = self.map.world.grid_fields[neighbors.topleft]
+                    if raw_field.solid:
+                        raw_field = self.map.world.grid_fields[neighbors.topright]
+                        if raw_field.solid and raw_field.buildable and not raw_field.building:
+                            build = True
+        # 3x3
+        elif x == y == 3:
+            build = True
+            for rawval in neighbors.all:
+                raw_field = self.map.world.grid_fields[rawval]
+                if not raw_field.solid or not raw_field.buildable or raw_field.building:
+                    build = False
+
+        if build:
+            # delete entities and place building
+            # 1x1
+            if x == y == 1:
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
+                self.map.world.grid_fields[RESA_GSH.place_on.key].building = True
+                raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
+                new_building = Building(raw_field.rect.midbottom,
+                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 1)
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
+            # 2x2
+            elif x == y == 2:
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
+                self.map.world.grid_fields[RESA_GSH.place_on.key].building = True
+                self.map.world.grid_fields[neighbors.top].sprite = None
+                self.map.world.grid_fields[neighbors.top].building = True
+                self.map.world.grid_fields[neighbors.topleft].sprite = None
+                self.map.world.grid_fields[neighbors.topleft].building = True
+                self.map.world.grid_fields[neighbors.topright].sprite = None
+                self.map.world.grid_fields[neighbors.topright].building = True
+
+                raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
+                new_building = Building(raw_field.rect.midbottom,
+                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 2)
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
+            # 3x3
+            elif x == y == 3:
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
+                for rawval in neighbors.all:
+                    self.map.world.grid_fields[rawval].sprite = None
+                    self.map.world.grid_fields[rawval].building = True
+
+                raw_field = self.map.world.grid_fields[neighbors.bottom]
+                new_building = Building(raw_field.rect.midbottom,
+                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 3)
+                self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
+
+        # reset state
+        RESA_GSH.place = False
+        RESA_GSH.place_on = None
+
+        return build
