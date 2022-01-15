@@ -1,7 +1,7 @@
 import logging
 import pygame
 import src.ui.form as forms
-import src.handler
+from src.handler import RESA_EH
 from src.handler.spritesheet import SpriteSheetHandler
 import src.locales as locales
 
@@ -34,7 +34,7 @@ class GamePanel(forms.Interface):
             self.sheet_handler,
             self.sheet_key,
             locales.get('btn_leavegame'),
-            pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_BTN_LEAVEGAME)
+            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_LEAVEGAME)
         )
         b_quit.align(forms.RIGHT)
         b_quit.set_font(False, 13)
@@ -43,7 +43,7 @@ class GamePanel(forms.Interface):
             self.sheet_handler,
             self.sheet_key,
             locales.get('btn_savegame'),
-            pygame.event.Event(src.handler.RESA_TITLE_EVENT, code=src.handler.RESA_BTN_SAVEGAME)
+            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_SAVEGAME)
         )
         b_save.align(forms.RIGHT)
         b_save.set_font(False, 13)

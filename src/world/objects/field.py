@@ -5,7 +5,7 @@
 :license: CC-BY-SA-4.0
 """
 import pygame
-import src.handler
+from src.handler import RESA_CH, RESA_EH
 
 
 class RawField(object):
@@ -30,9 +30,9 @@ class Field(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # basic settings
-        self._size = (src.handler.conf.grid_zoom * 2, src.handler.conf.grid_zoom)
+        self._size = (RESA_CH.grid_zoom * 2, RESA_CH.grid_zoom)
         self._visible = True
-        self._temperature = src.handler.conf.temp_center
+        self._temperature = RESA_CH.temp_center
         self._solid = False
 
         # image and sprite settings
@@ -94,8 +94,8 @@ class Field(pygame.sprite.Sprite):
         :return: None
         """
         if event is not None:
-            if event.type == src.handler.RESA_GAME_EVENT:
-                if event.code == src.handler.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.RESA_GAME_EVENT:
+                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
                     self.position = (self._position[0] + event.move[0], self._position[1] + event.move[1])
         self.rect.topleft = self.position
 

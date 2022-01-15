@@ -4,12 +4,11 @@
 :source: https://github.com/Kanasaru/resa
 :license: CC-BY-SA-4.0
 """
-from src.handler import conf
 import pygame.sprite
 from src.world.entities.tree import RawTree
 from src.world.generator import Generator
 from src.world.objects.field import RawField, Field
-import src.handler
+from src.handler import RESA_CH, RESA_SSH, RESA_GSH, RESA_EH
 
 
 class Moving(object):
@@ -40,10 +39,8 @@ class Map(object):
         # event handling varibales
         self.moving = Moving()
         self.map_shift = map_shift
-        
-        self.building = False
+
         self.buildsprites = pygame.sprite.Group()
-        self.building_size = (1, 1)
 
         # surfaces
         self.screen_size = screen_size
@@ -118,24 +115,21 @@ class Map(object):
                 self.show_grid = not self.show_grid
             # >>> BUILDMODE: just for testing
             if event.key == pygame.K_F6:
-                pygame.event.post(pygame.event.Event(src.handler.RESA_GAME_EVENT, code=src.handler.RESA_BUILDMODE))
+                RESA_GSH.building = not RESA_GSH.building
             if event.key == pygame.K_1:
-                if self.building:
-                    self.building_size = (1, 1)
+                if RESA_GSH.building:
+                    RESA_GSH.building_size = (1, 1)
             if event.key == pygame.K_2:
-                if self.building:
-                    self.building_size = (2, 2)
+                if RESA_GSH.building:
+                    RESA_GSH.building_size = (2, 2)
             if event.key == pygame.K_3:
-                if self.building:
-                    self.building_size = (3, 3)
+                if RESA_GSH.building:
+                    RESA_GSH.building_size = (3, 3)
             # <<<
-        elif event.type == src.handler.RESA_GAME_EVENT:
-            if event.code == src.handler.RESA_BUILDMODE:
-                self.building = not self.building
-        elif event.type == pygame.MOUSEMOTION and self.building:
+        elif event.type == pygame.MOUSEMOTION and RESA_GSH.building:
             if self.map_shift[0] < event.pos[0] < self.surface.get_width() + self.map_shift[0] and \
                     self.map_shift[1] < event.pos[1] < self.surface.get_height() + self.map_shift[1]:
-                self.draw_build_grid(event.pos, self.building_size)
+                self.draw_build_grid(event.pos, RESA_GSH.building_size)
             else:
                 self.buildsprites.empty()
         else:
@@ -187,37 +181,37 @@ class Map(object):
             # create and fill movement
             move_field = (0, 0)
             if self.moving.left and movable_px_left != 0:
-                if movable_px_left < conf.map_pace:
+                if movable_px_left < RESA_CH.map_pace:
                     self.rect.x += movable_px_left
                     move_field = (movable_px_left, 0)
                 else:
-                    self.rect.x += conf.map_pace
-                    move_field = (conf.map_pace, 0)
+                    self.rect.x += RESA_CH.map_pace
+                    move_field = (RESA_CH.map_pace, 0)
             elif self.moving.right and movable_px_right != 0:
-                if movable_px_right < conf.map_pace:
+                if movable_px_right < RESA_CH.map_pace:
                     self.rect.x -= movable_px_right
                     move_field = (-movable_px_right, 0)
                 else:
-                    self.rect.x -= conf.map_pace
-                    move_field = (-conf.map_pace, 0)
+                    self.rect.x -= RESA_CH.map_pace
+                    move_field = (-RESA_CH.map_pace, 0)
             if self.moving.up and movable_px_up != 0:
-                if movable_px_up < conf.map_pace:
+                if movable_px_up < RESA_CH.map_pace:
                     self.rect.y += movable_px_up
                     move_field = (move_field[0], movable_px_up)
                 else:
-                    self.rect.y += conf.map_pace
-                    move_field = (move_field[0], conf.map_pace)
+                    self.rect.y += RESA_CH.map_pace
+                    move_field = (move_field[0], RESA_CH.map_pace)
             elif self.moving.down and movable_px_down != 0:
-                if movable_px_down < conf.map_pace:
+                if movable_px_down < RESA_CH.map_pace:
                     self.rect.y -= movable_px_down
                     move_field = (move_field[0], -movable_px_down)
                 else:
-                    self.rect.y -= conf.map_pace
-                    move_field = (move_field[0], -conf.map_pace)
+                    self.rect.y -= RESA_CH.map_pace
+                    move_field = (move_field[0], -RESA_CH.map_pace)
 
             # raise event for movement
-            pygame.event.post(pygame.event.Event(src.handler.RESA_GAME_EVENT,
-                                                 code=src.handler.RESA_CTRL_MAP_MOVE,
+            pygame.event.post(pygame.event.Event(RESA_EH.RESA_GAME_EVENT,
+                                                 code=RESA_EH.RESA_CTRL_MAP_MOVE,
                                                  move=move_field))
 
     def render(self) -> None:
@@ -225,14 +219,14 @@ class Map(object):
 
         :return: None
         """
-        self.surface.fill(conf.COLOR_BLACK)
+        self.surface.fill(RESA_CH.COLOR_BLACK)
 
         if self.show_grid:
             self.surface.blit(self.world.grid_image, self.rect.topleft)
         else:
             self.surface.blit(self.world.image, self.rect.topleft)
 
-        if self.building:
+        if RESA_GSH.building:
             self.buildsprites.draw(self.surface)
 
         self.trees.draw(self.surface)
@@ -262,7 +256,7 @@ class Map(object):
                     sprite_index = 1
                 else:
                     sprite_index = 0
-                image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                 new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
                 self.buildsprites.add(new_field)
             # 2x2
@@ -272,7 +266,7 @@ class Map(object):
                     sprite_index = 1
                 else:
                     sprite_index = 0
-                image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                 new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
                 self.buildsprites.add(new_field)
                 # set all neighbors false that are not used
@@ -288,7 +282,7 @@ class Map(object):
                             sprite_index = 1
                         else:
                             sprite_index = 0
-                        image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                        image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                         new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
                         self.buildsprites.add(new_field)
             # 3x3
@@ -301,7 +295,7 @@ class Map(object):
                         sprite_index = 1
                     else:
                         sprite_index = 0
-                    image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                     new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
                     self.buildsprites.add(new_field)
                     for rawval in neighbors.all:
@@ -311,6 +305,6 @@ class Map(object):
                                 sprite_index = 1
                             else:
                                 sprite_index = 0
-                            image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                            image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                             new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
                             self.buildsprites.add(new_field)

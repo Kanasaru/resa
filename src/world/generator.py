@@ -6,10 +6,9 @@
 """
 import pickle
 import src.locales as locales
-from src.handler import conf
 import random
 import pygame
-import src.handler
+from src.handler import RESA_CH, RESA_SSH, RESA_EH
 from src.ui.screens import GameLoadScreen
 from src.world.objects.field import RawField, Field
 from src.world.entities.tree import Tree
@@ -19,7 +18,7 @@ import src.world.grid
 
 class World(object):
     def __init__(self, grid_x, grid_y):
-        self.grid = src.world.grid.Grid(grid_x, grid_y, conf.grid_zoom)
+        self.grid = src.world.grid.Grid(grid_x, grid_y, RESA_CH.grid_zoom)
         self.rect = pygame.Rect((0, 0), (self.grid.grid_width, self.grid.grid_height))
         self.image = pygame.Surface(self.rect.size)
         self.grid_image = pygame.Surface(self.rect.size)
@@ -35,8 +34,8 @@ class World(object):
 
     def update(self, event):
         if event is not None:
-            if event.type == src.handler.RESA_GAME_EVENT:
-                if event.code == src.handler.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.RESA_GAME_EVENT:
+                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
                     for key, value in self.grid_fields.items():
                         value.rect.x += event.move[0]
                         value.rect.y += event.move[1]
@@ -49,15 +48,15 @@ class Generator(object):
 
         # world islands
         self.world.islands = {
-            'North_West': islands.Island(islands.MEDIUM, conf.temp_north),
-            'North': islands.Island(islands.SMALL, conf.temp_north),
-            'North_East': islands.Island(islands.MEDIUM, conf.temp_north),
-            'Center_West': islands.Island(islands.SMALL, conf.temp_center),
-            'Center': islands.Island(islands.BIG, conf.temp_center),
-            'Center_East': islands.Island(islands.SMALL, conf.temp_center),
-            'South_West': islands.Island(islands.MEDIUM, conf.temp_south),
-            'South': islands.Island(islands.SMALL, conf.temp_south),
-            'South_East': islands.Island(islands.MEDIUM, conf.temp_south),
+            'North_West': islands.Island(islands.MEDIUM, RESA_CH.temp_north),
+            'North': islands.Island(islands.SMALL, RESA_CH.temp_north),
+            'North_East': islands.Island(islands.MEDIUM, RESA_CH.temp_north),
+            'Center_West': islands.Island(islands.SMALL, RESA_CH.temp_center),
+            'Center': islands.Island(islands.BIG, RESA_CH.temp_center),
+            'Center_East': islands.Island(islands.SMALL, RESA_CH.temp_center),
+            'South_West': islands.Island(islands.MEDIUM, RESA_CH.temp_south),
+            'South': islands.Island(islands.SMALL, RESA_CH.temp_south),
+            'South_East': islands.Island(islands.MEDIUM, RESA_CH.temp_south),
         }
 
         self.fields = pygame.sprite.Group()
@@ -109,7 +108,7 @@ class Generator(object):
         sprite_index = 2
 
         for key, value in self.world.grid.fields_iso.items():
-            image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+            image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
             new_field = Field((value.rect.x, value.rect.y), image)
             new_field.sprite_sheet_id = sprite_sheet
             new_field.sprite_id = sprite_index
@@ -132,31 +131,31 @@ class Generator(object):
         for key, value in self.world.islands.items():
             if key == 'North_West':
                 nc_key = 1
-                temperature = conf.temp_north
+                temperature = RESA_CH.temp_north
             elif key == 'North':
                 nc_key = 23
-                temperature = conf.temp_north
+                temperature = RESA_CH.temp_north
             elif key == 'North_East':
                 nc_key = 45
-                temperature = conf.temp_north
+                temperature = RESA_CH.temp_north
             elif key == 'Center_West':
                 nc_key = 5765
-                temperature = conf.temp_center
+                temperature = RESA_CH.temp_center
             elif key == 'Center':
                 nc_key = 5787
-                temperature = conf.temp_center
+                temperature = RESA_CH.temp_center
             elif key == 'Center_East':
                 nc_key = 5809
-                temperature = conf.temp_center
+                temperature = RESA_CH.temp_center
             elif key == 'South_West':
                 nc_key = 11529
-                temperature = conf.temp_south
+                temperature = RESA_CH.temp_south
             elif key == 'South':
                 nc_key = 11551
-                temperature = conf.temp_south
+                temperature = RESA_CH.temp_south
             elif key == 'South_East':
                 nc_key = 11573
-                temperature = conf.temp_south
+                temperature = RESA_CH.temp_south
             else:
                 raise KeyError(f'Which island should that be, called {key}?')
 
@@ -167,7 +166,7 @@ class Generator(object):
                 if row_even:
                     if col_count <= self.world.grid.fields_x // 6:
                         if field_data.sprite_index != 2:
-                            image = src.handler.hdl_sh_world.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
+                            image = RESA_SSH.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
                             field = Field(self.world.grid.fields_iso[nc_key].rect.topleft, image)
                             field.sprite_sheet_id = field_data.sprite_sheet
                             field.sprite_id = field_data.sprite_index
@@ -205,7 +204,7 @@ class Generator(object):
                 if not row_even:
                     if col_count <= self.world.grid.fields_x // 6 - 1:
                         if field_data.sprite_index != 2:
-                            image = src.handler.hdl_sh_world.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
+                            image = RESA_SSH.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
                             field = Field(self.world.grid.fields_iso[nc_key].rect.topleft, image)
                             field.sprite_sheet_id = field_data.sprite_sheet
                             field.sprite_id = field_data.sprite_index
@@ -241,7 +240,7 @@ class Generator(object):
                             break
 
                         if field_data.sprite_index != 2:
-                            image = src.handler.hdl_sh_world.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
+                            image = RESA_SSH.image_by_index(field_data.sprite_sheet, field_data.sprite_index)
                             field = Field(self.world.grid.fields_iso[nc_key].rect.topleft, image)
                             field.sprite_sheet_id = field_data.sprite_sheet
                             field.sprite_id = field_data.sprite_index
@@ -277,17 +276,17 @@ class Generator(object):
             # only plant trees on solid fields
             if field.solid:
                 # central islands get broadleafs by chance
-                if field.temperature == conf.temp_center and random.randrange(0, 100, 1) <= conf.tree_spawn_bl:
+                if field.temperature == RESA_CH.temp_center and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_bl:
                     sprite_sheet = 'Trees'
                     sprite_index = random.choice([0, 6, 12])
                     plant = True
                 # north islands get evergreens by chance
-                elif field.temperature == conf.temp_north and random.randrange(0, 100, 1) <= conf.tree_spawn_eg:
+                elif field.temperature == RESA_CH.temp_north and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_eg:
                     sprite_sheet = 'Trees'
                     sprite_index = random.choice([0, 6, 12])
                     plant = True
                 # south islands get palms by chance
-                elif field.temperature == conf.temp_south and random.randrange(0, 100, 1) <= conf.tree_spawn_p:
+                elif field.temperature == RESA_CH.temp_south and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_p:
                     sprite_sheet = 'Trees'
                     sprite_index = random.choice([0, 6, 12])
                     plant = True
@@ -295,7 +294,7 @@ class Generator(object):
                     plant = False
 
                 if plant:
-                    image = src.handler.hdl_sh_world.image_by_index(sprite_sheet, sprite_index)
+                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                     pos = field.rect.bottomleft
                     tree = Tree(pos, image)
                     tree.sprite_sheet_id = sprite_sheet

@@ -1,5 +1,5 @@
 import pygame
-import src.handler
+from src.handler import RESA_CH, RESA_EH
 from src.handler.spritesheet import SpriteSheetHandler
 
 
@@ -25,7 +25,7 @@ class Tree(pygame.sprite.Sprite):
 
         # image and sprite settings
         self.image = image
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, src.handler.conf.grid_zoom * 2)
+        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
         self.sprite_sheet_id = None
         self.sprite_id = None
@@ -58,8 +58,8 @@ class Tree(pygame.sprite.Sprite):
         :return: None
         """
         if event is not None:
-            if event.type == src.handler.RESA_GAME_EVENT:
-                if event.code == src.handler.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.RESA_GAME_EVENT:
+                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
                     pos_x = self._position[0] + event.move[0]
                     pox_y = self._position[1] + event.move[1]
                     self.position = (pos_x, pox_y)
