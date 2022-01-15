@@ -23,7 +23,6 @@ class RawField(object):
         self.buildable = False
         self.building = False
 
-
 class Field(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
         """ Initializes a field
