@@ -1,10 +1,10 @@
 # Road to a playable 1.0.0-alpha
 ***
 ### Environment Update | v0.7.0-alpha
-- [ ] add mountains
+- [x] add mountains
 - [ ] add tree growth
 - [x] add fishes
-- [ ] add ship wracks
+- [ ] ~~add ship wracks~~
 - [x] add rocks
 
 ### Infrastructure Update | v0.8.0-alpha

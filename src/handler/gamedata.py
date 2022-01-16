@@ -198,5 +198,8 @@ class Settings(object):
                 literal_eval(self.parser.get('Entities', 'FishesSize'))),
             self.parser.get('Entities', 'RocksID'): (
                 self.parser.get('Entities', 'RocksSheet'),
-                literal_eval(self.parser.get('Entities', 'RocksSize')))
+                literal_eval(self.parser.get('Entities', 'RocksSize'))),
+            self.parser.get('Entities', 'MountainID'): (
+                self.parser.get('Entities', 'MountainSheet'),
+                literal_eval(self.parser.get('Entities', 'MountainSize')))
         }

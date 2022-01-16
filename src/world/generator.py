@@ -14,6 +14,7 @@ from src.world.objects.field import RawField, Field
 from src.world.entities.tree import Tree
 from src.world.entities.fishes import Fishes
 from src.world.entities.rock import Rock
+from src.world.entities.mountain import Mountain
 import src.world.objects.island as islands
 import src.world.grid
 
@@ -109,6 +110,10 @@ class Generator(object):
         self.load_msg = f"{locales.get('load_world_rocks')}"
         self.__update_load_screen()
         self.__throw_rocks()
+        # raise mountains
+        self.load_msg = f"{locales.get('load_world_mountains')}"
+        self.__update_load_screen()
+        self.__raise_mountains()
         # spread fishes
         self.load_msg = f"{locales.get('load_world_fishes')}"
         self.__update_load_screen()
@@ -359,3 +364,68 @@ class Generator(object):
                     pos = value.rect.bottomleft
                     image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                     self.world.grid_fields[key].sprite = Rock(pos, image)
+
+    def __raise_mountains(self):
+        sprite_sheet = 'Mountain'
+        sprite_index = 0
+        island_check = {
+            'North_West': False,
+            'North': False,
+            'North_East': False,
+            'Center_West': False,
+            'Center': False,
+            'Center_East': False,
+            'South_West': False,
+            'South': False,
+            'South_East': False
+        }
+
+        for key, value in self.world.grid_fields.items():
+            check = True
+            if value.island:
+                if not island_check[value.island] and value.buildable:
+                    neighbors = self.world.grid.iso_grid_neighbors(key)
+                    for rawval in neighbors.all:
+                        if rawval:
+                            raw_field = self.world.grid_fields[rawval]
+                            if not raw_field.buildable:
+                                check = False
+                    if check:
+                        neighbors_2 = self.world.grid.iso_grid_neighbors(neighbors.topleft)
+                        left_neighbors = self.world.grid.iso_grid_neighbors(neighbors_2.topleft)
+                        neighbors_3 = self.world.grid.iso_grid_neighbors(neighbors.topright)
+                        right_neighbors = self.world.grid.iso_grid_neighbors(neighbors_3.topright)
+                        for rawval in left_neighbors.all:
+                            if rawval:
+                                raw_field = self.world.grid_fields[rawval]
+                                if not raw_field.buildable:
+                                    check = False
+                        for rawval in right_neighbors.all:
+                            if rawval:
+                                raw_field = self.world.grid_fields[rawval]
+                                if not raw_field.buildable:
+                                    check = False
+                        if check:
+                            island_check[value.island] = True
+
+                            self.world.grid_fields[key].sprite = None
+                            self.world.grid_fields[key].building = True
+                            for rawval in neighbors.all:
+                                self.world.grid_fields[rawval].sprite = None
+                                self.world.grid_fields[rawval].building = True
+
+                            self.world.grid_fields[neighbors_2.topleft].sprite = None
+                            self.world.grid_fields[neighbors_2.topleft].building = True
+                            for rawval in left_neighbors.all:
+                                self.world.grid_fields[rawval].sprite = None
+                                self.world.grid_fields[rawval].building = True
+
+                            self.world.grid_fields[neighbors_3.topright].sprite = None
+                            self.world.grid_fields[neighbors_3.topright].building = True
+                            for rawval in right_neighbors.all:
+                                self.world.grid_fields[rawval].sprite = None
+                                self.world.grid_fields[rawval].building = True
+
+                            pos = self.world.grid_fields[neighbors.bottom].rect.midbottom
+                            image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
+                            self.world.grid_fields[key].sprite = Mountain(pos, image)

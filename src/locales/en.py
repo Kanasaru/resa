@@ -51,4 +51,5 @@ lang_en = {
     'load_world_trees': "Planting trees...",
     'load_world_fishes': "Bring life into the water...",
     'load_world_rocks': "Throw some rocks around...",
+    'load_world_mountains': "Raise some mountains...",
 }

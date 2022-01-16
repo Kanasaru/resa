@@ -70,8 +70,7 @@ class Game(object):
         """
         # map instance with shrinked surface size to provide border and room for game panel
         surface_width = pygame.display.get_surface().get_width() - self.border_thickness * 2
-        surface_height = pygame.display.get_surface().get_height()
-        surface_height -= self.game_panel.rect.height - self.border_thickness * 2
+        surface_height = pygame.display.get_surface().get_height() - self.game_panel.rect.height - self.border_thickness * 2
         self.map = Map((surface_width, surface_height), self.map_shift)
 
         if RESA_GSH.map_load:
