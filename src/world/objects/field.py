@@ -19,6 +19,7 @@ class RawField(object):
         self.rect = None
         self.temperature = None
 
+        self.island = False
         self.sprite = None
         self.buildable = False
         self.building = False

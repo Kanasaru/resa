@@ -5,7 +5,7 @@
 - [ ] add tree growth
 - [x] add fishes
 - [ ] add ship wracks
-- [ ] add rocks
+- [x] add rocks
 
 ### Infrastructure Update | v0.8.0-alpha
 - [ ] add countinghouse

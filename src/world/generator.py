@@ -13,6 +13,7 @@ from src.ui.screens import GameLoadScreen
 from src.world.objects.field import RawField, Field
 from src.world.entities.tree import Tree
 from src.world.entities.fishes import Fishes
+from src.world.entities.rock import Rock
 import src.world.objects.island as islands
 import src.world.grid
 
@@ -104,6 +105,10 @@ class Generator(object):
         self.load_msg = f"{locales.get('load_world_trees')}"
         self.__update_load_screen()
         self.__plant_trees()
+        # throw rocks
+        self.load_msg = f"{locales.get('load_world_rocks')}"
+        self.__update_load_screen()
+        self.__throw_rocks()
         # spread fishes
         self.load_msg = f"{locales.get('load_world_fishes')}"
         self.__update_load_screen()
@@ -195,6 +200,7 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
+                            raw_field.island = key
                             if 2 < field_data.sprite_index:
                                 raw_field.solid = True
                                 field.solid = True
@@ -236,6 +242,7 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
+                            raw_field.island = key
                             if 2 < field_data.sprite_index:
                                 raw_field.solid = True
                                 field.solid = True
@@ -275,6 +282,7 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
+                            raw_field.island = key
                             if 2 < field_data.sprite_index:
                                 raw_field.solid = True
                                 field.solid = True
@@ -341,3 +349,13 @@ class Generator(object):
                     pos = value.rect.bottomleft
                     fishes = Fishes(pos)
                     self.world.grid_fields[key].sprite = fishes
+
+    def __throw_rocks(self):
+        sprite_sheet = 'Rocks'
+        for key, value in self.world.grid_fields.items():
+            if value.buildable and value.sprite is None:
+                if random.randrange(0, 100, 1) <= RESA_CH.rock_spawn:
+                    sprite_index = random.choice([0, 1, 2])
+                    pos = value.rect.bottomleft
+                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
+                    self.world.grid_fields[key].sprite = Rock(pos, image)

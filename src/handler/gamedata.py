@@ -137,10 +137,11 @@ class Settings(object):
         self.sp_world = None
 
         # spawn rates
-        self.tree_spawn_bl = 70
-        self.tree_spawn_eg = 90
-        self.tree_spawn_p = 50
-        self.fish_spawn = 20
+        self.tree_spawn_bl = 50
+        self.tree_spawn_eg = 70
+        self.tree_spawn_p = 35
+        self.fish_spawn = 15
+        self.rock_spawn = 5
 
         # islands temperatures
         self.temp_north = -20
@@ -194,5 +195,8 @@ class Settings(object):
                 literal_eval(self.parser.get('Entities', 'TreesSize'))),
             self.parser.get('Entities', 'FishesID'): (
                 self.parser.get('Entities', 'FishesSheet'),
-                literal_eval(self.parser.get('Entities', 'FishesSize')))
+                literal_eval(self.parser.get('Entities', 'FishesSize'))),
+            self.parser.get('Entities', 'RocksID'): (
+                self.parser.get('Entities', 'RocksSheet'),
+                literal_eval(self.parser.get('Entities', 'RocksSize')))
         }
