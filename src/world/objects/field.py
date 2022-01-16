@@ -23,6 +23,7 @@ class RawField(object):
         self.buildable = False
         self.building = False
 
+
 class Field(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
         """ Initializes a field
@@ -37,6 +38,7 @@ class Field(pygame.sprite.Sprite):
         self.visible = True
         self.temperature = RESA_CH.temp_center
         self.solid = False
+        self.buildable = False
 
         # image and sprite settings
         self.image = pygame.transform.scale(image, self.size).convert_alpha()

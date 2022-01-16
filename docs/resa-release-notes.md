@@ -1,19 +1,9 @@
 # Road to a playable 1.0.0-alpha
 ***
-### Jigsaw Update | v0.6.0-alpha
-- [x] new world generation
-- [x] new grid handling
-- [x] new sprite handling
-- [x] new sprites
-- [x] add island creator
-- [x] add build logic
-- [x] new license
-- [ ] ~~new save and load mechanism~~
-
 ### Environment Update | v0.7.0-alpha
 - [ ] add mountains
 - [ ] add tree growth
-- [ ] add fishes
+- [x] add fishes
 - [ ] add ship wracks
 - [ ] add rocks
 
@@ -38,6 +28,16 @@
 
 # Things done so far
 ***
+### Jigsaw Update | v0.6.0-alpha
+- [x] new world generation
+- [x] new grid handling
+- [x] new sprite handling
+- [x] new sprites
+- [x] add island creator
+- [x] add build logic
+- [x] new license
+- [ ] ~~new save and load mechanism~~
+
 ### Concrete Update | v0.5.x-alpha
 #### v0.5.2
 - [x] change sprites and license

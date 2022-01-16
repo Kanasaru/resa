@@ -123,7 +123,7 @@ class Map(object):
         else:
             pass
 
-        self.world.update(event)
+        self.world.handle_event(event)
 
     def run_logic(self) -> None:
         """ Runs the logic for the loaded world
@@ -172,6 +172,8 @@ class Map(object):
             pygame.event.post(
                 pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_CTRL_MAP_MOVE, move=move_field)
             )
+            
+        self.world.update()
 
     def render(self) -> None:
         """ Renders all fields of the world on its surface
@@ -211,7 +213,7 @@ class Map(object):
             # 1x1
             if x == y == 1:
                 raw_field = self.world.grid_fields[field.key]
-                if raw_field.solid:
+                if raw_field.buildable and not raw_field.building:
                     sprite_index = 1
                 else:
                     sprite_index = 0
@@ -221,7 +223,7 @@ class Map(object):
             # 2x2
             elif x == y == 2:
                 raw_field = self.world.grid_fields[field.key]
-                if raw_field.solid:
+                if raw_field.buildable and not raw_field.building:
                     sprite_index = 1
                 else:
                     sprite_index = 0
@@ -237,7 +239,7 @@ class Map(object):
                 for rawval in neighbors.all:
                     if rawval:
                         raw_field = self.world.grid_fields[rawval]
-                        if raw_field.solid:
+                        if raw_field.buildable and not raw_field.building:
                             sprite_index = 1
                         else:
                             sprite_index = 0
@@ -250,7 +252,7 @@ class Map(object):
                 if field:
                     # add sprites
                     raw_field = self.world.grid_fields[field.key]
-                    if raw_field.solid:
+                    if raw_field.buildable and not raw_field.building:
                         sprite_index = 1
                     else:
                         sprite_index = 0
@@ -260,7 +262,7 @@ class Map(object):
                     for rawval in neighbors.all:
                         if rawval:
                             raw_field = self.world.grid_fields[rawval]
-                            if raw_field.solid:
+                            if raw_field.buildable and not raw_field.building:
                                 sprite_index = 1
                             else:
                                 sprite_index = 0

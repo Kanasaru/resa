@@ -1,20 +1,14 @@
 import pygame
-from src.handler import RESA_CH, RESA_EH
-from src.handler.spritesheet import SpriteSheetHandler
+from src.handler import RESA_CH, RESA_EH, RESA_SSH
 
 
 class Building(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image, size: int) -> None:
-        """ Initializes a field
-
-        :param position: position on world surface
-        :param image: tree image
-        """
         pygame.sprite.Sprite.__init__(self)
 
         # image and sprite settings
         self.image = image
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2 * size)
+        self.size = RESA_SSH.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2 * size)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
         self.sprite_sheet_id = None
         self.sprite_id = None
@@ -25,11 +19,6 @@ class Building(pygame.sprite.Sprite):
         self.rect.midbottom = self.position
 
     def update(self, event: pygame.event.Event = None) -> None:
-        """ Updates tree by its position
-
-        :param event: optional event
-        :return: None
-        """
         if event is not None:
             if event.type == RESA_EH.RESA_GAME_EVENT:
                 if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:

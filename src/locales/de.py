@@ -49,4 +49,5 @@ lang_de = {
     'load_world_water': "Fülle die Welt mit Wasser...",
     'load_world_islands': "Erschaffe Inseln...",
     'load_world_trees': "Pflanze einige Bäume...",
+    'load_world_fishes': "Bring Leben in das Wasser...",
 }

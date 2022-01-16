@@ -12,6 +12,7 @@ from src.handler import RESA_CH, RESA_SSH, RESA_EH
 from src.ui.screens import GameLoadScreen
 from src.world.objects.field import RawField, Field
 from src.world.entities.tree import Tree
+from src.world.entities.fishes import Fishes
 import src.world.objects.island as islands
 import src.world.grid
 
@@ -31,16 +32,21 @@ class World(object):
         self.fields.draw(self.grid_image)
         self.grid.draw_iso_grid(self.grid_image, (0, 0))
 
-    def update(self, event):
-        if event is not None:
+    def handle_event(self, event):
+        if event.type == RESA_EH.RESA_GAME_EVENT:
             if event.type == RESA_EH.RESA_GAME_EVENT:
-                for key, value in self.grid_fields.items():
-                    if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+                    for key, value in self.grid_fields.items():
                         value.rect.x += event.move[0]
                         value.rect.y += event.move[1]
 
-                    if value.sprite is not None:
-                        value.sprite.update(event)
+                        if value.sprite is not None:
+                            value.sprite.update(event)
+
+    def update(self):
+        for key, value in self.grid_fields.items():
+            if value.sprite is not None:
+                value.sprite.update()
 
     def draw(self, surface):
         for key, value in self.grid_fields.items():
@@ -98,6 +104,10 @@ class Generator(object):
         self.load_msg = f"{locales.get('load_world_trees')}"
         self.__update_load_screen()
         self.__plant_trees()
+        # spread fishes
+        self.load_msg = f"{locales.get('load_world_fishes')}"
+        self.__update_load_screen()
+        self.__spread_fishes()
 
     def get_world(self) -> World:
         """ Returns the world src.
@@ -185,13 +195,15 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
-                            if 2 < field_data.sprite_index < 5:
+                            if 2 < field_data.sprite_index:
                                 raw_field.solid = True
-                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
                                 field.solid = False
+                            if 2 < field_data.sprite_index < 5:
+                                raw_field.buildable = True
+                                field.buildable = True
 
                             self.world.fields.add(field)
                             self.world.grid_fields[nc_key] = raw_field
@@ -224,13 +236,15 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
-                            if 2 < field_data.sprite_index < 5:
+                            if 2 < field_data.sprite_index:
                                 raw_field.solid = True
-                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
                                 field.solid = False
+                            if 2 < field_data.sprite_index < 5:
+                                raw_field.buildable = True
+                                field.buildable = True
 
                             self.world.fields.add(field)
                             self.world.grid_fields[nc_key] = raw_field
@@ -261,13 +275,15 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
-                            if 2 < field_data.sprite_index < 5:
+                            if 2 < field_data.sprite_index:
                                 raw_field.solid = True
-                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
                                 field.solid = False
+                            if 2 < field_data.sprite_index < 5:
+                                raw_field.buildable = True
+                                field.buildable = True
 
                             self.world.fields.add(field)
                             self.world.grid_fields[nc_key] = raw_field
@@ -282,7 +298,7 @@ class Generator(object):
             sprite_sheet = None
             sprite_index = 0
             # only plant trees on solid fields
-            if field.solid:
+            if field.buildable:
                 # central islands get broadleafs by chance
                 if field.temperature == RESA_CH.temp_center and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_bl:
                     sprite_sheet = 'Trees'
@@ -309,3 +325,19 @@ class Generator(object):
                     tree.sprite_id = sprite_index
                     
                     self.world.grid_fields[field.iso_key].sprite = tree
+
+    def __spread_fishes(self):
+        for key, value in self.world.grid_fields.items():
+            if not value.solid:
+                # check neighbors
+                check = False
+                neighbors = self.world.grid.iso_grid_neighbors(key)
+                for rawval in neighbors.all:
+                    if rawval:
+                        raw_field = self.world.grid_fields[rawval]
+                        if raw_field.solid:
+                            check = True
+                if check and random.randrange(0, 100, 1) <= RESA_CH.fish_spawn:
+                    pos = value.rect.bottomleft
+                    fishes = Fishes(pos)
+                    self.world.grid_fields[key].sprite = fishes

@@ -101,7 +101,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.6.0-alpha'
+        self.version = '0.7.0-dev'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
@@ -136,10 +136,11 @@ class Settings(object):
         self.sp_menu_swt_size = None
         self.sp_world = None
 
-        # tree spawn rate
+        # spawn rates
         self.tree_spawn_bl = 70
         self.tree_spawn_eg = 90
         self.tree_spawn_p = 50
+        self.fish_spawn = 20
 
         # islands temperatures
         self.temp_north = -20
@@ -190,5 +191,8 @@ class Settings(object):
                 literal_eval(self.parser.get('Objects', 'TilesSize'))),
             self.parser.get('Entities', 'TreesID'): (
                 self.parser.get('Entities', 'TreesSheet'),
-                literal_eval(self.parser.get('Entities', 'TreesSize')))
+                literal_eval(self.parser.get('Entities', 'TreesSize'))),
+            self.parser.get('Entities', 'FishesID'): (
+                self.parser.get('Entities', 'FishesSheet'),
+                literal_eval(self.parser.get('Entities', 'FishesSize')))
         }

@@ -1,6 +1,5 @@
 import pygame
-from src.handler import RESA_CH, RESA_EH
-from src.handler.spritesheet import SpriteSheetHandler
+from src.handler import RESA_CH, RESA_EH, RESA_SSH
 
 
 class Tree(pygame.sprite.Sprite):
@@ -17,7 +16,7 @@ class Tree(pygame.sprite.Sprite):
 
         # image and sprite settings
         self.image = image
-        self.size = SpriteSheetHandler.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2)
+        self.size = RESA_SSH.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
         self.sprite_sheet_id = None
         self.sprite_id = None
