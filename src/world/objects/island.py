@@ -24,6 +24,7 @@ class Island(object):
         self._temperature = temperature
         self._data_set = None
         self.data_fields = []
+        self.mountains = 0
 
         self.load_island_from_file()
 

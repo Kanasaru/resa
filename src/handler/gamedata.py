@@ -142,6 +142,30 @@ class Settings(object):
         self.tree_spawn_p = 35
         self.fish_spawn = 15
         self.rock_spawn = 5
+        self.mountain_spawn = {
+            'North_West': {0: 100, 1: 80, 2: 50},
+            'North': {0: 100, 1: 80, 2: 50},
+            'North_East': {0: 100, 1: 80, 2: 50},
+            'Center_West': {0: 100, 1: 80, 2: 50},
+            'Center': {0: 100, 1: 80, 2: 50},
+            'Center_East': {0: 100, 1: 80, 2: 50},
+            'South_West': {0: 100, 1: 80, 2: 50},
+            'South': {0: 100, 1: 80, 2: 50},
+            'South_East': {0: 100, 1: 80, 2: 50},
+        }
+
+        # islands max mountain
+        self.max_mountain = {
+            'North_West': {0: 3, 1: 2, 2: 1},
+            'North': {0: 3, 1: 2, 2: 1},
+            'North_East': {0: 3, 1: 2, 2: 1},
+            'Center_West': {0: 3, 1: 2, 2: 1},
+            'Center': {0: 3, 1: 2, 2: 1},
+            'Center_East': {0: 3, 1: 2, 2: 1},
+            'South_West': {0: 3, 1: 2, 2: 1},
+            'South': {0: 3, 1: 2, 2: 1},
+            'South_East': {0: 3, 1: 2, 2: 1},
+        }
 
         # islands temperatures
         self.temp_north = -20
