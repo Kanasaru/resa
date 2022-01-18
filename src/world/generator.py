@@ -50,11 +50,12 @@ class World(object):
                 if event.button == 1:
                     pos_x, pos_y = event.pos
                     if value.sprite is not None:
-                        value.sprite.update(pygame.event.Event(
+                        if value.sprite.update(pygame.event.Event(
                             pygame.MOUSEBUTTONUP,
                             button=1,
                             pos=(pos_x - self.mouse_shift_x, pos_y - self.mouse_shift_y)
-                        ))
+                        )) is not None:
+                            return
 
     def update(self):
         for key, value in self.grid_fields.items():
