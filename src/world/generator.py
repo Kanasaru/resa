@@ -28,6 +28,8 @@ class World(object):
         self.grid_fields = {}
         self.fields = pygame.sprite.Group()
         self.islands = None
+        self.mouse_shift_x = 0
+        self.mouse_shift_y = 0
 
     def create_images(self):
         self.fields.draw(self.image)
@@ -35,15 +37,24 @@ class World(object):
         self.grid.draw_iso_grid(self.grid_image, (0, 0))
 
     def handle_event(self, event):
-        if event.type == RESA_EH.RESA_GAME_EVENT:
+        # iterate reversed cause of isometric overlap
+        for key, value in reversed(self.grid_fields.items()):
             if event.type == RESA_EH.RESA_GAME_EVENT:
                 if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
-                    for key, value in self.grid_fields.items():
-                        value.rect.x += event.move[0]
-                        value.rect.y += event.move[1]
+                    value.rect.x += event.move[0]
+                    value.rect.y += event.move[1]
 
-                        if value.sprite is not None:
-                            value.sprite.update(event)
+                    if value.sprite is not None:
+                        value.sprite.update(event)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    pos_x, pos_y = event.pos
+                    if value.sprite is not None:
+                        value.sprite.update(pygame.event.Event(
+                            pygame.MOUSEBUTTONUP,
+                            button=1,
+                            pos=(pos_x - self.mouse_shift_x, pos_y - self.mouse_shift_y)
+                        ))
 
     def update(self):
         for key, value in self.grid_fields.items():
@@ -114,6 +125,9 @@ class Generator(object):
         self.load_msg = f"{locales.get('load_world_mountains')}"
         self.__update_load_screen()
         self.__raise_mountains()
+        for key, value in self.world.islands.items():
+            for counter, mountain in enumerate(value.mountains):
+                print(f'{key}: Mountain {counter + 1} = ({mountain.ores})')
         # spread fishes
         self.load_msg = f"{locales.get('load_world_fishes')}"
         self.__update_load_screen()
@@ -336,7 +350,7 @@ class Generator(object):
                     tree = Tree(pos, image)
                     tree.sprite_sheet_id = sprite_sheet
                     tree.sprite_id = sprite_index
-                    
+
                     self.world.grid_fields[field.iso_key].sprite = tree
 
     def __spread_fishes(self):
@@ -452,6 +466,12 @@ class Generator(object):
 
                     pos = self.world.grid_fields[neighbors_bottom.bottom].rect.midbottom
                     image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
-                    self.world.grid_fields[key].sprite = Mountain(pos, image)
+                    mountain = Mountain(pos, image)
 
-                    self.world.islands[value.island].mountains += 1
+                    # ore generation
+                    for ore_key, ore_value in mountain.ores.items():
+                        if random.randrange(0, 100, 1) <= RESA_CH.mountain_ore_spawn[value.island][ore_key]:
+                            mountain.ores[ore_key] = True
+
+                    self.world.grid_fields[key].sprite = mountain
+                    self.world.islands[value.island].mountains.append(mountain)

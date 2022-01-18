@@ -153,6 +153,17 @@ class Settings(object):
             'South': {0: 100, 1: 80, 2: 50},
             'South_East': {0: 100, 1: 80, 2: 50},
         }
+        self.mountain_ore_spawn = {
+            'North_West': {'Gold': 75, 'Iron': 100, 'Gems': 10},
+            'North': {'Gold': 75, 'Iron': 100, 'Gems': 10},
+            'North_East': {'Gold': 75, 'Iron': 100, 'Gems': 10},
+            'Center_West': {'Gold': 50, 'Iron': 100, 'Gems': 0},
+            'Center': {'Gold': 50, 'Iron': 100, 'Gems': 0},
+            'Center_East': {'Gold': 50, 'Iron': 100, 'Gems': 0},
+            'South_West': {'Gold': 90, 'Iron': 20, 'Gems': 70},
+            'South': {'Gold': 90, 'Iron': 20, 'Gems': 70},
+            'South_East': {'Gold': 90, 'Iron': 20, 'Gems': 70},
+        }
 
         # islands max mountain
         self.max_mountain = {

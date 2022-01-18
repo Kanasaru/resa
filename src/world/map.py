@@ -74,6 +74,9 @@ class Map(object):
         # get all sprites from world
         self.world = world.get_world()
         self.rect = self.world.rect
+        # mouse shift for events
+        self.world.mouse_shift_x = self.rect.x + self.map_shift[0]
+        self.world.mouse_shift_y = self.rect.y + self.map_shift[1]
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """ Handles given event

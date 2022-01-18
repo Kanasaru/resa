@@ -10,8 +10,14 @@ class Mountain(pygame.sprite.Sprite):
         self.image = image
         self.size = RESA_SSH.aspect_ratio(self.image.get_rect().size, RESA_CH.grid_zoom * 2 * 5)
         self.image = pygame.transform.scale(self.image, self.size).convert_alpha()
+        self.mask = pygame.mask.from_surface(self.image)
         self.sprite_sheet_id = None
         self.sprite_id = None
+        self.ores = ores = {
+            'Gold': False,
+            'Iron': False,
+            'Gems': False
+        }
 
         # positions
         self.position = position
@@ -25,4 +31,12 @@ class Mountain(pygame.sprite.Sprite):
                     pos_x = self.position[0] + event.move[0]
                     pox_y = self.position[1] + event.move[1]
                     self.position = (pos_x, pox_y)
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                    collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
+                    if collided:
+                        print(self.ores)
+
         self.rect.midbottom = self.position
