@@ -320,34 +320,27 @@ class Generator(object):
         :return: None
         """
         for field in self.world.fields:
-            sprite_sheet = None
-            sprite_index = 0
+            tree_type = -1
             # only plant trees on solid fields
             if field.buildable:
                 # central islands get broadleafs by chance
                 if field.temperature == RESA_CH.temp_center and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_bl:
-                    sprite_sheet = 'Trees'
-                    sprite_index = random.choice([0, 6, 12])
+                    tree_type = src.world.entities.tree.BROADLEAF
                     plant = True
                 # north islands get evergreens by chance
                 elif field.temperature == RESA_CH.temp_north and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_eg:
-                    sprite_sheet = 'Trees'
-                    sprite_index = random.choice([0, 6, 12])
+                    tree_type = src.world.entities.tree.EVERGREEN
                     plant = True
                 # south islands get palms by chance
                 elif field.temperature == RESA_CH.temp_south and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_p:
-                    sprite_sheet = 'Trees'
-                    sprite_index = random.choice([0, 6, 12])
+                    tree_type = src.world.entities.tree.PALM
                     plant = True
                 else:
                     plant = False
 
                 if plant:
-                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                     pos = field.rect.bottomleft
-                    tree = Tree(pos, image)
-                    tree.sprite_sheet_id = sprite_sheet
-                    tree.sprite_id = sprite_index
+                    tree = Tree(pos, tree_type)
 
                     self.world.grid_fields[field.iso_key].sprite = tree
 

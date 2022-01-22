@@ -75,6 +75,28 @@ class GameDataHandler(object):
         hour = time // 3600
         return f'Year {year} Day {day} Hour {hour}'
 
+    def get_game_time_diff(self, time, count: str = 'ydh') -> tuple:
+        """ Returns the in-game time.
+
+        :return: in-game time
+        """
+        time = ((self.game_time // 1000) * self.game_time_speed) - time
+        if count == 'ydh':
+            year = time // (365 * 24 * 3600)
+            time -= year * (365 * 24 * 3600)
+            day = time // (24 * 3600)
+            time -= day * (24 * 3600)
+            hour = time // 3600
+            return year, day, hour
+        elif count == 'dh':
+            day = time // (24 * 3600)
+            time -= day * (24 * 3600)
+            hour = time // 3600
+            return day, hour
+        elif count == 'h':
+            hour = time // 3600
+            return hour
+
     @property
     def world_data(self) -> tuple[pygame.Rect, dict, dict]:
         return self._world_data
@@ -182,6 +204,9 @@ class Settings(object):
         self.temp_north = -20
         self.temp_center = 20
         self.temp_south = 40
+
+        # tree growth
+        self.tree_growth = 36
 
         # standard colors
         self.COLOR_KEY = (1, 0, 0)
