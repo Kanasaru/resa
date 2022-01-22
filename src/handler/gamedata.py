@@ -75,6 +75,28 @@ class GameDataHandler(object):
         hour = time // 3600
         return f'Year {year} Day {day} Hour {hour}'
 
+    def get_game_time_diff(self, time, count: str = 'ydh') -> tuple:
+        """ Returns the in-game time.
+
+        :return: in-game time
+        """
+        time = ((self.game_time // 1000) * self.game_time_speed) - time
+        if count == 'ydh':
+            year = time // (365 * 24 * 3600)
+            time -= year * (365 * 24 * 3600)
+            day = time // (24 * 3600)
+            time -= day * (24 * 3600)
+            hour = time // 3600
+            return year, day, hour
+        elif count == 'dh':
+            day = time // (24 * 3600)
+            time -= day * (24 * 3600)
+            hour = time // 3600
+            return day, hour
+        elif count == 'h':
+            hour = time // 3600
+            return hour
+
     @property
     def world_data(self) -> tuple[pygame.Rect, dict, dict]:
         return self._world_data
@@ -101,7 +123,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.6.0-alpha'
+        self.version = '0.7.0-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
@@ -136,15 +158,56 @@ class Settings(object):
         self.sp_menu_swt_size = None
         self.sp_world = None
 
-        # tree spawn rate
-        self.tree_spawn_bl = 70
-        self.tree_spawn_eg = 90
-        self.tree_spawn_p = 50
+        # spawn rates
+        self.tree_spawn_bl = 50
+        self.tree_spawn_eg = 70
+        self.tree_spawn_p = 35
+        self.fish_spawn = 15
+        self.rock_spawn = 5
+        self.mountain_spawn = {
+            'North_West': {0: 100, 1: 80, 2: 50},
+            'North': {0: 100, 1: 80, 2: 50},
+            'North_East': {0: 100, 1: 80, 2: 50},
+            'Center_West': {0: 100, 1: 80, 2: 50},
+            'Center': {0: 100, 1: 80, 2: 50},
+            'Center_East': {0: 100, 1: 80, 2: 50},
+            'South_West': {0: 100, 1: 80, 2: 50},
+            'South': {0: 100, 1: 80, 2: 50},
+            'South_East': {0: 100, 1: 80, 2: 50},
+        }
+        self.mountain_ore_spawn = {
+            'North_West': {'Gold': 75, 'Iron': 100, 'Gems': 10},
+            'North': {'Gold': 75, 'Iron': 100, 'Gems': 10},
+            'North_East': {'Gold': 75, 'Iron': 100, 'Gems': 10},
+            'Center_West': {'Gold': 50, 'Iron': 100, 'Gems': 0},
+            'Center': {'Gold': 50, 'Iron': 100, 'Gems': 0},
+            'Center_East': {'Gold': 50, 'Iron': 100, 'Gems': 0},
+            'South_West': {'Gold': 90, 'Iron': 20, 'Gems': 70},
+            'South': {'Gold': 90, 'Iron': 20, 'Gems': 70},
+            'South_East': {'Gold': 90, 'Iron': 20, 'Gems': 70},
+        }
+
+        # islands max mountain
+        self.max_mountain = {
+            'North_West': {0: 3, 1: 2, 2: 1},
+            'North': {0: 3, 1: 2, 2: 1},
+            'North_East': {0: 3, 1: 2, 2: 1},
+            'Center_West': {0: 3, 1: 2, 2: 1},
+            'Center': {0: 3, 1: 2, 2: 1},
+            'Center_East': {0: 3, 1: 2, 2: 1},
+            'South_West': {0: 3, 1: 2, 2: 1},
+            'South': {0: 3, 1: 2, 2: 1},
+            'South_East': {0: 3, 1: 2, 2: 1},
+        }
 
         # islands temperatures
         self.temp_north = -20
         self.temp_center = 20
         self.temp_south = 40
+
+        # tree growth
+        self.tree_growth = 36
+        self.tree_grow = (50, 20, 30)
 
         # standard colors
         self.COLOR_KEY = (1, 0, 0)
@@ -190,5 +253,14 @@ class Settings(object):
                 literal_eval(self.parser.get('Objects', 'TilesSize'))),
             self.parser.get('Entities', 'TreesID'): (
                 self.parser.get('Entities', 'TreesSheet'),
-                literal_eval(self.parser.get('Entities', 'TreesSize')))
+                literal_eval(self.parser.get('Entities', 'TreesSize'))),
+            self.parser.get('Entities', 'FishesID'): (
+                self.parser.get('Entities', 'FishesSheet'),
+                literal_eval(self.parser.get('Entities', 'FishesSize'))),
+            self.parser.get('Entities', 'RocksID'): (
+                self.parser.get('Entities', 'RocksSheet'),
+                literal_eval(self.parser.get('Entities', 'RocksSize'))),
+            self.parser.get('Entities', 'MountainID'): (
+                self.parser.get('Entities', 'MountainSheet'),
+                literal_eval(self.parser.get('Entities', 'MountainSize')))
         }

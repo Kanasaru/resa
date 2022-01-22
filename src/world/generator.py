@@ -8,10 +8,13 @@ import pickle
 import src.locales as locales
 import random
 import pygame
-from src.handler import RESA_CH, RESA_SSH, RESA_EH
+from src.handler import RESA_CH, RESA_SSH, RESA_EH, RESA_GSH
 from src.ui.screens import GameLoadScreen
 from src.world.objects.field import RawField, Field
 from src.world.entities.tree import Tree
+from src.world.entities.fishes import Fishes
+from src.world.entities.rock import Rock
+from src.world.entities.mountain import Mountain
 import src.world.objects.island as islands
 import src.world.grid
 
@@ -25,22 +28,39 @@ class World(object):
         self.grid_fields = {}
         self.fields = pygame.sprite.Group()
         self.islands = None
+        self.mouse_shift_x = 0
+        self.mouse_shift_y = 0
 
     def create_images(self):
         self.fields.draw(self.image)
         self.fields.draw(self.grid_image)
         self.grid.draw_iso_grid(self.grid_image, (0, 0))
 
-    def update(self, event):
-        if event is not None:
+    def handle_event(self, event):
+        # iterate reversed cause of isometric overlap
+        for key, value in reversed(self.grid_fields.items()):
             if event.type == RESA_EH.RESA_GAME_EVENT:
-                for key, value in self.grid_fields.items():
-                    if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
-                        value.rect.x += event.move[0]
-                        value.rect.y += event.move[1]
+                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+                    value.rect.x += event.move[0]
+                    value.rect.y += event.move[1]
 
                     if value.sprite is not None:
                         value.sprite.update(event)
+            elif event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:
+                    pos_x, pos_y = event.pos
+                    if value.sprite is not None:
+                        if value.sprite.update(pygame.event.Event(
+                            pygame.MOUSEBUTTONUP,
+                            button=1,
+                            pos=(pos_x - self.mouse_shift_x, pos_y - self.mouse_shift_y)
+                        )) is not None:
+                            return
+
+    def update(self):
+        for key, value in self.grid_fields.items():
+            if value.sprite is not None:
+                value.sprite.update()
 
     def draw(self, surface):
         for key, value in self.grid_fields.items():
@@ -98,6 +118,18 @@ class Generator(object):
         self.load_msg = f"{locales.get('load_world_trees')}"
         self.__update_load_screen()
         self.__plant_trees()
+        # throw rocks
+        self.load_msg = f"{locales.get('load_world_rocks')}"
+        self.__update_load_screen()
+        self.__throw_rocks()
+        # raise mountains
+        self.load_msg = f"{locales.get('load_world_mountains')}"
+        self.__update_load_screen()
+        self.__raise_mountains()
+        # spread fishes
+        self.load_msg = f"{locales.get('load_world_fishes')}"
+        self.__update_load_screen()
+        self.__spread_fishes()
 
     def get_world(self) -> World:
         """ Returns the world src.
@@ -185,13 +217,16 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
-                            if 2 < field_data.sprite_index < 5:
+                            raw_field.island = key
+                            if 2 < field_data.sprite_index:
                                 raw_field.solid = True
-                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
                                 field.solid = False
+                            if 2 < field_data.sprite_index < 5:
+                                raw_field.buildable = True
+                                field.buildable = True
 
                             self.world.fields.add(field)
                             self.world.grid_fields[nc_key] = raw_field
@@ -224,13 +259,16 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
-                            if 2 < field_data.sprite_index < 5:
+                            raw_field.island = key
+                            if 2 < field_data.sprite_index:
                                 raw_field.solid = True
-                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
                                 field.solid = False
+                            if 2 < field_data.sprite_index < 5:
+                                raw_field.buildable = True
+                                field.buildable = True
 
                             self.world.fields.add(field)
                             self.world.grid_fields[nc_key] = raw_field
@@ -261,13 +299,16 @@ class Generator(object):
                             raw_field.sprite_sheet = field_data.sprite_sheet
                             raw_field.sprite_index = field_data.sprite_index
                             raw_field.temperature = temperature
-                            if 2 < field_data.sprite_index < 5:
+                            raw_field.island = key
+                            if 2 < field_data.sprite_index:
                                 raw_field.solid = True
-                                raw_field.buildable = True
                                 field.solid = True
                             else:
                                 raw_field.solid = False
                                 field.solid = False
+                            if 2 < field_data.sprite_index < 5:
+                                raw_field.buildable = True
+                                field.buildable = True
 
                             self.world.fields.add(field)
                             self.world.grid_fields[nc_key] = raw_field
@@ -279,33 +320,151 @@ class Generator(object):
         :return: None
         """
         for field in self.world.fields:
-            sprite_sheet = None
-            sprite_index = 0
+            tree_type = -1
             # only plant trees on solid fields
-            if field.solid:
+            if field.buildable:
                 # central islands get broadleafs by chance
                 if field.temperature == RESA_CH.temp_center and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_bl:
-                    sprite_sheet = 'Trees'
-                    sprite_index = random.choice([0, 6, 12])
+                    tree_type = src.world.entities.tree.BROADLEAF
                     plant = True
                 # north islands get evergreens by chance
                 elif field.temperature == RESA_CH.temp_north and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_eg:
-                    sprite_sheet = 'Trees'
-                    sprite_index = random.choice([0, 6, 12])
+                    tree_type = src.world.entities.tree.EVERGREEN
                     plant = True
                 # south islands get palms by chance
                 elif field.temperature == RESA_CH.temp_south and random.randrange(0, 100, 1) <= RESA_CH.tree_spawn_p:
-                    sprite_sheet = 'Trees'
-                    sprite_index = random.choice([0, 6, 12])
+                    tree_type = src.world.entities.tree.PALM
                     plant = True
                 else:
                     plant = False
 
                 if plant:
-                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                     pos = field.rect.bottomleft
-                    tree = Tree(pos, image)
-                    tree.sprite_sheet_id = sprite_sheet
-                    tree.sprite_id = sprite_index
-                    
+                    tree = Tree(pos, tree_type)
+
                     self.world.grid_fields[field.iso_key].sprite = tree
+
+    def __spread_fishes(self):
+        for key, value in self.world.grid_fields.items():
+            if not value.solid:
+                # check neighbors
+                check = False
+                neighbors = self.world.grid.iso_grid_neighbors(key)
+                for rawval in neighbors.all:
+                    if rawval:
+                        raw_field = self.world.grid_fields[rawval]
+                        if raw_field.solid:
+                            check = True
+                if check and random.randrange(0, 100, 1) <= RESA_CH.fish_spawn:
+                    pos = value.rect.bottomleft
+                    fishes = Fishes(pos)
+                    self.world.grid_fields[key].sprite = fishes
+
+    def __throw_rocks(self):
+        sprite_sheet = 'Rocks'
+        for key, value in self.world.grid_fields.items():
+            if value.buildable and value.sprite is None:
+                if random.randrange(0, 100, 1) <= RESA_CH.rock_spawn:
+                    sprite_index = random.choice([0, 1, 2])
+                    pos = value.rect.bottomleft
+                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
+                    self.world.grid_fields[key].sprite = Rock(pos, image)
+
+    def __check_mountain_place(self, key):
+        # check inner 3x3
+        neighbors = self.world.grid.iso_grid_neighbors(key)
+        for rawval in neighbors.all:
+            if rawval:
+                raw_field = self.world.grid_fields[rawval]
+                if not raw_field.buildable:
+                    return False
+        # check corner
+        neighbors_top = self.world.grid.iso_grid_neighbors(neighbors.top)
+        neighbors_bottom = self.world.grid.iso_grid_neighbors(neighbors.bottom)
+        neighbors_right = self.world.grid.iso_grid_neighbors(neighbors.right)
+        neighbors_left = self.world.grid.iso_grid_neighbors(neighbors.left)
+
+        for rawval in neighbors_top.all:
+            if rawval:
+                raw_field = self.world.grid_fields[rawval]
+                if not raw_field.buildable:
+                    return False
+        for rawval in neighbors_bottom.all:
+            if rawval:
+                raw_field = self.world.grid_fields[rawval]
+                if not raw_field.buildable:
+                    return False
+        for rawval in neighbors_right.all:
+            if rawval:
+                raw_field = self.world.grid_fields[rawval]
+                if not raw_field.buildable:
+                    return False
+        for rawval in neighbors_left.all:
+            if rawval:
+                raw_field = self.world.grid_fields[rawval]
+                if not raw_field.buildable:
+                    return False
+
+        return True
+
+    def __place_mountain(self, key, island):
+        # check fields
+        if not self.__check_mountain_place(key):
+            return False
+
+        # check for attemps
+        if RESA_GSH.mountain_spawn_attempts[island] == RESA_CH.max_mountain[island][self.world.islands[island].size]:
+            return False
+
+        # check for spawn rate
+        if random.randrange(0, 100, 1) > RESA_CH.mountain_spawn[island][self.world.islands[island].size]:
+            RESA_GSH.mountain_spawn_attempts[island] += 1
+            return False
+
+        RESA_GSH.mountain_spawn_attempts[island] += 1
+        return True
+
+    def __raise_mountains(self):
+        sprite_sheet = 'Mountain'
+        sprite_index = 0
+
+        for key, value in self.world.grid_fields.items():
+            if value.island and value.buildable:
+                if self.__place_mountain(key, value.island):
+                    neighbors = self.world.grid.iso_grid_neighbors(key)
+                    neighbors_top = self.world.grid.iso_grid_neighbors(neighbors.top)
+                    neighbors_bottom = self.world.grid.iso_grid_neighbors(neighbors.bottom)
+                    neighbors_right = self.world.grid.iso_grid_neighbors(neighbors.right)
+                    neighbors_left = self.world.grid.iso_grid_neighbors(neighbors.left)
+
+                    self.world.grid_fields[key].sprite = None
+                    self.world.grid_fields[key].buildable = False
+                    for rawval in neighbors.all:
+                        self.world.grid_fields[rawval].sprite = None
+                        self.world.grid_fields[rawval].buildable = False
+                    for rawval in neighbors_top.all:
+                        self.world.grid_fields[rawval].sprite = None
+                        self.world.grid_fields[rawval].buildable = False
+                    for rawval in neighbors_bottom.all:
+                        self.world.grid_fields[rawval].sprite = None
+                        self.world.grid_fields[rawval].buildable = False
+                    for rawval in neighbors_right.all:
+                        self.world.grid_fields[rawval].sprite = None
+                        self.world.grid_fields[rawval].buildable = False
+                    for rawval in neighbors_left.all:
+                        self.world.grid_fields[rawval].sprite = None
+                        self.world.grid_fields[rawval].buildable = False
+
+                    pos = self.world.grid_fields[neighbors_bottom.bottom].rect.midbottom
+                    image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
+                    mountain = Mountain(pos, image)
+
+                    # ore generation
+                    for ore_key, ore_value in mountain.ores.items():
+                        if random.randrange(0, 100, 1) <= RESA_CH.mountain_ore_spawn[value.island][ore_key]:
+                            mountain.ores[ore_key] = True
+
+                    self.world.grid_fields[key].sprite = mountain
+                    self.world.islands[value.island].mountains.append(mountain)
+
+        RESA_GSH.reset_mountain_spawn_attempts()

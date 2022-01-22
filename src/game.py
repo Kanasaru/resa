@@ -70,8 +70,7 @@ class Game(object):
         """
         # map instance with shrinked surface size to provide border and room for game panel
         surface_width = pygame.display.get_surface().get_width() - self.border_thickness * 2
-        surface_height = pygame.display.get_surface().get_height()
-        surface_height -= self.game_panel.rect.height - self.border_thickness * 2
+        surface_height = pygame.display.get_surface().get_height() - self.game_panel.rect.height - self.border_thickness * 2
         self.map = Map((surface_width, surface_height), self.map_shift)
 
         if RESA_GSH.map_load:
@@ -138,7 +137,6 @@ class Game(object):
                         cursor_on_map = False
 
                     if cursor_on_map and not self.messages.is_msg():
-                        print(self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
                         # build mode
                         if RESA_GSH.building:
                             RESA_GSH.place = True

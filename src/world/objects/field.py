@@ -19,9 +19,11 @@ class RawField(object):
         self.rect = None
         self.temperature = None
 
+        self.island = False
         self.sprite = None
         self.buildable = False
         self.building = False
+
 
 class Field(pygame.sprite.Sprite):
     def __init__(self, position: tuple[int, int], image: pygame.image) -> None:
@@ -37,6 +39,7 @@ class Field(pygame.sprite.Sprite):
         self.visible = True
         self.temperature = RESA_CH.temp_center
         self.solid = False
+        self.buildable = False
 
         # image and sprite settings
         self.image = pygame.transform.scale(image, self.size).convert_alpha()
