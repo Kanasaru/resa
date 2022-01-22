@@ -6,6 +6,7 @@
 """
 import pickle
 import random
+from src.handler import RESA_CH
 
 BIG = 0
 MEDIUM = 1
@@ -61,14 +62,22 @@ class Island(object):
 
     def load_island_from_file(self) -> None:
         number = random.choice([1])
-        size = ''
+
         if self.size == BIG:
             size = 'b'
         elif self.size == MEDIUM:
             size = 'm'
         else:
             size = 's'
-        self.data_fields = pickle.load(open(f'data/islands/{size}_{number}.island', 'rb'))
+
+        if self.temperature >= RESA_CH.temp_south:
+            temp = 's'
+        elif RESA_CH.temp_center <= self.temperature < RESA_CH.temp_south:
+            temp = 'c'
+        else:
+            temp = 'n'
+
+        self.data_fields = pickle.load(open(f'data/islands/{size}_{temp}_{number}.island', 'rb'))
 
     def __bool__(self):
         if len(self.data_fields) > 0:

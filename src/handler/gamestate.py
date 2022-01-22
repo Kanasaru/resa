@@ -24,3 +24,16 @@ class GameStateHandler(object):
             'South': 0,
             'South_East': 0,
         }
+
+    def reset_mountain_spawn_attempts(self):
+        self.mountain_spawn_attempts = {
+            'North_West': 0,
+            'North': 0,
+            'North_East': 0,
+            'Center_West': 0,
+            'Center': 0,
+            'Center_East': 0,
+            'South_West': 0,
+            'South': 0,
+            'South_East': 0,
+        }

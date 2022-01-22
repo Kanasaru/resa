@@ -126,9 +126,6 @@ class Generator(object):
         self.load_msg = f"{locales.get('load_world_mountains')}"
         self.__update_load_screen()
         self.__raise_mountains()
-        for key, value in self.world.islands.items():
-            for counter, mountain in enumerate(value.mountains):
-                print(f'{key}: Mountain {counter + 1} = ({mountain.ores})')
         # spread fishes
         self.load_msg = f"{locales.get('load_world_fishes')}"
         self.__update_load_screen()
@@ -476,3 +473,5 @@ class Generator(object):
 
                     self.world.grid_fields[key].sprite = mountain
                     self.world.islands[value.island].mountains.append(mountain)
+
+        RESA_GSH.reset_mountain_spawn_attempts()
