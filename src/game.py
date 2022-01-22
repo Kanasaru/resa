@@ -137,7 +137,6 @@ class Game(object):
                         cursor_on_map = False
 
                     if cursor_on_map and not self.messages.is_msg():
-                        print(self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y)))
                         # build mode
                         if RESA_GSH.building:
                             RESA_GSH.place = True

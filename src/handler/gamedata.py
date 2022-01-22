@@ -123,7 +123,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.7.0-dev'
+        self.version = '0.7.0-alpha'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
@@ -207,6 +207,7 @@ class Settings(object):
 
         # tree growth
         self.tree_growth = 36
+        self.tree_grow = (50, 20, 30)
 
         # standard colors
         self.COLOR_KEY = (1, 0, 0)

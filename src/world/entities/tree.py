@@ -17,7 +17,14 @@ class Tree(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         # basic settings
-        self.growth = random.choice([0, 1, 2])
+        tree_grow = random.randrange(0, 100, 1)
+        if tree_grow <= RESA_CH.tree_grow[2]:
+            self.growth = 0
+        elif tree_grow <= RESA_CH.tree_grow[2]:
+            self.growth = 1
+        else:
+            self.growth = 2
+
         self.planted = 0
         self.sprite_id = {}
         if tree_type == BROADLEAF:

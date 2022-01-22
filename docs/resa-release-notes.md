@@ -1,12 +1,5 @@
 # Road to a playable 1.0.0-alpha
 ***
-### Environment Update | v0.7.0-alpha
-- [x] add mountains
-- [ ] add tree growth
-- [x] add fishes
-- [ ] ~~add ship wracks~~
-- [x] add rocks
-
 ### Infrastructure Update | v0.8.0-alpha
 - [ ] add countinghouse
 - [ ] add marketplace
@@ -28,13 +21,31 @@
 
 # Things done so far
 ***
+### Environment Update | v0.7.0-alpha
+- [x] added mountains
+  - max amount by island size
+  - probability in generation
+- [x] added ore generation
+  - gold, iron and gems
+  - probability by island location
+- [x] added tree growth
+  - grows along game time
+  - first generation by size probabilities
+- [x] added new tree sprites
+  - palms and evergreens
+  - generation by island location
+- [x] added fishes
+- [ ] ~~add ship wracks~~
+- [x] added rocks
+- [x] re-added island temperature use
+
 ### Jigsaw Update | v0.6.0-alpha
 - [x] new world generation
 - [x] new grid handling
 - [x] new sprite handling
 - [x] new sprites
-- [x] add island creator
-- [x] add build logic
+- [x] added island creator
+- [x] added build logic
 - [x] new license
 - [ ] ~~new save and load mechanism~~
 
