@@ -84,14 +84,14 @@ class GamePanelIcons(forms.Interface):
         self.title.set_alpha(255)
 
         # buttons
-        width = 54
-        height = 54
+        width = 64
+        height = 64
         x = self.title.width() - 20
         y = 55
         btn_1 = forms.IconButton(
             pygame.Rect(x, y, width, height),
             'IconButtons',
-            RESA_SSH.image_by_index('GameIcons', 0),
+            RESA_SSH.image_by_index('Icons', 0),
             pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
         )
         btn_1.align(forms.RIGHT)
@@ -99,7 +99,7 @@ class GamePanelIcons(forms.Interface):
         btn_2 = forms.IconButton(
             pygame.Rect(x, y, width, height),
             'IconButtons',
-            RESA_SSH.image_by_index('GameIcons', 1),
+            RESA_SSH.image_by_index('Icons', 1),
             pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
         )
         btn_2.align(forms.RIGHT)
@@ -107,7 +107,7 @@ class GamePanelIcons(forms.Interface):
         btn_3 = forms.IconButton(
             pygame.Rect(x, y, width, height),
             'IconButtons',
-            RESA_SSH.image_by_index('GameIcons', 2),
+            RESA_SSH.image_by_index('Icons', 2),
             pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
         )
         btn_3.align(forms.RIGHT)

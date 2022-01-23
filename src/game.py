@@ -282,9 +282,9 @@ class Game(object):
         elif x == y == 2:
             if neighbors.top and neighbors.topleft and neighbors.topright:
                 raw_field = self.map.world.grid_fields[neighbors.top]
-                if raw_field.solid:
+                if raw_field.solid and raw_field.buildable and not raw_field.building:
                     raw_field = self.map.world.grid_fields[neighbors.topleft]
-                    if raw_field.solid:
+                    if raw_field.solid and raw_field.buildable and not raw_field.building:
                         raw_field = self.map.world.grid_fields[neighbors.topright]
                         if raw_field.solid and raw_field.buildable and not raw_field.building:
                             build = True
@@ -317,8 +317,7 @@ class Game(object):
                 self.map.world.grid_fields[neighbors.topright].building = True
 
                 raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
-                new_building = Building(raw_field.rect.midbottom,
-                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 2)
+                new_building = Building(raw_field.rect.midbottom, RESA_SSH.image_by_index('Countinghouse', 0), 2)
                 self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
             # 3x3
             elif x == y == 3:
@@ -328,8 +327,7 @@ class Game(object):
                     self.map.world.grid_fields[rawval].building = True
 
                 raw_field = self.map.world.grid_fields[neighbors.bottom]
-                new_building = Building(raw_field.rect.midbottom,
-                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 3)
+                new_building = Building(raw_field.rect.midbottom, RESA_SSH.image_by_index('Countinghouse', 0), 3)
                 self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
 
         # reset state

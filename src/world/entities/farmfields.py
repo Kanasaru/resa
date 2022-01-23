@@ -12,7 +12,7 @@ class Wheat(object):
             2: 2,
             3: 3,
         }
-        self.sprite_sheet_id = 'Wheatfields'
+        self.sprite_sheet_id = 'Farmfields'
         self.growth = 0
         self.grow_speed = 24
         self.grow_factor = 1.0

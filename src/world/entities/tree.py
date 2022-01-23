@@ -32,20 +32,20 @@ class Tree(pygame.sprite.Sprite):
         if tree_type == BROADLEAF:
             self.sprite_id = {
                 0: 0,
-                1: 6,
-                2: 12
+                1: 1,
+                2: 2
             }
         elif tree_type == PALM:
             self.sprite_id = {
-                0: 2,
-                1: 8,
-                2: 14
+                0: 17,
+                1: 18,
+                2: 19
             }
         else:
             self.sprite_id = {
-                0: 1,
-                1: 7,
-                2: 13
+                0: 9,
+                1: 10,
+                2: 11
             }
         self.sprite_sheet_id = 'Trees'
         self.position = position

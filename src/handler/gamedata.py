@@ -244,9 +244,9 @@ class Settings(object):
         """
         self.parser.read(filepath)
 
-        self.sp_game_icons_key = self.parser.get('Icons', 'GameIconsKey')
-        self.sp_game_icons = self.parser.get('Icons', 'GameIcons')
-        self.sp_game_icons_size = literal_eval(self.parser.get('Icons', 'GameIconsSize'))
+        self.sp_game_icons_key = self.parser.get('Icons', 'IconsKey')
+        self.sp_game_icons = self.parser.get('Icons', 'Icons')
+        self.sp_game_icons_size = literal_eval(self.parser.get('Icons', 'IconsSize'))
         self.sp_menu_btn_key = self.parser.get('Buttons', 'MenuButtonsKey')
         self.sp_menu_btn = self.parser.get('Buttons', 'MenuButtons')
         self.sp_menu_btn_size = literal_eval(self.parser.get('Buttons', 'MenuButtonsSize'))
@@ -269,10 +269,13 @@ class Settings(object):
             self.parser.get('Entities', 'RocksID'): (
                 self.parser.get('Entities', 'RocksSheet'),
                 literal_eval(self.parser.get('Entities', 'RocksSize'))),
-            self.parser.get('Entities', 'MountainID'): (
-                self.parser.get('Entities', 'MountainSheet'),
-                literal_eval(self.parser.get('Entities', 'MountainSize'))),
-            self.parser.get('Entities', 'WheatfieldID'): (
-                self.parser.get('Entities', 'WheatfieldSheet'),
-                literal_eval(self.parser.get('Entities', 'WheatfieldSize')))
+            self.parser.get('Entities', 'MountainsID'): (
+                self.parser.get('Entities', 'MountainsSheet'),
+                literal_eval(self.parser.get('Entities', 'MountainsSize'))),
+            self.parser.get('Entities', 'FarmfieldsID'): (
+                self.parser.get('Entities', 'FarmfieldsSheet'),
+                literal_eval(self.parser.get('Entities', 'FarmfieldsSize'))),
+            self.parser.get('Houses', 'CountinghouseID'): (
+                self.parser.get('Houses', 'CountinghouseSheet'),
+                literal_eval(self.parser.get('Houses', 'CountinghouseSize')))
         }

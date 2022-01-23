@@ -428,8 +428,7 @@ class Generator(object):
         return True
 
     def __raise_mountains(self):
-        sprite_sheet = 'Mountain'
-        sprite_index = 0
+        sprite_sheet = 'Mountains'
 
         for key, value in self.world.grid_fields.items():
             if value.island and value.buildable:
@@ -457,6 +456,8 @@ class Generator(object):
                     for rawval in neighbors_left.all:
                         self.world.grid_fields[rawval].sprite = None
                         self.world.grid_fields[rawval].buildable = False
+
+                    sprite_index = random.choice([0, 1])
 
                     pos = self.world.grid_fields[neighbors_bottom.bottom].rect.midbottom
                     image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
