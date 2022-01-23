@@ -8,7 +8,7 @@ class EventHandler(object):
         self.RESA_MUSIC_ENDED_EVENT = pygame.USEREVENT + 2
         self.RESA_AUTOSAVE_EVENT = pygame.USEREVENT + 3
         self.RESA_GAME_EVENT = pygame.USEREVENT + 4
-        # pygame.USEREVENT + 5
+        self.RESA_GAME_CLOCK = pygame.USEREVENT + 5
         # pygame.USEREVENT + 6
         # pygame.USEREVENT + 7
         # pygame.USEREVENT + 8

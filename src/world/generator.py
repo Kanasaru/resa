@@ -56,6 +56,9 @@ class World(object):
                             pos=(pos_x - self.mouse_shift_x, pos_y - self.mouse_shift_y)
                         )) is not None:
                             return
+            elif event.type == RESA_EH.RESA_GAME_CLOCK:
+                if value.sprite is not None:
+                    value.sprite.update(event)
 
     def update(self):
         for key, value in self.grid_fields.items():

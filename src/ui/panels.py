@@ -1,7 +1,7 @@
 import logging
 import pygame
 import src.ui.form as forms
-from src.handler import RESA_EH
+from src.handler import RESA_EH, RESA_SSH
 from src.handler.spritesheet import SpriteSheetHandler
 import src.locales as locales
 
@@ -71,3 +71,53 @@ class GamePanel(forms.Interface):
 
     def update_resources(self):
         return self.resources
+
+
+class GamePanelIcons(forms.Interface):
+    def __init__(self):
+        super().__init__()
+
+        self.rect = pygame.Rect((0, 0), pygame.display.get_surface().get_size())
+        self.bg_color = forms.COLOR_KEY
+
+        self.title = forms.Title(self.rect, self.bg_color, None, self.bg_color)
+        self.title.set_alpha(255)
+
+        # buttons
+        width = 54
+        height = 54
+        x = self.title.width() - 20
+        y = 55
+        btn_1 = forms.IconButton(
+            pygame.Rect(x, y, width, height),
+            'IconButtons',
+            RESA_SSH.image_by_index('GameIcons', 0),
+            pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
+        )
+        btn_1.align(forms.RIGHT)
+        y += btn_1.height() + 10
+        btn_2 = forms.IconButton(
+            pygame.Rect(x, y, width, height),
+            'IconButtons',
+            RESA_SSH.image_by_index('GameIcons', 1),
+            pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
+        )
+        btn_2.align(forms.RIGHT)
+        y += btn_2.height() + 10
+        btn_3 = forms.IconButton(
+            pygame.Rect(x, y, width, height),
+            'IconButtons',
+            RESA_SSH.image_by_index('GameIcons', 2),
+            pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
+        )
+        btn_3.align(forms.RIGHT)
+        y += btn_3.height() + 10
+
+        self.title.add([btn_1, btn_2, btn_3])
+
+    def collide(self, point):
+        for value in self.title.form_objects:
+            if value.rect.collidepoint(point):
+                return True
+
+        return False

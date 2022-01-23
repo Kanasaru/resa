@@ -190,7 +190,7 @@ class Map(object):
         else:
             self.surface.blit(self.world.image, self.rect.topleft)
 
-        if RESA_GSH.building:
+        if RESA_GSH.building and not RESA_GSH.cursor_over_icons:
             self.buildsprites.draw(self.surface)
 
         self.world.draw(self.surface)
@@ -272,3 +272,11 @@ class Map(object):
                             image = RESA_SSH.image_by_index(sprite_sheet, sprite_index)
                             new_field = Field((raw_field.rect.x, raw_field.rect.y), image)
                             self.buildsprites.add(new_field)
+
+    def cursor_on_map(self, pos):
+        cursor_x = pos[0] - self.rect.x - self.map_shift[0]
+        cursor_y = pos[1] - self.rect.y - self.map_shift[1]
+        if cursor_x >= 0 and cursor_y >= 0:
+            return cursor_x, cursor_y
+
+        return False

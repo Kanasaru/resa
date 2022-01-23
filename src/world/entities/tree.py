@@ -26,6 +26,8 @@ class Tree(pygame.sprite.Sprite):
             self.growth = 2
 
         self.planted = 0
+        self.grow_speed = 40
+        self.grow_factor = 1.0
         self.sprite_id = {}
         if tree_type == BROADLEAF:
             self.sprite_id = {
@@ -78,14 +80,14 @@ class Tree(pygame.sprite.Sprite):
                     pos_x = self.position[0] + event.move[0]
                     pox_y = self.position[1] + event.move[1]
                     self.position = (pos_x, pox_y)
-
-        # tree growth
-        if self.growth < 2:
-            hour = RESA_GDH.get_game_time_diff(self.planted, 'h')
-            if hour > RESA_CH.tree_growth:
-                self.planted = RESA_GDH.game_time
-                self.growth += 1
-                self.image = self.images[self.growth]
+            if event.type == RESA_EH.RESA_GAME_CLOCK:
+                if self.growth < 2:
+                    if self.planted >= self.grow_speed * self.grow_factor:
+                        self.planted = 0
+                        self.growth += 1
+                        self.image = self.images[self.growth]
+                    else:
+                        self.planted += 1
 
         self.rect.bottomleft = self.position
 

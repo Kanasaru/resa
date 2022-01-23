@@ -123,7 +123,7 @@ class Settings(object):
 
         # information
         self.title = 'Resa'
-        self.version = '0.7.0-alpha'
+        self.version = '0.8.0-dev'
         self.author = 'Kanasaru'
         self.www = 'bitbyteopen.org'
 
@@ -136,7 +136,7 @@ class Settings(object):
         self.map_border_thickness = 5
 
         # standard game values
-        self.game_speed = 1440
+        self.game_speed = 1440  # 1 minute equals one day
         self.map_pace = 10
         self.save_file = 'data/saves/game.xml'
         self.std_font = None
@@ -150,18 +150,25 @@ class Settings(object):
         self.autosave_interval = 240000
 
         # sprite sheets
+        self.sp_game_icons_key = None
+        self.sp_game_icons = None
+        self.sp_game_icons_size = None
         self.sp_menu_btn_key = None
         self.sp_menu_btn = None
         self.sp_menu_btn_size = None
         self.sp_menu_swt_key = None
         self.sp_menu_swt = None
         self.sp_menu_swt_size = None
+        self.sp_icon_btn_key = None
+        self.sp_icon_btn = None
+        self.sp_icon_btn_size = None
         self.sp_world = None
 
         # spawn rates
         self.tree_spawn_bl = 50
         self.tree_spawn_eg = 70
         self.tree_spawn_p = 35
+        self.tree_grow = (50, 20, 30)
         self.fish_spawn = 15
         self.rock_spawn = 5
         self.mountain_spawn = {
@@ -205,10 +212,6 @@ class Settings(object):
         self.temp_center = 20
         self.temp_south = 40
 
-        # tree growth
-        self.tree_growth = 36
-        self.tree_grow = (50, 20, 30)
-
         # standard colors
         self.COLOR_KEY = (1, 0, 0)
         self.COLOR_BLACK = (0, 0, 0)
@@ -241,9 +244,15 @@ class Settings(object):
         """
         self.parser.read(filepath)
 
+        self.sp_game_icons_key = self.parser.get('Icons', 'GameIconsKey')
+        self.sp_game_icons = self.parser.get('Icons', 'GameIcons')
+        self.sp_game_icons_size = literal_eval(self.parser.get('Icons', 'GameIconsSize'))
         self.sp_menu_btn_key = self.parser.get('Buttons', 'MenuButtonsKey')
         self.sp_menu_btn = self.parser.get('Buttons', 'MenuButtons')
         self.sp_menu_btn_size = literal_eval(self.parser.get('Buttons', 'MenuButtonsSize'))
+        self.sp_icon_btn_key = self.parser.get('Buttons', 'IconButtonsKey')
+        self.sp_icon_btn = self.parser.get('Buttons', 'IconButtons')
+        self.sp_icon_btn_size = literal_eval(self.parser.get('Buttons', 'IconButtonsSize'))
         self.sp_menu_swt_key = self.parser.get('Switches', 'MenuSwitchesKey')
         self.sp_menu_swt = self.parser.get('Switches', 'MenuSwitches')
         self.sp_menu_swt_size = literal_eval(self.parser.get('Switches', 'MenuSwitchesSize'))
@@ -262,5 +271,8 @@ class Settings(object):
                 literal_eval(self.parser.get('Entities', 'RocksSize'))),
             self.parser.get('Entities', 'MountainID'): (
                 self.parser.get('Entities', 'MountainSheet'),
-                literal_eval(self.parser.get('Entities', 'MountainSize')))
+                literal_eval(self.parser.get('Entities', 'MountainSize'))),
+            self.parser.get('Entities', 'WheatfieldID'): (
+                self.parser.get('Entities', 'WheatfieldSheet'),
+                literal_eval(self.parser.get('Entities', 'WheatfieldSize')))
         }

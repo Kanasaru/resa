@@ -13,6 +13,7 @@ class GameStateHandler(object):
         self.building_size = (3, 3)
         self.place = False
         self.place_on = None
+        self.cursor_over_icons = False
         self.mountain_spawn_attempts = {
             'North_West': 0,
             'North': 0,
@@ -24,6 +25,10 @@ class GameStateHandler(object):
             'South': 0,
             'South_East': 0,
         }
+        # build menu states
+        self.build_menu_construct = False
+        self.build_menu_farms = False
+        self.build_menu_industry = False
 
     def reset_mountain_spawn_attempts(self):
         self.mountain_spawn_attempts = {

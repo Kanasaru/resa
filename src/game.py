@@ -10,7 +10,8 @@ import pygame
 import logging
 from src.handler import RESA_CH, RESA_SSH, RESA_GDH, RESA_GSH, RESA_SH, RESA_MH, RESA_DH, RESA_EH
 from src.ui.screens import DebugScreen, GamePausedScreen
-from src.ui.panels import GamePanel
+from src.ui.panels import GamePanel, GamePanelIcons
+from src.world.entities import farmfields
 from src.world.map import Map
 from src.ui.form import MessageHandler
 from src.world.entities.building import Building
@@ -43,6 +44,7 @@ class Game(object):
         self.debug_screen.add(locales.get('info_ingame_time'), RESA_GDH.get_game_time)
         # game panel
         self.game_panel = GamePanel(RESA_SSH, RESA_CH.sp_menu_btn_key)
+        self.game_panel_icons = GamePanelIcons()
         # messages
         self.messages = MessageHandler(RESA_SSH, RESA_CH.sp_menu_btn_key)
         self.messages.top = self.game_panel.rect.height + self.border_thickness * 3
@@ -59,6 +61,7 @@ class Game(object):
 
         # timer
         pygame.time.set_timer(RESA_EH.RESA_AUTOSAVE_EVENT, RESA_CH.autosave_interval)
+        pygame.time.set_timer(RESA_EH.RESA_GAME_CLOCK, RESA_CH.game_speed)
 
         # start the game loop
         self.loop()
@@ -129,20 +132,22 @@ class Game(object):
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     # cursor in map?
-                    cursor_x = event.pos[0] - self.map.rect.x - self.map_shift[0]
-                    cursor_y = event.pos[1] - self.map.rect.y - self.map_shift[1]
-                    if cursor_x >= 0 and cursor_y >= 0:
-                        cursor_on_map = True
-                    else:
-                        cursor_on_map = False
-
-                    if cursor_on_map and not self.messages.is_msg():
+                    cursor_map = self.map.cursor_on_map(event.pos)
+                    if cursor_map and not self.messages.is_msg():
                         # build mode
-                        if RESA_GSH.building:
+                        if RESA_GSH.building and not RESA_GSH.cursor_over_icons:
                             RESA_GSH.place = True
-                            RESA_GSH.place_on = self.map.world.grid.pos_in_iso_grid_field((cursor_x, cursor_y))
+                            RESA_GSH.place_on = self.map.world.grid.pos_in_iso_grid_field(cursor_map)
                 elif event.button == 2:
                     pass
+            elif event.type == pygame.MOUSEMOTION:
+                if self.map.cursor_on_map(event.pos) and not self.messages.is_msg():
+                    # cursor not on icons?
+                    if self.game_panel_icons.collide(event.pos):
+                        RESA_GSH.cursor_over_icons = True
+                    else:
+                        RESA_GSH.cursor_over_icons = False
+
             elif event.type == RESA_EH.RESA_TITLE_EVENT:
                 if event.code == RESA_EH.RESA_BTN_LEAVEGAME:
                     self.leave_game()
@@ -164,6 +169,7 @@ class Game(object):
                 # do not run game event handler on pause
                 if not RESA_GSH.pause_game:
                     self.map.handle_event(event)
+                    self.game_panel_icons.handle_event(event)
 
     def run_logic(self) -> None:
         """ Runs the in-game logic
@@ -185,6 +191,7 @@ class Game(object):
 
                 # update map
                 self.map.run_logic()
+                self.game_panel_icons.run_logic()
             # update game panel
             self.game_panel.run_logic()
 
@@ -211,6 +218,7 @@ class Game(object):
 
         # render the game panel
         self.game_panel.render(self.surface)
+        self.game_panel_icons.render(self.surface)
 
         # render debug screen if activated
         if RESA_DH:
@@ -295,8 +303,7 @@ class Game(object):
                 self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = None
                 self.map.world.grid_fields[RESA_GSH.place_on.key].building = True
                 raw_field = self.map.world.grid_fields[RESA_GSH.place_on.key]
-                new_building = Building(raw_field.rect.midbottom,
-                                        pygame.image.load('res/sprites/entities/build_3x3_test.png').convert(), 1)
+                new_building = farmfields.Wheat(raw_field.rect.bottomleft)
                 self.map.world.grid_fields[RESA_GSH.place_on.key].sprite = new_building
             # 2x2
             elif x == y == 2:

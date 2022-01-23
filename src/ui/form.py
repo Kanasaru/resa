@@ -6,7 +6,7 @@
 """
 import pygame
 import src
-from src.handler import RESA_SH, RESA_EH
+from src.handler import RESA_SH, RESA_EH, RESA_SSH
 from src.handler.spritesheet import SpriteSheetHandler
 
 LEFT = 0
@@ -371,6 +371,7 @@ class Button(Form):
         self.render_text()
         self.align(self.alignment)
         self.load_start_image()
+        self.mask = pygame.mask.from_surface(self.image)
 
     def enable(self) -> None:
         """ Enables the button
@@ -433,6 +434,7 @@ class Button(Form):
         self.scale()
         self.render_text()
         self.load_start_image()
+        self.mask = pygame.mask.from_surface(self.image)
 
     def scale(self) -> None:
         """ Scales individual sprites from sprite sheet for each button state to button size
@@ -480,18 +482,23 @@ class Button(Form):
         """
         if self.clickable:
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.rect.collidepoint(event.pos):
+                pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
+                if collided:
                     self.image = self.surf_images["pressed"]
                     self.button_down = True
             elif event.type == pygame.MOUSEBUTTONUP:
-                if self.rect.collidepoint(event.pos) and self.button_down:
+                pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
+                if collided and self.button_down:
                     RESA_SH.play(src.ui.SOUND_BTN_CLICK)
                     if self.callback_event is not None:
                         pygame.event.post(self.callback_event)
                     self.image = self.surf_images["hover"]
                 self.button_down = False
             elif event.type == pygame.MOUSEMOTION:
-                collided = self.rect.collidepoint(event.pos)
+                pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
                 if collided and not self.button_down:
                     self.image = self.surf_images["hover"]
                 elif not collided:
@@ -925,3 +932,136 @@ class MessageHandler(object):
 
         if self.is_msg():
             self._msgBox.render(surface)
+
+
+class IconButton(Form):
+    def __init__(self, rect: pygame.Rect, sprite_sheet_id: str,
+                 icon: pygame.image, callback_event: pygame.event.Event = None) -> None:
+        Form.__init__(self, rect.size)
+
+        self.icon = icon
+        self.sprite_sheet_id = sprite_sheet_id
+
+        self.rect = rect
+        self.pos_x = self.rect.x
+        self.pos_y = self.rect.y
+
+        self.surf_images = {}
+        self.clickable = True
+        self.callback_event = callback_event
+        self.button_down = False
+
+        self.load_sprites()
+        self.scale()
+        self.render_image()
+        self.align(self.alignment)
+        self.load_start_image()
+        self.mask = pygame.mask.from_surface(self.image)
+
+    def enable(self) -> None:
+        """ Enables the button
+
+        :return: None
+        """
+        self.clickable = True
+        self.image = self.surf_images["standard"]
+
+    def disable(self) -> None:
+        """ Disables the button
+
+        :return: None
+        """
+        self.clickable = False
+        self.image = self.surf_images["disabled"]
+
+    def toggle(self) -> None:
+        """ Toggles the button state for clickable
+
+        :return: None
+        """
+        if self.clickable:
+            self.disable()
+        else:
+            self.enable()
+
+    def load_start_image(self) -> None:
+        """ Sets the starting image of the button
+
+        :return: None
+        """
+        if self.clickable:
+            self.image = self.surf_images["standard"]
+        else:
+            self.image = self.surf_images["disabled"]
+
+    def set_callback_event(self, event) -> None:
+        """ Sets the callback event which is return to the title if button was clicked
+
+        :param event: resa event
+        :return: None
+        """
+        self.callback_event = event
+
+    def scale(self) -> None:
+        """ Scales individual sprites from sprite sheet for each button state to button size
+
+        :return: None
+        """
+        for key in self.surf_images:
+            self.surf_images[key] = pygame.transform.scale(self.surf_images[key], self.rect.size)
+
+    def load_sprites(self) -> None:
+        """ Loads individual sprites from sprite sheet for each button state
+
+        :return: None
+        """
+        self.surf_images = {
+            "standard": RESA_SSH.image_by_index(self.sprite_sheet_id, 0),
+            "hover": RESA_SSH.image_by_index(self.sprite_sheet_id, 1),
+            "pressed": RESA_SSH.image_by_index(self.sprite_sheet_id, 2),
+            "disabled": RESA_SSH.image_by_index(self.sprite_sheet_id, 3)
+        }
+
+    def render_image(self) -> None:
+        """ Renders text for all button states on their images
+
+        :return: None
+        """
+        image = pygame.transform.scale(self.icon, self.rect.size).convert_alpha()
+
+        self.surf_images["standard"].blit(image, (0, 0))
+        self.surf_images["hover"].blit(image, (0, 0))
+        self.surf_images["pressed"].blit(image, (0, 0))
+        self.surf_images["disabled"].blit(image, (0, 0))
+
+    def handle_event(self, event) -> None:
+        """ Handles given event
+
+        :param event: pygame or resa event
+        :return: None
+        """
+        if self.clickable:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
+                if collided:
+                    self.image = self.surf_images["pressed"]
+                    self.button_down = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
+                if collided and self.button_down:
+                    RESA_SH.play(src.ui.SOUND_BTN_CLICK)
+                    if self.callback_event is not None:
+                        pygame.event.post(self.callback_event)
+                    self.image = self.surf_images["hover"]
+                self.button_down = False
+            elif event.type == pygame.MOUSEMOTION:
+                pos_in_mask = event.pos[0] - self.rect.x, event.pos[1] - self.rect.y
+                collided = self.rect.collidepoint(event.pos) and self.mask.get_at(pos_in_mask)
+                if collided and not self.button_down:
+                    self.image = self.surf_images["hover"]
+                elif not collided:
+                    self.image = self.surf_images["standard"]
+        else:
+            self.image = self.surf_images["disabled"]
