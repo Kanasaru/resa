@@ -8,9 +8,11 @@ import src.locales as locales
 from datetime import datetime
 import pygame
 import logging
+
+import src.ui.panels
 from src.handler import RESA_CH, RESA_SSH, RESA_GDH, RESA_GSH, RESA_SH, RESA_MH, RESA_DH, RESA_EH
 from src.ui.screens import DebugScreen, GamePausedScreen
-from src.ui.panels import GamePanel, GamePanelIcons
+from src.ui.panels import GamePanel, BuildMenuIcons
 from src.world.entities import farmfields
 from src.world.map import Map
 from src.ui.form import MessageHandler
@@ -44,7 +46,7 @@ class Game(object):
         self.debug_screen.add(locales.get('info_ingame_time'), RESA_GDH.get_game_time)
         # game panel
         self.game_panel = GamePanel('MenuButtons')
-        self.game_panel_icons = GamePanelIcons()
+        self.game_panel_icons = BuildMenuIcons()
         # messages
         self.messages = MessageHandler('MenuButtons')
         self.messages.top = self.game_panel.rect.height + self.border_thickness * 3
@@ -147,7 +149,6 @@ class Game(object):
                         RESA_GSH.cursor_over_icons = True
                     else:
                         RESA_GSH.cursor_over_icons = False
-
             elif event.type == RESA_EH.RESA_TITLE_EVENT:
                 if event.code == RESA_EH.RESA_BTN_LEAVEGAME:
                     self.leave_game()
@@ -159,7 +160,20 @@ class Game(object):
                     RESA_GDH.pause_ingame_time()
             elif event.type == RESA_EH.RESA_GAME_EVENT:
                 if event.code == RESA_EH.RESA_BUILDMODE:
+                    RESA_GSH.build_menu_open = False
+                    RESA_GSH.build_menu = -1
                     RESA_GSH.building = not RESA_GSH.building
+                elif event.code == RESA_EH.RESA_BUILD_MENU:
+                    if RESA_GSH.build_menu_open:
+                        if event.menu == RESA_GSH.build_menu:
+                            RESA_GSH.build_menu_open = False
+                        else:
+                            RESA_GSH.building = False
+                            RESA_GSH.build_menu = event.menu
+                    else:
+                        RESA_GSH.building = False
+                        RESA_GSH.build_menu_open = True
+                        RESA_GSH.build_menu = event.menu
 
             # push event into title and map event handling
             self.debug_screen.handle_event(event)

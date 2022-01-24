@@ -39,3 +39,5 @@ class EventHandler(object):
         self.RESA_EDITOR_LEAVE = 70002
         self.RESA_EDITOR_LOAD = 70003
         self.RESA_EDITOR_SAVE = 70004
+
+        self.RESA_BUILD_MENU = 6001

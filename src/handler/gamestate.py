@@ -26,9 +26,8 @@ class GameStateHandler(object):
             'South_East': 0,
         }
         # build menu states
-        self.build_menu_construct = False
-        self.build_menu_farms = False
-        self.build_menu_industry = False
+        self.build_menu_open = False
+        self.build_menu = -1
 
     def reset_mountain_spawn_attempts(self):
         self.mountain_spawn_attempts = {

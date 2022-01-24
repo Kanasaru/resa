@@ -254,9 +254,6 @@ class Settings(object):
             self.parser.get('Forms', 'MenuSwitchesKey'): (
                 self.parser.get('Forms', 'MenuSwitches'),
                 literal_eval(self.parser.get('Forms', 'MenuSwitchesSize'))),
-            self.parser.get('Forms', 'BuildMenuKey'): (
-                self.parser.get('Forms', 'BuildMenu'),
-                literal_eval(self.parser.get('Forms', 'BuildMenuSize'))),
         }
 
         self.sp_world = {

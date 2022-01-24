@@ -144,8 +144,11 @@ class Title(Form):
         self.bg_image = bg_image
 
         if self.bg_image is not None:
-            pic = pygame.image.load(self.bg_image).convert()
-            self.bg_image = pygame.transform.scale(pic, self.rect.size)
+            if isinstance(self.bg_image, str):
+                pic = pygame.image.load(self.bg_image).convert()
+                self.bg_image = pygame.transform.scale(pic, self.rect.size)
+            else:
+                self.bg_image = pygame.transform.scale(self.bg_image, self.rect.size)
 
     def add(self, form_object: Form | list[Form]) -> None:
         """ Adds a form object to the title
@@ -373,6 +376,8 @@ class Button(Form):
         self.load_start_image()
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.active = False
+
     def enable(self) -> None:
         """ Enables the button
 
@@ -505,6 +510,10 @@ class Button(Form):
                     self.image = self.surf_images["standard"]
         else:
             self.image = self.surf_images["disabled"]
+
+    def update(self):
+        if self.active:
+            self.image = self.surf_images["hover"]
 
 
 class Switch(Form):
@@ -957,6 +966,8 @@ class IconButton(Form):
         self.load_start_image()
         self.mask = pygame.mask.from_surface(self.image)
 
+        self.active = False
+
     def enable(self) -> None:
         """ Enables the button
 
@@ -1064,3 +1075,7 @@ class IconButton(Form):
                     self.image = self.surf_images["standard"]
         else:
             self.image = self.surf_images["disabled"]
+
+    def update(self):
+        if self.active:
+            self.image = self.surf_images["hover"]
