@@ -20,11 +20,19 @@ PATH_MUSIC = RESA_CH.bg_music
 
 """ SpriteSheetHandler """
 RESA_SSH = SpriteSheetHandler()
-RESA_SSH.add(SpriteSheet(RESA_CH.sp_menu_btn_key, RESA_CH.sp_menu_btn, RESA_CH.sp_menu_btn_size, STD_COLOR_KEY))
-RESA_SSH.add(SpriteSheet(RESA_CH.sp_menu_swt_key, RESA_CH.sp_menu_swt, RESA_CH.sp_menu_swt_size, STD_COLOR_KEY))
-RESA_SSH.add(SpriteSheet(RESA_CH.sp_game_icons_key, RESA_CH.sp_game_icons, RESA_CH.sp_game_icons_size, STD_COLOR_KEY))
-RESA_SSH.add(SpriteSheet(RESA_CH.sp_icon_btn_key, RESA_CH.sp_icon_btn, RESA_CH.sp_icon_btn_size, STD_COLOR_KEY))
+for key, value in RESA_CH.sp_general.items():
+    sheet = SpriteSheet(key, value[0], value[1])
+    sheet.colorkey = None
+    RESA_SSH.add(sheet)
+for key, value in RESA_CH.sp_forms.items():
+    sheet = SpriteSheet(key, value[0], value[1])
+    sheet.colorkey = STD_COLOR_KEY
+    RESA_SSH.add(sheet)
 for key, value in RESA_CH.sp_world.items():
+    sheet = SpriteSheet(key, value[0], value[1])
+    sheet.colorkey = None
+    RESA_SSH.add(sheet)
+for key, value in RESA_CH.sp_houses.items():
     sheet = SpriteSheet(key, value[0], value[1])
     sheet.colorkey = None
     RESA_SSH.add(sheet)

@@ -835,7 +835,7 @@ class PlainMessageBox(Interface):
 
 
 class MessageHandler(object):
-    def __init__(self, sprite_sheet_handler, sprite_sheet_key) -> None:
+    def __init__(self, sprite_sheet_key) -> None:
         """ Initializes the message handler.
 
         :param sprite_sheet_handler: sprite sheet handler instance
@@ -844,7 +844,6 @@ class MessageHandler(object):
         self._info_boxes = pygame.sprite.Group()
         self._msgBox = None
         self._msg_cb_event = {}
-        self._sprite_sheet_handler = sprite_sheet_handler
         self._sprite_sheet_key = sprite_sheet_key
         # padding top for info boxes
         self.top = 0
@@ -875,11 +874,11 @@ class MessageHandler(object):
         no_btn = None
         ok_btn = MessageBoxButton(cb_ok_text,
                                   pygame.event.Event(src.ui.EVT_TITLE_EVENT, code=src.ui.EVT_MSG_BOX_OK),
-                                  self._sprite_sheet_handler, self._sprite_sheet_key)
+                                  RESA_SSH, self._sprite_sheet_key)
         if cb_no is not None:
             no_btn = MessageBoxButton(cb_no_text,
                                       pygame.event.Event(src.ui.EVT_TITLE_EVENT, code=src.ui.EVT_MSG_BOX_NO),
-                                      self._sprite_sheet_handler, self._sprite_sheet_key)
+                                      RESA_SSH, self._sprite_sheet_key)
 
         self._msgBox = PlainMessageBox(caption, text, ok_btn, no_btn)
 

@@ -8,7 +8,7 @@ import pygame
 import logging
 from datetime import datetime
 import src.locales as locales
-from src.handler import RESA_CH, RESA_SSH, RESA_GSH, RESA_SH, RESA_MH, RESA_EH
+from src.handler import RESA_CH, RESA_GSH, RESA_SH, RESA_MH, RESA_EH
 import src.ui.display
 from src.ui.editor import Editor
 from src.ui.form import MessageHandler
@@ -35,11 +35,11 @@ class Start(object):
         self.resolution = pygame.display.get_surface().get_size()
 
         # create titles
-        self.title_main = MainMenu(RESA_SSH, RESA_CH.sp_menu_btn_key)
-        self.title_options = Options(RESA_SSH, RESA_CH.sp_menu_btn_key)
+        self.title_main = MainMenu('MenuButtons')
+        self.title_options = Options('MenuButtons')
 
         # messages
-        self.messages = MessageHandler(RESA_SSH, RESA_CH.sp_menu_btn_key)
+        self.messages = MessageHandler('MenuButtons')
 
         # start the game loop
         self.game = None

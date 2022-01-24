@@ -43,10 +43,10 @@ class Game(object):
         self.debug_screen.add(locales.get('info_date'), lambda: datetime.now().strftime("%A, %d. %B %Y"))
         self.debug_screen.add(locales.get('info_ingame_time'), RESA_GDH.get_game_time)
         # game panel
-        self.game_panel = GamePanel(RESA_SSH, RESA_CH.sp_menu_btn_key)
+        self.game_panel = GamePanel('MenuButtons')
         self.game_panel_icons = GamePanelIcons()
         # messages
-        self.messages = MessageHandler(RESA_SSH, RESA_CH.sp_menu_btn_key)
+        self.messages = MessageHandler('MenuButtons')
         self.messages.top = self.game_panel.rect.height + self.border_thickness * 3
         # pause screen
         self.paused_screen = GamePausedScreen(pygame.Rect(

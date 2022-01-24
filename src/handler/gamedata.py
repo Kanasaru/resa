@@ -150,19 +150,10 @@ class Settings(object):
         self.autosave_interval = 240000
 
         # sprite sheets
-        self.sp_game_icons_key = None
-        self.sp_game_icons = None
-        self.sp_game_icons_size = None
-        self.sp_menu_btn_key = None
-        self.sp_menu_btn = None
-        self.sp_menu_btn_size = None
-        self.sp_menu_swt_key = None
-        self.sp_menu_swt = None
-        self.sp_menu_swt_size = None
-        self.sp_icon_btn_key = None
-        self.sp_icon_btn = None
-        self.sp_icon_btn_size = None
+        self.sp_general = None
+        self.sp_forms = None
         self.sp_world = None
+        self.sp_houses = None
 
         # spawn rates
         self.tree_spawn_bl = 50
@@ -244,37 +235,52 @@ class Settings(object):
         """
         self.parser.read(filepath)
 
-        self.sp_game_icons_key = self.parser.get('Icons', 'IconsKey')
-        self.sp_game_icons = self.parser.get('Icons', 'Icons')
-        self.sp_game_icons_size = literal_eval(self.parser.get('Icons', 'IconsSize'))
-        self.sp_menu_btn_key = self.parser.get('Buttons', 'MenuButtonsKey')
-        self.sp_menu_btn = self.parser.get('Buttons', 'MenuButtons')
-        self.sp_menu_btn_size = literal_eval(self.parser.get('Buttons', 'MenuButtonsSize'))
-        self.sp_icon_btn_key = self.parser.get('Buttons', 'IconButtonsKey')
-        self.sp_icon_btn = self.parser.get('Buttons', 'IconButtons')
-        self.sp_icon_btn_size = literal_eval(self.parser.get('Buttons', 'IconButtonsSize'))
-        self.sp_menu_swt_key = self.parser.get('Switches', 'MenuSwitchesKey')
-        self.sp_menu_swt = self.parser.get('Switches', 'MenuSwitches')
-        self.sp_menu_swt_size = literal_eval(self.parser.get('Switches', 'MenuSwitchesSize'))
+        self.sp_general = {
+            self.parser.get('General', 'ResourcesKey'): (
+                self.parser.get('General', 'Resources'),
+                literal_eval(self.parser.get('General', 'ResourcesSize'))),
+        }
+
+        self.sp_forms = {
+            self.parser.get('Forms', 'IconsKey'): (
+                self.parser.get('Forms', 'Icons'),
+                literal_eval(self.parser.get('Forms', 'IconsSize'))),
+            self.parser.get('Forms', 'MenuButtonsKey'): (
+                self.parser.get('Forms', 'MenuButtons'),
+                literal_eval(self.parser.get('Forms', 'MenuButtonsSize'))),
+            self.parser.get('Forms', 'IconButtonsKey'): (
+                self.parser.get('Forms', 'IconButtons'),
+                literal_eval(self.parser.get('Forms', 'IconButtonsSize'))),
+            self.parser.get('Forms', 'MenuSwitchesKey'): (
+                self.parser.get('Forms', 'MenuSwitches'),
+                literal_eval(self.parser.get('Forms', 'MenuSwitchesSize'))),
+            self.parser.get('Forms', 'BuildMenuKey'): (
+                self.parser.get('Forms', 'BuildMenu'),
+                literal_eval(self.parser.get('Forms', 'BuildMenuSize'))),
+        }
+
         self.sp_world = {
-            self.parser.get('Objects', 'TilesID'): (
-                self.parser.get('Objects', 'TilesSheet'),
-                literal_eval(self.parser.get('Objects', 'TilesSize'))),
-            self.parser.get('Entities', 'TreesID'): (
-                self.parser.get('Entities', 'TreesSheet'),
-                literal_eval(self.parser.get('Entities', 'TreesSize'))),
-            self.parser.get('Entities', 'FishesID'): (
-                self.parser.get('Entities', 'FishesSheet'),
-                literal_eval(self.parser.get('Entities', 'FishesSize'))),
-            self.parser.get('Entities', 'RocksID'): (
-                self.parser.get('Entities', 'RocksSheet'),
-                literal_eval(self.parser.get('Entities', 'RocksSize'))),
-            self.parser.get('Entities', 'MountainsID'): (
-                self.parser.get('Entities', 'MountainsSheet'),
-                literal_eval(self.parser.get('Entities', 'MountainsSize'))),
-            self.parser.get('Entities', 'FarmfieldsID'): (
-                self.parser.get('Entities', 'FarmfieldsSheet'),
-                literal_eval(self.parser.get('Entities', 'FarmfieldsSize'))),
+            self.parser.get('World', 'TilesID'): (
+                self.parser.get('World', 'TilesSheet'),
+                literal_eval(self.parser.get('World', 'TilesSize'))),
+            self.parser.get('World', 'TreesID'): (
+                self.parser.get('World', 'TreesSheet'),
+                literal_eval(self.parser.get('World', 'TreesSize'))),
+            self.parser.get('World', 'FishesID'): (
+                self.parser.get('World', 'FishesSheet'),
+                literal_eval(self.parser.get('World', 'FishesSize'))),
+            self.parser.get('World', 'RocksID'): (
+                self.parser.get('World', 'RocksSheet'),
+                literal_eval(self.parser.get('World', 'RocksSize'))),
+            self.parser.get('World', 'MountainsID'): (
+                self.parser.get('World', 'MountainsSheet'),
+                literal_eval(self.parser.get('World', 'MountainsSize'))),
+            self.parser.get('World', 'FarmfieldsID'): (
+                self.parser.get('World', 'FarmfieldsSheet'),
+                literal_eval(self.parser.get('World', 'FarmfieldsSize'))),
+        }
+
+        self.sp_houses = {
             self.parser.get('Houses', 'CountinghouseID'): (
                 self.parser.get('Houses', 'CountinghouseSheet'),
                 literal_eval(self.parser.get('Houses', 'CountinghouseSize')))

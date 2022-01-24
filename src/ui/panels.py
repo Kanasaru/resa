@@ -2,14 +2,12 @@ import logging
 import pygame
 import src.ui.form as forms
 from src.handler import RESA_EH, RESA_SSH
-from src.handler.spritesheet import SpriteSheetHandler
 import src.locales as locales
 
 
 class GamePanel(forms.Interface):
-    def __init__(self, sheet_handler: SpriteSheetHandler, sheet_key):
+    def __init__(self, sheet_key):
         super().__init__()
-        self.sheet_handler = sheet_handler
         self.sheet_key = sheet_key
 
         self.rect = pygame.Rect((0, 0), (pygame.display.get_surface().get_width(), 30))
@@ -31,7 +29,7 @@ class GamePanel(forms.Interface):
         # buttons
         b_quit = forms.Button(
             pygame.Rect(self.title.width() - 5, 3, 70, 24),
-            self.sheet_handler,
+            RESA_SSH,
             self.sheet_key,
             locales.get('btn_leavegame'),
             pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_LEAVEGAME)
@@ -40,7 +38,7 @@ class GamePanel(forms.Interface):
         b_quit.set_font(False, 13)
         b_save = forms.Button(
             pygame.Rect(self.title.width() - 80, 3, 70, 24),
-            self.sheet_handler,
+            RESA_SSH,
             self.sheet_key,
             locales.get('btn_savegame'),
             pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_SAVEGAME)
