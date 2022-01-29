@@ -1,11 +1,13 @@
+import pygame
+
+
 class GameStateHandler(object):
     def __init__(self):
+        self.clock = pygame.time.Clock()
         self.start_game = False
         self.load_game = False
-        self.leave_game = False
         self.options = False
         self.start_editor = False
-        self.leave_game = False
         self.exit_game = False
         self.map_load = False
         self.pause_game = False

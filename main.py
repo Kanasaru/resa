@@ -4,14 +4,10 @@
 :license: CC-BY-SA-4.0
 """
 import logging.config
-import src
-import src.start
-
-
-def main():
-    logging.config.fileConfig('data/conf/logging.conf')
-    start = src.start.Start()
+import src.game
 
 
 if __name__ == "__main__":
-    main()
+    logging.config.fileConfig('data/conf/logging.conf')
+    game = src.game.Game()
+    game.run()

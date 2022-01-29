@@ -5,6 +5,10 @@
 :license: CC-BY-SA-4.0
 """
 import pygame
+from datetime import datetime
+import logging
+import src.locales as locales
+from src.handler import RESA_CH, RESA_SH
 
 
 def get_screenmodes():
@@ -40,3 +44,16 @@ def get_screenmodes():
         screenmodes['win'].append((800, 600))
 
     return screenmodes
+
+
+def take_screenshot() -> str:
+    """ Saves the current screen as an image.
+
+    :return: None
+    """
+    RESA_SH.play('screenshot')
+    filename = f'{RESA_CH.screenshot_path}screenshot_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.jpeg'
+    pygame.image.save(pygame.display.get_surface(), filename)
+    logging.info('Took screenshot')
+
+    return f"{locales.get('info_screenshot')}: {filename}"

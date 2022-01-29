@@ -127,8 +127,16 @@ class BuildMenuIcons(forms.Interface):
         if self.current_menu == BUILD_MENU_INFRASTRUCTURE:
             btn_3.active = True
         y += btn_3.height() + 10
+        btn_4 = forms.IconButton(
+            pygame.Rect(x, y, self.button_width, self.button_height),
+            'IconButtons',
+            RESA_SSH.image_by_index('Icons', 0),
+            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_LEAVEGAME)
+        )
+        btn_4.align(forms.RIGHT)
+        y += btn_4.height() + 10
 
-        self.title.add([btn_1, btn_2, btn_3])
+        self.title.add([btn_1, btn_2, btn_3, btn_4])
 
         # build menu
         if self.current_menu == BUILD_MENU_GENERAL:

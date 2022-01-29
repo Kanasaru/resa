@@ -28,8 +28,24 @@ class World(object):
         self.grid_fields = {}
         self.fields = pygame.sprite.Group()
         self.islands = None
-        self.mouse_shift_x = 0
-        self.mouse_shift_y = 0
+        self.sprites = pygame.sprite.Group()
+
+    def center(self):
+        center_field_key = len(self.grid_fields) // 2
+        shift_x = (self.grid_fields[center_field_key].rect.x - pygame.display.get_surface().get_width() // 2) * -1
+        shift_y = (self.grid_fields[center_field_key].rect.y - pygame.display.get_surface().get_height() // 2) * -1
+
+        for key, value in reversed(self.grid_fields.items()):
+            value.rect.x += shift_x
+            value.rect.y += shift_y
+
+            if value.sprite is not None:
+                value.sprite.update(pygame.event.Event(
+                    RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_CTRL_MAP_MOVE, move=(shift_x, shift_y))
+                )
+
+        self.rect.x += shift_x
+        self.rect.y += shift_y
 
     def create_images(self):
         self.fields.draw(self.image)
@@ -48,12 +64,11 @@ class World(object):
                         value.sprite.update(event)
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    pos_x, pos_y = event.pos
                     if value.sprite is not None:
                         if value.sprite.update(pygame.event.Event(
                             pygame.MOUSEBUTTONUP,
                             button=1,
-                            pos=(pos_x - self.mouse_shift_x, pos_y - self.mouse_shift_y)
+                            pos=event.pos
                         )) is not None:
                             return
             elif event.type == RESA_EH.RESA_GAME_CLOCK:
@@ -61,14 +76,14 @@ class World(object):
                     value.sprite.update(event)
 
     def update(self):
+        self.sprites.empty()
         for key, value in self.grid_fields.items():
             if value.sprite is not None:
                 value.sprite.update()
+                self.sprites.add(value.sprite)
 
     def draw(self, surface):
-        for key, value in self.grid_fields.items():
-            if value.sprite is not None:
-                surface.blit(value.sprite.image, value.sprite.rect)
+        self.sprites.draw(surface)
 
 
 class Generator(object):

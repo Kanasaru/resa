@@ -82,7 +82,7 @@ class Editor(object):
         self.clock = pygame.time.Clock()
 
         # set handler
-        self.messages = forms.MessageHandler(RESA_SSH, RESA_CH.sp_menu_btn_key)
+        self.messages = forms.MessageHandler('MenuButtons')
 
         # screen settings and build screen
         self.surface = pygame.display.get_surface()
@@ -272,7 +272,7 @@ class Editor(object):
         position_y = 715
         b_save_island = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
-            RESA_SSH, RESA_CH.sp_menu_btn_key,
+            RESA_SSH, 'MenuButtons',
             locales.get('editor_btn_save'),
             pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_SAVE)
         )
@@ -282,7 +282,7 @@ class Editor(object):
 
         b_load_island = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
-            RESA_SSH, RESA_CH.sp_menu_btn_key,
+            RESA_SSH, 'MenuButtons',
             locales.get('editor_btn_load'),
             pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_LOAD)
         )
@@ -297,7 +297,7 @@ class Editor(object):
 
         b_quiteditor = forms.Button(
             pygame.Rect(position_x, position_y, 220, 60),
-            RESA_SSH, RESA_CH.sp_menu_btn_key,
+            RESA_SSH, 'MenuButtons',
             locales.get('editor_btn_leave'),
             pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_LEAVE)
         )

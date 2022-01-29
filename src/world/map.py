@@ -30,14 +30,13 @@ class Moving(object):
 
 
 class Map(object):
-    def __init__(self, screen_size: tuple[int, int], map_shift: tuple[int, int]) -> None:
+    def __init__(self, screen_size: tuple[int, int]) -> None:
         """ Initializes a world loading instance
 
         :param screen_size: tuple of screen size
         """
         # event handling varibales
         self.moving = Moving()
-        self.map_shift = map_shift
 
         self.buildsprites = pygame.sprite.Group()
 
@@ -73,10 +72,8 @@ class Map(object):
 
         # get all sprites from world
         self.world = world.get_world()
+        self.world.center()
         self.rect = self.world.rect
-        # mouse shift for events
-        self.world.mouse_shift_x = self.rect.x + self.map_shift[0]
-        self.world.mouse_shift_y = self.rect.y + self.map_shift[1]
 
     def handle_event(self, event: pygame.event.Event) -> None:
         """ Handles given event
@@ -118,8 +115,7 @@ class Map(object):
                     RESA_GSH.building_size = (3, 3)
             # <<<
         elif event.type == pygame.MOUSEMOTION and RESA_GSH.building:
-            if self.map_shift[0] < event.pos[0] < self.surface.get_width() + self.map_shift[0] and \
-                    self.map_shift[1] < event.pos[1] < self.surface.get_height() + self.map_shift[1]:
+            if event.pos[0] < self.surface.get_width() and event.pos[1] < self.surface.get_height():
                 self.draw_build_grid(event.pos, RESA_GSH.building_size)
             else:
                 self.buildsprites.empty()
@@ -206,8 +202,8 @@ class Map(object):
         x, y = size
         sprite_sheet = 'Tiles'
         # relativate to grid
-        mouse_x = position[0] - self.rect.x - self.map_shift[0]
-        mouse_y = position[1] - self.rect.y - self.map_shift[1]
+        mouse_x = position[0] - self.rect.x
+        mouse_y = position[1] - self.rect.y
 
         field = self.world.grid.pos_in_iso_grid_field((mouse_x, mouse_y))
         if field:
@@ -274,8 +270,8 @@ class Map(object):
                             self.buildsprites.add(new_field)
 
     def cursor_on_map(self, pos):
-        cursor_x = pos[0] - self.rect.x - self.map_shift[0]
-        cursor_y = pos[1] - self.rect.y - self.map_shift[1]
+        cursor_x = pos[0] - self.rect.x
+        cursor_y = pos[1] - self.rect.y
         if cursor_x >= 0 and cursor_y >= 0:
             return cursor_x, cursor_y
 
