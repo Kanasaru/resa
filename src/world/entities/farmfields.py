@@ -40,12 +40,12 @@ class Wheat(object):
 
     def update(self, event: pygame.event.Event = None) -> None:
         if event is not None:
-            if event.type == RESA_EH.RESA_GAME_EVENT:
-                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.GAME_EVENT:
+                if event.code == RESA_EH.CTRL_MAP_MOVE:
                     pos_x = self.position[0] + event.move[0]
                     pox_y = self.position[1] + event.move[1]
                     self.position = (pos_x, pox_y)
-            if event.type == RESA_EH.RESA_GAME_CLOCK:
+            if event.type == RESA_EH.GAME_CLOCK:
                 if self.growth < 3:
                     if self.planted >= self.grow_speed * self.grow_factor:
                         self.planted = 0

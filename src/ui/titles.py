@@ -42,7 +42,7 @@ class MainMenu(forms.Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             RESA_SSH, self.sheet_key,
             locales.get('btn_newgame'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_STARTGAME)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_STARTGAME)
         )
         b_newgame.align(forms.CENTER)
         position_y += b_newgame.height() + 20
@@ -50,7 +50,7 @@ class MainMenu(forms.Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             RESA_SSH, self.sheet_key,
             locales.get('btn_loadgame'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_LOADGAME)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_LOADGAME)
         )
         b_loadgame.align(forms.CENTER)
         try:
@@ -63,7 +63,7 @@ class MainMenu(forms.Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             RESA_SSH, self.sheet_key,
             locales.get('btn_options'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_OPTIONS)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_OPTIONS)
         )
         b_options.align(forms.CENTER)
         position_y += b_options.height() + 20
@@ -71,7 +71,7 @@ class MainMenu(forms.Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             RESA_SSH, self.sheet_key,
             locales.get('btn_quitgame'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_QUITGAME)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_QUITGAME)
         )
         b_quitgame.align(forms.CENTER)
 
@@ -79,7 +79,7 @@ class MainMenu(forms.Interface):
             pygame.Rect(10, self.title.height() - 40, 110, 30),
             RESA_SSH, self.sheet_key,
             locales.get('btn_editor'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_EDITOR)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_EDITOR)
         )
         b_editor.align(forms.LEFT)
 
@@ -131,7 +131,7 @@ class Options(forms.Interface):
                     pygame.Rect(self.title.width() / 2, position_y, 180, 50),
                     RESA_SSH, self.sheet_key,
                     f'{mode[0]}x{mode[1]}',
-                    pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_CHG_RESOLUTION, res=mode)
+                    pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_CHG_RESOLUTION, res=mode)
                 )
                 btn.align(forms.CENTER)
                 if pygame.display.get_surface().get_size() == mode:
@@ -144,7 +144,7 @@ class Options(forms.Interface):
                     pygame.Rect(self.title.width() / 2, position_y, 180, 50),
                     RESA_SSH, self.sheet_key,
                     f'{mode[0]}x{mode[1]}',
-                    pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_CHG_RESOLUTION, res=mode)
+                    pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_CHG_RESOLUTION, res=mode)
                 )
                 btn.align(forms.CENTER)
                 if pygame.display.get_surface().get_size() == mode:
@@ -158,9 +158,9 @@ class Options(forms.Interface):
             swt_fullscreen = forms.Switch(
                 pygame.Rect(self.title.width() / 2, position_y, 60, 30),
                 RESA_SSH, self.swt_sheet_key,
-                pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_SWT_FULLSCREEN,
+                pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.SWT_FULLSCREEN,
                                    fullscreen=True, res=self.screenmodes['full'][0]),
-                pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_SWT_FULLSCREEN,
+                pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.SWT_FULLSCREEN,
                                    fullscreen=False, res=self.screenmodes['full'][-1]),
                 RESA_CH.fullscreen
             )
@@ -175,10 +175,14 @@ class Options(forms.Interface):
             pygame.Rect(self.title.width() / 2, position_y, 220, 60),
             RESA_SSH, self.sheet_key,
             locales.get('btn_back'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_MAINMENU)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_MAINMENU)
         )
         b_back.align(forms.CENTER)
 
         # add form objects to title
         self.title.add([tf_headline, tf_version, tf_credits, l_reso])
         self.title.add(b_back)
+
+
+MAINMENU = MainMenu('MenuButtons')
+OPTIONSMENU = Options('MenuButtons')

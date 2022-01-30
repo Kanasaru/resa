@@ -49,7 +49,7 @@ RESA_SH = SoundHandler(PATH_SOUNDS)
 
 """ MusicHandler """
 RESA_MH = MusicHandler(PATH_MUSIC)
-RESA_MH.set_endevent(RESA_EH.RESA_MUSIC_ENDED_EVENT)
+RESA_MH.set_endevent(RESA_EH.MUSIC_ENDED_EVENT)
 RESA_MH.load()
 
 """ DebugHandler """

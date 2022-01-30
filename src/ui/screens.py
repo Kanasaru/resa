@@ -1,13 +1,15 @@
 import pygame
+from datetime import datetime
+from src.handler import RESA_CH, RESA_GDH, RESA_GSH
 import src.ui.form as forms
 import src.locales as locales
 
 
 class GamePausedScreen(forms.Interface):
-    def __init__(self, rect):
+    def __init__(self):
         super().__init__()
 
-        self.rect = rect
+        self.rect = pygame.Rect((0, 0), pygame.display.get_surface().get_size())
         self.bg_color = forms.COLOR_BLACK
         self.bg_image = None
         self._text = f"{locales.get('info_game_paused')}"
@@ -138,3 +140,12 @@ class DebugScreen(forms.Interface):
             seconds = str(seconds)
 
         return f'{hours}:{minutes}:{seconds}'
+
+
+DEBUG = DebugScreen()
+DEBUG.add(locales.get('info_fps'), RESA_GSH.clock.get_fps)
+DEBUG.add(locales.get('info_version'), lambda: RESA_CH.version)
+DEBUG.add(locales.get('info_date'), lambda: datetime.now().strftime("%A, %d. %B %Y"))
+DEBUG.add(locales.get('info_ingame_time'), RESA_GDH.get_game_time)
+
+PAUSE = GamePausedScreen()

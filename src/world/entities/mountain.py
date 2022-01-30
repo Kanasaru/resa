@@ -26,8 +26,8 @@ class Mountain(pygame.sprite.Sprite):
 
     def update(self, event: pygame.event.Event = None) -> None | bool:
         if event is not None:
-            if event.type == RESA_EH.RESA_GAME_EVENT:
-                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.GAME_EVENT:
+                if event.code == RESA_EH.CTRL_MAP_MOVE:
                     pos_x = self.position[0] + event.move[0]
                     pox_y = self.position[1] + event.move[1]
                     self.position = (pos_x, pox_y)

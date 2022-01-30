@@ -41,7 +41,7 @@ class World(object):
 
             if value.sprite is not None:
                 value.sprite.update(pygame.event.Event(
-                    RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_CTRL_MAP_MOVE, move=(shift_x, shift_y))
+                    RESA_EH.GAME_EVENT, code=RESA_EH.CTRL_MAP_MOVE, move=(shift_x, shift_y))
                 )
 
         self.rect.x += shift_x
@@ -55,8 +55,8 @@ class World(object):
     def handle_event(self, event):
         # iterate reversed cause of isometric overlap
         for key, value in reversed(self.grid_fields.items()):
-            if event.type == RESA_EH.RESA_GAME_EVENT:
-                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.GAME_EVENT:
+                if event.code == RESA_EH.CTRL_MAP_MOVE:
                     value.rect.x += event.move[0]
                     value.rect.y += event.move[1]
 
@@ -71,7 +71,7 @@ class World(object):
                             pos=event.pos
                         )) is not None:
                             return
-            elif event.type == RESA_EH.RESA_GAME_CLOCK:
+            elif event.type == RESA_EH.GAME_CLOCK:
                 if value.sprite is not None:
                     value.sprite.update(event)
 

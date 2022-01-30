@@ -169,12 +169,12 @@ class Map(object):
 
             # raise event for movement
             pygame.event.post(
-                pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_CTRL_MAP_MOVE, move=move_field)
+                pygame.event.Event(RESA_EH.GAME_EVENT, code=RESA_EH.CTRL_MAP_MOVE, move=move_field)
             )
             
         self.world.update()
 
-    def render(self) -> None:
+    def render(self, surface) -> None:
         """ Renders all fields of the world on its surface
 
         :return: None
@@ -191,12 +191,7 @@ class Map(object):
 
         self.world.draw(self.surface)
 
-    def get_surface(self) -> pygame.Surface:
-        """ Returns the current state of the map surface
-
-        :return: current map surface
-        """
-        return self.surface
+        pygame.Surface.blit(surface, self.surface, (0, 0))
     
     def draw_build_grid(self, position, size):
         x, y = size

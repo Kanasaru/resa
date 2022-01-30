@@ -60,8 +60,8 @@ class Field(pygame.sprite.Sprite):
         :return: None
         """
         if event is not None:
-            if event.type == RESA_EH.RESA_GAME_EVENT:
-                if event.code == RESA_EH.RESA_CTRL_MAP_MOVE:
+            if event.type == RESA_EH.GAME_EVENT:
+                if event.code == RESA_EH.CTRL_MAP_MOVE:
                     self.position = (self.position[0] + event.move[0], self.position[1] + event.move[1])
         self.rect.topleft = self.position
 

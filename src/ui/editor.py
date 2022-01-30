@@ -47,7 +47,7 @@ class PaletteField(pygame.sprite.Sprite):
         if event.type == pygame.MOUSEBUTTONUP:
             if self.rect.collidepoint(event.pos):
                 pygame.event.post(pygame.event.Event(
-                    RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_SELECT, field=self.tile
+                    RESA_EH.TITLE_EVENT, code=RESA_EH.EDITOR_SELECT, field=self.tile
                 ))
         self.rect.topleft = self.position
 
@@ -108,10 +108,7 @@ class Editor(object):
             new_field.iso_key = key
             self.fields.add(new_field)
 
-        # start the game loop
-        self.loop()
-
-    def loop(self) -> None:
+    def run(self) -> None:
         """ editor loopp
 
         :return: None
@@ -145,24 +142,24 @@ class Editor(object):
                         )
                         if tile_field and not self.messages.is_msg():
                             pygame.event.post(pygame.event.Event(
-                                RESA_EH.RESA_TITLE_EVENT,
-                                code=RESA_EH.RESA_EDITOR_PLACE,
+                                RESA_EH.TITLE_EVENT,
+                                code=RESA_EH.EDITOR_PLACE,
                                 field=tile_field
                             ))
-            elif event.type == RESA_EH.RESA_TITLE_EVENT:
-                if event.code == RESA_EH.RESA_EDITOR_SELECT:
+            elif event.type == RESA_EH.TITLE_EVENT:
+                if event.code == RESA_EH.EDITOR_SELECT:
                     RESA_SH.play('btn-click')
                     self.selected_tile = event.field
                     self.messages.info(f"{locales.get('editor_tile_select')} {self.selected_tile}.")
-                elif event.code == RESA_EH.RESA_EDITOR_PLACE:
+                elif event.code == RESA_EH.EDITOR_PLACE:
                     self.place_tile = event.field
-                elif event.code == RESA_EH.RESA_EDITOR_LEAVE:
+                elif event.code == RESA_EH.EDITOR_LEAVE:
                     self.leave_editor()
-                elif event.code == RESA_EH.RESA_EDITOR_LOAD:
+                elif event.code == RESA_EH.EDITOR_LOAD:
                     self.load_island()
-                elif event.code == RESA_EH.RESA_EDITOR_SAVE:
+                elif event.code == RESA_EH.EDITOR_SAVE:
                     self.save_island()
-                elif event.code == RESA_EH.RESA_QUITGAME_TRUE:
+                elif event.code == RESA_EH.QUITGAME_TRUE:
                     self.exit = True
 
             self.messages.handle_event(event)
@@ -225,11 +222,11 @@ class Editor(object):
         :return: None
         """
         self.messages.show(locales.get('msg_cap_leaveeditor'), locales.get('msg_text_leaveeditor'),
-                           pygame.event.Event(RESA_EH.RESA_TITLE_EVENT,
-                                              code=RESA_EH.RESA_QUITGAME_TRUE),
+                           pygame.event.Event(RESA_EH.TITLE_EVENT,
+                                              code=RESA_EH.QUITGAME_TRUE),
                            locales.get('btn_msg_yes'),
-                           pygame.event.Event(RESA_EH.RESA_TITLE_EVENT,
-                                              code=RESA_EH.RESA_QUITGAME_FALSE),
+                           pygame.event.Event(RESA_EH.TITLE_EVENT,
+                                              code=RESA_EH.QUITGAME_FALSE),
                            locales.get('btn_msg_no'))
 
     def save_island(self) -> None:
@@ -274,7 +271,7 @@ class Editor(object):
             pygame.Rect(position_x, position_y, 220, 60),
             RESA_SSH, 'MenuButtons',
             locales.get('editor_btn_save'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_SAVE)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.EDITOR_SAVE)
         )
         b_save_island.align(forms.CENTER)
 
@@ -284,7 +281,7 @@ class Editor(object):
             pygame.Rect(position_x, position_y, 220, 60),
             RESA_SSH, 'MenuButtons',
             locales.get('editor_btn_load'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_LOAD)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.EDITOR_LOAD)
         )
         b_load_island.align(forms.CENTER)
         try:
@@ -299,7 +296,7 @@ class Editor(object):
             pygame.Rect(position_x, position_y, 220, 60),
             RESA_SSH, 'MenuButtons',
             locales.get('editor_btn_leave'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_EDITOR_LEAVE)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.EDITOR_LEAVE)
         )
         b_quiteditor.align(forms.CENTER)
 

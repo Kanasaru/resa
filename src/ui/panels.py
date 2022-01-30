@@ -32,7 +32,7 @@ class GamePanel(forms.Interface):
             RESA_SSH,
             self.sheet_key,
             locales.get('btn_leavegame'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_LEAVEGAME)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_LEAVEGAME)
         )
         b_quit.align(forms.RIGHT)
         b_quit.set_font(False, 13)
@@ -41,7 +41,7 @@ class GamePanel(forms.Interface):
             RESA_SSH,
             self.sheet_key,
             locales.get('btn_savegame'),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_SAVEGAME)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_SAVEGAME)
         )
         b_save.align(forms.RIGHT)
         b_save.set_font(False, 13)
@@ -101,7 +101,7 @@ class BuildMenuIcons(forms.Interface):
             pygame.Rect(x, y, self.button_width, self.button_height),
             'IconButtons',
             RESA_SSH.image_by_index('Icons', 0),
-            pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILD_MENU, menu=BUILD_MENU_GENERAL)
+            pygame.event.Event(RESA_EH.GAME_EVENT, code=RESA_EH.BUILD_MENU, menu=BUILD_MENU_GENERAL)
         )
         btn_1.align(forms.RIGHT)
         if self.current_menu == BUILD_MENU_GENERAL:
@@ -111,7 +111,7 @@ class BuildMenuIcons(forms.Interface):
             pygame.Rect(x, y, self.button_width, self.button_height),
             'IconButtons',
             RESA_SSH.image_by_index('Icons', 1),
-            pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILD_MENU, menu=BUILD_MENU_FARMS)
+            pygame.event.Event(RESA_EH.GAME_EVENT, code=RESA_EH.BUILD_MENU, menu=BUILD_MENU_FARMS)
         )
         btn_2.align(forms.RIGHT)
         if self.current_menu == BUILD_MENU_FARMS:
@@ -121,7 +121,7 @@ class BuildMenuIcons(forms.Interface):
             pygame.Rect(x, y, self.button_width, self.button_height),
             'IconButtons',
             RESA_SSH.image_by_index('Icons', 2),
-            pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILD_MENU, menu=BUILD_MENU_INFRASTRUCTURE)
+            pygame.event.Event(RESA_EH.GAME_EVENT, code=RESA_EH.BUILD_MENU, menu=BUILD_MENU_INFRASTRUCTURE)
         )
         btn_3.align(forms.RIGHT)
         if self.current_menu == BUILD_MENU_INFRASTRUCTURE:
@@ -131,7 +131,7 @@ class BuildMenuIcons(forms.Interface):
             pygame.Rect(x, y, self.button_width, self.button_height),
             'IconButtons',
             RESA_SSH.image_by_index('Icons', 0),
-            pygame.event.Event(RESA_EH.RESA_TITLE_EVENT, code=RESA_EH.RESA_BTN_LEAVEGAME)
+            pygame.event.Event(RESA_EH.TITLE_EVENT, code=RESA_EH.BTN_LEAVEGAME)
         )
         btn_4.align(forms.RIGHT)
         y += btn_4.height() + 10
@@ -146,7 +146,7 @@ class BuildMenuIcons(forms.Interface):
                 pygame.Rect(x, y, self.button_width, self.button_height),
                 'IconButtons',
                 RESA_SSH.image_by_index('Countinghouse', 0),
-                pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
+                pygame.event.Event(RESA_EH.GAME_EVENT, code=RESA_EH.BUILDMODE)
             )
             self.title.add([btn_1])
         elif self.current_menu == BUILD_MENU_FARMS:
@@ -156,7 +156,7 @@ class BuildMenuIcons(forms.Interface):
                 pygame.Rect(x, y, self.button_width, self.button_height),
                 'IconButtons',
                 RESA_SSH.image_by_index('Farmfields', 3),
-                pygame.event.Event(RESA_EH.RESA_GAME_EVENT, code=RESA_EH.RESA_BUILDMODE)
+                pygame.event.Event(RESA_EH.GAME_EVENT, code=RESA_EH.BUILDMODE)
             )
             self.title.add([btn_1])
         elif self.current_menu == BUILD_MENU_INFRASTRUCTURE:
@@ -198,3 +198,6 @@ class BuildMenuIcons(forms.Interface):
                 return True
 
         return False
+
+
+ICONS = BuildMenuIcons()
